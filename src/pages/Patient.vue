@@ -4,7 +4,9 @@
     <div class="row color-white">
       <q-toolbar
         class="col-4 bg-primary-500 no-padding shadow-1"
-        style="max-width:360px;width:100%;"
+        :style="
+          $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
+        "
       >
         <q-toolbar-title>
           <q-btn flat round dense class="q-ml-sm q-mr-xs">
