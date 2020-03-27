@@ -1,9 +1,11 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <!-- TODO : Memu Bar Left is Desktop Mode-->
     <q-drawer
-      v-model="drawer"
+      persistent
       show-if-above
       :width="90"
+      :breakpoint="100"
       content-class="bg-black"
       v-if="$q.platform.is.desktop"
     >
@@ -52,8 +54,6 @@
             </q-item-section>
           </q-item>
 
-          <q-separator />
-
           <q-item class="color-white q-py-md" clickable v-ripple>
             <q-item-section>
               <div align="center">
@@ -68,6 +68,63 @@
       </q-scroll-area>
     </q-drawer>
 
+    <!-- TODO : Memu Bar Bottom is Mobile Mode -->
+    <q-footer elevated v-if="$q.platform.is.mobile">
+      <q-toolbar class=" bg-black no-padding">
+        <div class="col" align="center">
+          <q-btn
+            flat=""
+            class="no-border-radius fit q-py-xs"
+            @click="goToPatient()"
+          >
+            <div align="center">
+              <img src="../statics/pic/Face.png" style="width:30px;" />
+              <div style="font-size:14px;margin-top:-7px;">
+                ผู้ป่วย
+              </div>
+            </div>
+          </q-btn>
+        </div>
+        <q-space></q-space>
+        <div class="col" align="center">
+          <q-btn
+            flat=""
+            class="no-border-radius fit q-py-xs"
+            @click="goToWard()"
+          >
+            <div align="center">
+              <img src="../statics/pic/Bed.png" style="width:30px;" />
+              <div style="font-size:14px;margin-top:-7px;">
+                ห้องพัก
+              </div>
+            </div>
+          </q-btn>
+        </div>
+        <q-space></q-space>
+        <div class="col" align="center">
+          <q-btn flat="" class="no-border-radius fit q-py-xs">
+            <div align="center">
+              <img src="../statics/pic/Support.png" style="width:30px;" />
+              <div style="font-size:14px;margin-top:-7px;">
+                บุคลากร
+              </div>
+            </div>
+          </q-btn>
+        </div>
+        <q-space></q-space>
+        <div class="col" align="center">
+          <q-btn flat="" class="no-border-radius fit q-py-xs">
+            <div align="center">
+              <img src="../statics/pic/Setting.png" style="width:30px;" />
+              <div style="font-size:14px;margin-top:-7px;">
+                เพิ่มเติม
+              </div>
+            </div>
+          </q-btn>
+        </div>
+      </q-toolbar>
+    </q-footer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -78,11 +135,7 @@
 export default {
   name: "MainLayout",
   data() {
-    return {
-      drawer: false,
-      miniState: true,
-      leftDrawerOpen: false
-    };
+    return {};
   },
   methods: {
     goToWard() {

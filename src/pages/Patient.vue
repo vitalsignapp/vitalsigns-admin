@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!-- TODO : Container One List Data -->
-    <div class="row color-white">
+    <q-header class="row color-white">
       <q-toolbar
         class="col-4 bg-primary-500 no-padding shadow-1"
         :style="
@@ -10,7 +10,7 @@
       >
         <q-toolbar-title>
           <q-btn flat round dense class="q-ml-sm q-mr-xs">
-            <q-icon name="chevron_left" size="35px"></q-icon>
+            <q-icon name="chevron_left" size="24px"></q-icon>
           </q-btn>
           <span clas>ผู้ป่วย</span>
         </q-toolbar-title>
@@ -25,7 +25,7 @@
         <q-toolbar-title></q-toolbar-title>
         <q-space />
       </q-toolbar>
-    </div>
+    </q-header>
 
     <!-- TODO : Container Tow List Data -->
     <div class="row">
@@ -47,12 +47,12 @@
             <q-btn
               flat=""
               dense=""
-              class=" fit q-pr-xs q-py-xs"
+              class=" fit q-pr-xs q-py-xs no-border-radius"
               no-caps
               @click="selectPatient(item)"
             >
               <div class="row font-body  full-width ">
-                <div class="col-1" align="cetner">
+                <div class="col-1 " style="width:30px;" align="cetner">
                   <q-icon
                     v-if="item.status != 'read'"
                     name="fiber_manual_record"
@@ -64,7 +64,7 @@
                     "
                   ></q-icon>
                 </div>
-                <div class="col-5" align="left">
+                <div class="col " align="left">
                   <span class="no-padding">
                     {{ item.name }}
                   </span>
@@ -74,7 +74,7 @@
                   </span>
                 </div>
                 <div
-                  class="col-5 q-px-xs"
+                  class="col  q-px-xs"
                   :class="item.status != 'readNoMark' ? null : 'color-error'"
                   align="right"
                 >
@@ -90,8 +90,8 @@
                     item.status != "readNoMark" ? null : "ไม่ได้ส่งข้อมูลล่าสุด"
                   }}</span>
                 </div>
-                <div class="col-1  self-center">
-                  <q-icon name="chevron_right" size="35px"></q-icon>
+                <div class="col-1  self-center" style="width:30px;">
+                  <q-icon name="chevron_right" size="24px"></q-icon>
                 </div>
               </div>
             </q-btn>
@@ -101,10 +101,12 @@
       </div>
 
       <!-- TODO : Container Show Data -->
-
-      <!-- v-if="patientData != null" -->
       <div class="col" style="margin-top:30px;" v-if="$q.platform.is.desktop">
-        <div class="q-px-xs" style="max-width:325px;width:95%;margin:auto;">
+        <div
+          class="q-px-xs"
+          style="max-width:325px;width:95%;margin:auto;"
+          v-if="patientData != null"
+        >
           <div class="">
             <span class="font-h3 ">
               {{ patientData.name }}
@@ -363,8 +365,6 @@ export default {
 /* TODO : Container List Data And Scrollbar */
 .container-list-data {
   overflow-y: auto;
-  overflow-x: hidden;
-
   height: calc(100vh - 50px);
   border-right: 1px solid #b3b3b379;
 }
