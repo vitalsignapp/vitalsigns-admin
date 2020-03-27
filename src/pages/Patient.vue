@@ -16,17 +16,26 @@
           <q-btn flat round dense icon="search" />
         </div>
       </q-toolbar>
-      <q-toolbar class="col bg-primary-500 shadow-1"></q-toolbar>
+      <q-toolbar
+        class="col bg-primary-500 shadow-1"
+        v-if="$q.platform.is.desktop"
+      >
+        <q-toolbar-title></q-toolbar-title>
+        <q-space />
+      </q-toolbar>
     </div>
 
     <!-- TODO : Container Tow List Data -->
     <div class="row">
-      <div class="col-4 container-list-data">
+      <div
+        class="col-4 container-list-data"
+        :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
+      >
         <!-- TODO : List Data Component -->
         <div v-for="(room, index) in dataList" :key="index">
-          <div class="q-px-md q-mt-sm q-py-md">
+          <div class="q-px-md " style="padding-top:22px;padding-bottom:8px">
             <span
-              class="font-body color-primary-600 text-bold"
+              class="font-body color-primary-600 text-bold "
               style="font-size:14px;font-weight:bold;"
             >
               {{ "ห้องผู้ป่วย " + index.substr(index.length - 1) }}
@@ -92,19 +101,23 @@
       <!-- TODO : Container Show Data -->
 
       <!-- v-if="patientData != null" -->
-      <div class="col q-mt-lg">
-        <div class="q-pa-xs " style="max-width:325px;width:95%;margin:auto;">
+      <div class="col" style="margin-top:30px;" v-if="$q.platform.is.desktop">
+        <div class="q-px-xs" style="max-width:325px;width:95%;margin:auto;">
           <div class="">
-            <span class="font-h3">
+            <span class="font-h3 ">
               {{ patientData.name }}
             </span>
             <br />
-            <div class="font-body q-mt-xs">
+            <div class="font-body q-mt-sm">
               <span class="color-light-gray">รหัส</span>
               {{ " " + patientData.NH + "   " + "&nbsp;&nbsp;" }}
               <span class="color-light-gray">วันเกิด</span>
               {{ " " + patientData.birth + " " + "&nbsp;&nbsp;" }}
-              <span class="color-primary-500" clickable>เพิ่มเติม</span>
+              <span
+                class="color-primary-500 cursor-pointer"
+                @click="isDetails = true"
+                >เพิ่มเติม</span
+              >
             </div>
           </div>
 
@@ -197,6 +210,71 @@
         </div>
       </div>
     </div>
+
+    <!-- TODO : Container Dialog Model -->
+    <q-dialog v-model="isDetails">
+      <q-card class="my-card font-body" style="max-width:320px;width:100%;">
+        <div class="q-pa-sm" align="center">
+          <span>
+            ข้อมูลผู้ป่วย
+          </span>
+        </div>
+
+        <q-separator />
+
+        <div class="q-my-md q-px-sm">
+          <div>
+            <span class="font-h3">
+              {{ patientData.name }}
+            </span>
+          </div>
+          <div class="row q-mt-sm">
+            <div class="col-6 q-my-xs">
+              <span class="color-light-gray">รหัส</span>
+              {{ " " + patientData.NH + "   " + "&nbsp;&nbsp;" }}
+            </div>
+            <div class="col-6 q-my-xs" align="right">
+              <span class="color-light-gray">วันเกิด</span>
+              {{ " " + patientData.birth }}
+            </div>
+            <div class="col-2 q-my-xs " style="width:75px;">
+              <span class="color-light-gray">Diagnosis</span>
+            </div>
+            <div class="col q-my-xs">
+              {{
+                "Covid-19 มีอาการปวดหัวข้างเดียวและอาการน้ำในหูไม่เท่ากันเพิ่มเติมขึ้นมา"
+              }}
+            </div>
+            <div class="col-12 q-my-xs">
+              <span class="color-light-gray">อายุ</span>
+              {{ " " + "43" }}
+            </div>
+            <div class="col-12 q-my-xs">
+              <span class="color-light-gray">เพศ</span>
+              {{ " " + "ชาย" }}
+            </div>
+            <div class="col-12 q-my-xs">
+              <span class="color-light-gray">ห้อง</span>
+              {{ " " + "ห้องพักผู้ป่วย 1" }}
+            </div>
+            <div class="col-12 q-my-xs">
+              <span class="color-light-gray">เข้ารักษา</span>
+              {{ " " + "23/01/2563" }}
+            </div>
+          </div>
+
+          <div align="right" class="q-mt-md">
+            <q-btn
+              flat
+              class="button-action small"
+              dense=""
+              label="ปิด"
+              @click="isDetails = false"
+            ></q-btn>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -265,15 +343,17 @@ export default {
         date: 27,
         betweenTime: "12:00",
         birth: "23/01/2523"
-      }
+      },
+
+      isDetails: false
     };
   },
   methods: {
     selectPatient(data) {
-      console.log(data);
       this.patientData = data;
     }
-  }
+  },
+  mounted() {}
 };
 </script>
 
@@ -282,10 +362,18 @@ export default {
 .container-list-data {
   overflow-y: auto;
   overflow-x: hidden;
-  max-width: 360px;
-  width: 100%;
+
   height: calc(100vh - 50px);
   border-right: 1px solid #b3b3b379;
+}
+
+.container-list-data.desktop-only {
+  max-width: 360px;
+  width: 100%;
+}
+
+.container-list-data.mobile-only {
+  width: 100%;
 }
 
 .container-list-data::-webkit-scrollbar {
