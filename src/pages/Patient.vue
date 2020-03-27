@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <!-- TODO : Container One List Data -->
+    <!-- TODO : Container Header Bar -->
     <q-header class="row color-white">
       <q-toolbar
         class="col-4 bg-primary-500 no-padding shadow-1"
@@ -27,7 +27,7 @@
       </q-toolbar>
     </q-header>
 
-    <!-- TODO : Container Tow List Data -->
+    <!-- TODO : Container List Data -->
     <div class="row">
       <div
         class="col-4 container-list-data"
