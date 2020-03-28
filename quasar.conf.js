@@ -6,7 +6,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: [],
+    boot: ['i18n'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.css"],
@@ -161,6 +161,19 @@ module.exports = function (ctx) {
       extendWebpack(cfg) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
+
+        cfg.module.rules.push({
+          resourceQuery: /blockType=i18n/,
+          use: [{
+              loader: '@kazupon/vue-i18n-loader'
+            },
+            {
+              loader: 'yaml-loader'
+            }
+          ]
+        })
+
+
       }
     }
   };
