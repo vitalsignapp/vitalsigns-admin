@@ -191,11 +191,11 @@ export default {
     }
   },
   mounted() {
-    // let _this = this;
+    let _this = this;
     auth.onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in.
-        // _this.$router.push("/patient");
+        _this.$router.push("/patient");
       }
     });
   }
