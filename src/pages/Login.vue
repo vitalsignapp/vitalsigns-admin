@@ -7,10 +7,7 @@
       </q-toolbar-title>
       <q-space />
       <div style="width:70px;">
-        <div
-          class="row bg-primary-600 q-pa-xs round"
-          style="border-radius:15px;"
-        >
+        <div class="row bg-primary-600 q-pa-xs round" style="border-radius:15px;">
           <div class="col">
             <q-btn
               flat
@@ -37,24 +34,31 @@
       </div>
     </q-toolbar>
 
-    <div class=" q-pa-xl" align="center">
-      <q-btn
-        class="button-action"
-        dense=""
-        label="เข้าสู่ระบบ"
-        to="/patient"
-      ></q-btn>
+    <div class="q-pa-xl" align="center">
+      <q-btn class="button-action" dense label="เข้าสู่ระบบ" to="/patient"></q-btn>
     </div>
   </div>
 </template>
 
 <script>
+import { auth } from "../router";
 export default {
   name: "PageIndex",
   data() {
     return {
       isChangeLanguage: "th"
     };
+  },
+  mounted() {
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        console.log("SIGNIN");
+      } else {
+        // No user is signed in.
+        console.log("NOT");
+      }
+    });
   }
 };
 </script>

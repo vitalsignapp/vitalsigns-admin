@@ -11,7 +11,7 @@
           <span class="q-pl-md">ห้องพักผู้ป่วย</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn flat dense icon="add" label="เพิ่มห้องพัก" />
+          <q-btn @click="isShowAddRoomDialog = true" flat dense icon="add" label="เพิ่มห้องพัก" />
         </div>
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
@@ -21,19 +21,29 @@
     </q-header>
 
     <!-- TODO : Container Tow List Data -->
-    <div class="row">
+    <div class="row" v-if="!isLoading">
       <div
-        class="col-4 container-list-data brx"
+        class="container-list-data"
         :class="$q.platform.is.desktop ? 'col-4' : 'col-12'"
-        style="max-width:360px;width:100%;"
+        :style="
+          $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
+        "
       >
         <div>
-          <div v-for="i in 5" :key="i" class="relative-position container cursor-pointer" v-ripple>
+          <div
+            v-for="(items,index) in patientRoom"
+            :key="index"
+            class="relative-position container cursor-pointer"
+            v-ripple
+            @click="showPatientData(items.key)"
+          >
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
-                <span class="no-padding">ห้องพักผู้ป่วย {{ i }}</span>
+                <span class="no-padding">{{ items.name }}</span>
                 <br />
-                <span class="color-light-gray">{{ i * Math.floor(Math.random() * 10) }} คน</span>
+                <span
+                  class="color-light-gray"
+                >{{ patientData.filter(x => x.patientRoomKey == items.key ).length }} คน</span>
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -50,13 +60,113 @@
         </div>
       </div>
     </div>
+
+    <q-dialog
+      maximized
+      v-model="isShowAddRoomDialog"
+      persistent
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <q-card class="bg-white">
+        <q-card-section align="right">
+          <q-btn v-close-popup icon="fas fa-times" flat></q-btn>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <div class="text-h6" align="center">เพิ่มห้องพักผู้ป่วย</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none" align="center">
+          <q-input
+            v-model="roomName"
+            style="max-width:330px;min-height:80px"
+            outlined
+            label="ชื่อห้องพักผู้ป่วย"
+          ></q-input>
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn @click="addNewRoom()" label="บันทึก" class="button-action" style="min-width:80px"></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import { db } from "../router";
 export default {
   data() {
-    return {};
+    return {
+      isShowAddRoomDialog: false,
+      roomName: "",
+      patientRoom: [],
+      patientData: [],
+      isListenPatientRoom: "",
+      isLoading: true
+    };
+  },
+  methods: {
+    showPatientData(patientKey) {
+      console.log(patientKey);
+    },
+    async addNewRoom() {
+      this.loadingShow();
+      let date = await this.getDate();
+      db.collection("patientRoom")
+        .add({
+          name: this.roomName,
+          hospitalKey: "d9lzg1cDW3csxvCzlq0i",
+          addTime: date.microtime,
+          date: date
+        })
+        .then(() => {
+          this.$q.notify({
+            message: "คุณสร้างห้องพักสำเร็จแล้ว",
+            color: "black"
+          });
+          this.isShowAddRoomDialog = false;
+          this.loadinghide();
+        });
+    },
+    loadPatientData() {
+      this.loadingShow();
+      db.collection("patientData")
+        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .get()
+        .then(doc => {
+          let dataTemp = [];
+          doc.forEach(element => {
+            dataTemp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.patientData = dataTemp;
+          this.loadPatientRoom();
+        });
+    },
+    loadPatientRoom() {
+      this.isListenPatientRoom = db
+        .collection("patientRoom")
+        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .onSnapshot(doc => {
+          let dataTemp = [];
+          doc.forEach(element => {
+            let dataKey = {
+              key: element.id
+            };
+            dataTemp.push({ ...element.data(), ...dataKey });
+          });
+          dataTemp = dataTemp.sort((a, b) => a.microtime - b.microtime);
+          this.patientRoom = dataTemp;
+          this.isLoading = false;
+          this.loadingHide();
+        });
+    }
+  },
+  mounted() {
+    this.loadPatientData();
+  },
+  beforeDestroy() {
+    this.isListenPatientRoom();
   }
 };
 </script>

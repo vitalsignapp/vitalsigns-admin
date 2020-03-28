@@ -2,8 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
+import VueAxios from 'vue-axios'
+import axios from "axios";
 
 Vue.use(VueRouter)
+Vue.use(VueAxios, axios)
 
 /*
  * If not building with SSR mode, you can
@@ -27,6 +30,25 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
+export const auth = firebase.auth()
+
+Vue.mixin({
+  methods: {
+    async getDate() {
+      let apiLink = "https://api.winner-english.com/data/api/gettime.php";
+      const res = await axios.get(apiLink);
+      return res.data[0];
+    },
+    loadingShow() {
+      this.$q.loading.show({
+        delay: 400
+      })
+    },
+    loadingHide() {
+      this.$q.loading.hide()
+    },
+  },
+})
 
 
 export default function ( /* { store, ssrContext } */ ) {
