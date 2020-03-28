@@ -126,7 +126,7 @@ export default {
             color: "black"
           });
           this.isShowAddRoomDialog = false;
-          this.loadinghide();
+          this.loadingHide();
         });
     },
     loadPatientData() {
@@ -155,7 +155,7 @@ export default {
             };
             dataTemp.push({ ...element.data(), ...dataKey });
           });
-          dataTemp = dataTemp.sort((a, b) => a.microtime - b.microtime);
+          dataTemp = dataTemp.sort((a, b) => a.addTime - b.addTime);
           this.patientRoom = dataTemp;
           this.isLoading = false;
           this.loadingHide();
