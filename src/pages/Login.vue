@@ -126,7 +126,7 @@ export default {
       email: "",
       password: "",
       isChangeLanguage: "th",
-      isShowAddRoomDialog: false,
+      isShowAddRoomDialog: true,
       user: {
         userNo: "",
         prefix: "",
