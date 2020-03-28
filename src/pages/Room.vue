@@ -23,29 +23,28 @@
     <!-- TODO : Container Tow List Data -->
     <div class="row">
       <div
-        class="col-4 container-list-data"
-        :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
+        class="col-4 container-list-data brx"
+        :class="$q.platform.is.desktop ? 'col-4' : 'col-12'"
+        style="max-width:360px;width:100%;"
       >
-        <div class="q-pt-sm">
-          <div v-for="i in 5" :key="i">
-            <q-btn flat dense class="fit q-pr-xs q-py-xs no-border-radius" no-caps>
-              <div class="row q-pl-lg font-body full-width">
-                <div class="col" align="left">
-                  <span class="no-padding">ห้องพักผู้ป่วย {{ i }}</span>
-                  <br />
-                  <span class="color-light-gray">{{ i * Math.floor(Math.random() * 10) }} คน</span>
-                </div>
-                <div class="col-1 self-center" style="width:30px;">
-                  <q-icon name="chevron_right" size="24px"></q-icon>
-                </div>
+        <div>
+          <div v-for="i in 5" :key="i" class="relative-position container cursor-pointer" v-ripple>
+            <div class="row q-py-sm font-body full-width" style="padding-left:30px">
+              <div class="col" align="left">
+                <span class="no-padding">ห้องพักผู้ป่วย {{ i }}</span>
+                <br />
+                <span class="color-light-gray">{{ i * Math.floor(Math.random() * 10) }} คน</span>
               </div>
-            </q-btn>
+              <div class="col-1 self-center" style="width:30px;">
+                <q-icon name="chevron_right" size="24px"></q-icon>
+              </div>
+            </div>
             <q-separator />
           </div>
         </div>
       </div>
 
-      <div class="col relative-position">
+      <div class="col relative-position desktop-only">
         <div class="font-h3" style="position:relative;top:18%;left:15%">
           <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
         </div>
