@@ -11,34 +11,20 @@
     >
       <q-scroll-area class="fit">
         <q-list padding>
-          <q-item
-            class="color-white q-py-sm"
-            @click="goToPatient()"
-            clickable
-            v-ripple
-          >
+          <q-item class="color-white q-py-sm" @click="goToPatient()" clickable v-ripple>
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Face.png" style="width:50%;" />
-                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">
-                  ผู้ป่วย
-                </div>
+                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">ผู้ป่วย</div>
               </div>
             </q-item-section>
           </q-item>
 
-          <q-item
-            class="color-white q-py-sm"
-            clickable
-            @click="goToWard()"
-            v-ripple
-          >
+          <q-item class="color-white q-py-sm" clickable @click="goToWard()" v-ripple>
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Bed.png" style="width:50%;" />
-                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">
-                  ห้องพัก
-                </div>
+                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">ห้องพัก</div>
               </div>
             </q-item-section>
           </q-item>
@@ -47,9 +33,7 @@
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Support.png" style="width:50%;" />
-                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">
-                  บุคลากร
-                </div>
+                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">บุคลากร</div>
               </div>
             </q-item-section>
           </q-item>
@@ -58,9 +42,7 @@
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Setting.png" style="width:50%;" />
-                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">
-                  เพิ่มเติม
-                </div>
+                <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">เพิ่มเติม</div>
               </div>
             </q-item-section>
           </q-item>
@@ -70,57 +52,45 @@
 
     <!-- TODO : Memu Bar Bottom is Mobile Mode -->
     <q-footer elevated v-if="$q.platform.is.mobile">
-      <q-toolbar class=" bg-black no-padding">
+      <q-toolbar class="bg-black no-padding">
         <div class="col" align="center">
-          <q-btn
-            flat=""
-            class="no-border-radius fit q-py-xs"
+          <div
+            v-ripple
+            class="relative-position no-border-radius fit q-py-xs"
             @click="goToPatient()"
           >
             <div align="center">
               <img src="../statics/pic/Face.png" style="width:30px;" />
-              <div style="font-size:14px;margin-top:-7px;">
-                ผู้ป่วย
-              </div>
+              <div style="font-size:14px;margin-top:-7px;">ผู้ป่วย</div>
             </div>
-          </q-btn>
+          </div>
         </div>
         <q-space></q-space>
         <div class="col" align="center">
-          <q-btn
-            flat=""
-            class="no-border-radius fit q-py-xs"
-            @click="goToWard()"
-          >
+          <div v-ripple class="relative-position no-border-radius fit q-py-xs" @click="goToWard()">
             <div align="center">
               <img src="../statics/pic/Bed.png" style="width:30px;" />
-              <div style="font-size:14px;margin-top:-7px;">
-                ห้องพัก
-              </div>
+              <div style="font-size:14px;margin-top:-7px;">ห้องพัก</div>
             </div>
-          </q-btn>
+          </div>
         </div>
         <q-space></q-space>
         <div class="col" align="center">
-          <q-btn flat="" class="no-border-radius fit q-py-xs">
+          <div v-ripple class="relative-position no-border-radius fit q-py-xs">
             <div align="center">
               <img src="../statics/pic/Support.png" style="width:30px;" />
-              <div style="font-size:14px;margin-top:-7px;">
-                บุคลากร
-              </div>
+              <div style="font-size:14px;margin-top:-7px;">บุคลากร</div>
             </div>
-          </q-btn>
+          </div>
         </div>
         <q-space></q-space>
         <div class="col" align="center">
-          <q-btn flat="" class="no-border-radius fit q-py-xs">
+          <div v-ripple class="relative-position no-border-radius fit q-py-xs">
             <div align="center">
               <img src="../statics/pic/Setting.png" style="width:30px;" />
-              <div style="font-size:14px;margin-top:-7px;">
-                เพิ่มเติม
-              </div>
+              <div style="font-size:14px;margin-top:-7px;">เพิ่มเติม</div>
             </div>
-          </q-btn>
+          </div>
         </div>
       </q-toolbar>
     </q-footer>

@@ -1,12 +1,12 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-module.exports = function (ctx) {
+module.exports = function(ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ['i18n'],
+    boot: ["i18n"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.css"],
@@ -40,10 +40,10 @@ module.exports = function (ctx) {
       all: "auto",
 
       components: [],
-      directives: ['Ripple'],
+      directives: ["Ripple"],
 
       // Quasar plugins
-      plugins: ['Loading', 'Notify']
+      plugins: ["Loading", "Notify", "Dialog"]
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -94,7 +94,8 @@ module.exports = function (ctx) {
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
-        icons: [{
+        icons: [
+          {
             src: "statics/icons/icon-128x128.png",
             sizes: "128x128",
             type: "image/png"
@@ -164,16 +165,15 @@ module.exports = function (ctx) {
 
         cfg.module.rules.push({
           resourceQuery: /blockType=i18n/,
-          use: [{
-              loader: '@kazupon/vue-i18n-loader'
+          use: [
+            {
+              loader: "@kazupon/vue-i18n-loader"
             },
             {
-              loader: 'yaml-loader'
+              loader: "yaml-loader"
             }
           ]
-        })
-
-
+        });
       }
     }
   };

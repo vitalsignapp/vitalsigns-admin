@@ -186,6 +186,11 @@
   border: 1px solid#f00;
 }
 
+.dialog-container {
+  max-width: 400px;
+  margin: auto;
+}
+
 .button-action {
   padding: 2px 16px;
   background-color: #ffa726;
