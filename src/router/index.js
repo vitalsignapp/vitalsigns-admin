@@ -4,9 +4,11 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 import VueAxios from 'vue-axios'
 import axios from "axios";
+import VueCryptojs from 'vue-cryptojs'
 
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
+Vue.use(VueCryptojs)
 
 /*
  * If not building with SSR mode, you can
@@ -47,11 +49,48 @@ Vue.mixin({
     loadingHide() {
       this.$q.loading.hide()
     },
+    encrypt(data, type) {
+      // ฟังก์ชันการเข้ารหัส AES
+      // type 1.OBJ 2.String / boolean / number
+      let result
+      if (type == 1) {
+        // object TYPE
+        result = this.CryptoJS.AES.encrypt(JSON.stringify(data), "chomart12").toString()
+      } else if (type == 2) {
+        // STRING TYPE
+        data = data.toString()
+        result = this.CryptoJS.AES.encrypt(data, "chomart12").toString()
+      }
+      return result
+    },
+    decrypt(data, type) {
+      // ฟังก์ชันการถอดรหัส AES
+      // type 1.OBJ 2.String 3.Number 4.boolean
+      if (!data) {
+        return data
+      }
+      let result = this.CryptoJS.AES.decrypt(data, "chomart12").toString(
+        this.CryptoJS.enc.Utf8
+      );
+      if (type == 1) {
+        // object type
+        // แปลงJSON กลับ
+        result = JSON.parse(result.toString(CryptoJS.enc.Utf8));
+      } else if (type == 3) {
+        // number type
+        result = Number(result)
+      } else if (type == 4) {
+        // JSON TYPE
+        result = JSON.parse(result)
+      }
+      return result
+
+    },
   },
 })
 
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function ( /* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

@@ -35,7 +35,7 @@
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
-            @click="showPatientData(items.key)"
+            @click="showRoomData(items.key)"
           >
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
@@ -54,8 +54,8 @@
         </div>
       </div>
 
-      <div class="col relative-position desktop-only">
-        <div class="font-h3" style="position:relative;top:18%;left:15%">
+      <div class="col relative-position desktop-only" align="center">
+        <div class="font-h3 color-light-gray" style="position:relative;top:18%;">
           <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
         </div>
       </div>
@@ -107,8 +107,8 @@ export default {
     };
   },
   methods: {
-    showPatientData(patientKey) {
-      console.log(patientKey);
+    showRoomData(roomKey) {
+      this.$router.push("/roomdetails/" + roomKey);
     },
     async addNewRoom() {
       this.loadingShow();
