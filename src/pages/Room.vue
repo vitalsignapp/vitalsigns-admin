@@ -56,6 +56,14 @@
 
       <div class="col relative-position desktop-only" align="center">
         <div class="font-h3 color-light-gray" style="position:relative;top:18%;">
+          <qr-code
+            text="https://www.winner-english.com"
+            :size="250"
+            color="#000"
+            bg-color="#fff"
+            error-level="H"
+          ></qr-code>
+          <div style="height:100px"></div>
           <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
         </div>
       </div>

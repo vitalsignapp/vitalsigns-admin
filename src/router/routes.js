@@ -1,14 +1,16 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/Login.vue")
+  },
+  {
+    path: "/test",
+    component: () => import("pages/test.vue")
   },
 
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [
-      {
+    children: [{
         path: "/patient",
         component: () => import("pages/Patient.vue")
       },

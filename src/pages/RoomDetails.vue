@@ -26,12 +26,20 @@
         </div>
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
-        <q-toolbar-title></q-toolbar-title>
-        <q-space />
+        <q-toolbar-title>รายละเอียดผู้ป่วย</q-toolbar-title>
+        <q-btn icon="far fa-bell" flat></q-btn>
+        <q-btn flat icon="more_vert" class="no-border-radius">
+          <q-menu auto-close>
+            <q-list style="min-width: 100px">
+              <q-item clickable>
+                <q-item-section>พิมพ์ QR Code ทั้งห้อง</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
     <!-- END APP BAR -->
-
     <div class="row" v-if="!isLoading">
       <div
         class="container-list-data"
@@ -64,92 +72,72 @@
       </div>
 
       <!-- COLUMN ขวา -->
+
       <div class="col relative-position desktop-only" align="center">
-        <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
-          <div class>
-            <span class="font-h3">
-              <!-- {{ patientData.name }} -->
-              {{ currentPatientData.name }} {{ currentPatientData.surname }}
-            </span>
-            <br />
-            <div class="font-body q-mt-sm">
-              <span class="color-light-gray">รหัส</span>
-              <!-- {{ " " + patientData.NH + " " + "&nbsp;&nbsp;" }} -->
-              {{ currentPatientData.NH }}
-              <span class="color-light-gray">วันเกิด</span>
-              <!-- {{ " " + patientData.birth + " " + "&nbsp;&nbsp;" }} -->
-              {{ currentPatientData.dateOfBirth }}
-              <span
-                class="color-primary-500 cursor-pointer"
-                @click="isDetails = true"
-              >เพิ่มเติม</span>
+        <q-scroll-area style="height: 100vh; ">
+          <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
+            <div class>
+              <span class="font-h3">{{ currentPatientData.name }} {{ currentPatientData.surname }}</span>
+              <br />
+              <div class="font-body q-mt-sm">
+                <span class="color-light-gray">รหัส</span>
+                {{ currentPatientData.NH }}
+                <span class="color-light-gray">วันเกิด</span>
+                {{ currentPatientData.dateOfBirth }}
+                <span
+                  class="color-primary-500 cursor-pointer"
+                  @click="isDetails = true"
+                >เพิ่มเติม</span>
+              </div>
+            </div>
+
+            <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
+              <q-card class="my-card font-body">
+                <div class="q-pa-sm" align="center">
+                  <span>{{ items.inputDate }} รอบ {{ items.inputRound }}:00 น.</span>
+                </div>
+
+                <q-separator />
+
+                <div class="row" style="padding:20px 30px;">
+                  <div class="col-8">
+                    <div class="q-py-xs" align="left">
+                      <span>อุณหภูมิ</span>
+                    </div>
+                  </div>
+                  <div class="col" align="right">
+                    <div class="q-py-xs" align="right">
+                      <span>{{ items.temperature }} &#176;C</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="q-mb-xs" align="center">
+                  <span>อาการตอนนี้</span>
+                </div>
+                <q-separator />
+
+                <div class="row q-my-md q-px-lg">
+                  <div class="col-1" style="width:15px;">
+                    <div class="q-py-xs" v-for="(sym,index2) in items.symptomsCheck" :key="index2">
+                      <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div
+                      class="q-py-xs"
+                      v-for="(sym2,index3) in items.symptomsCheck"
+                      :key="index3"
+                      align="left"
+                    >
+                      <span>{{ sym2.sym }}</span>
+                    </div>
+                  </div>
+                </div>
+              </q-card>
             </div>
           </div>
-
-          <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
-            <q-card class="my-card font-body">
-              <div class="q-pa-sm" align="center">
-                <span>{{ items.inputDate }} {{ items.inputRound }}</span>
-              </div>
-
-              <q-separator />
-
-              <div class="row" style="padding:20px 30px;">
-                <div class="col-8">
-                  <div class="q-py-xs" align="left">
-                    <span>อุณหภูมิ</span>
-                  </div>
-                  <div class="q-py-xs" align="left">
-                    <span>ความดันโลหิต</span>
-                  </div>
-                  <div class="q-py-xs" align="left">
-                    <span>ออกซิเจนในเลือด</span>
-                  </div>
-                  <div class="q-py-xs" align="left">
-                    <span>การเต้นของหัวใจ</span>
-                  </div>
-                </div>
-                <div class="col" align="right">
-                  <div class="q-py-xs" align="right">
-                    <span>{{ items.temperature }} &#176;C</span>
-                  </div>
-                  <div class="q-py-xs" align="right">
-                    <span>{{ items.bloodPressure }}</span>
-                  </div>
-                  <div class="q-py-xs" align="right">
-                    <span>{{ items.oxygen }}%</span>
-                  </div>
-                  <div class="q-py-xs" align="right">
-                    <span>{{ items.heartRate }}/min</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="q-mb-xs" align="center">
-                <span>อาการตอนนี้</span>
-              </div>
-              <q-separator />
-
-              <div class="row q-my-md q-px-lg">
-                <div class="col-1" style="width:15px;">
-                  <div class="q-py-xs" v-for="(sym,index2) in items.symptomCheck" :key="index2">
-                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
-                  </div>
-                </div>
-                <div class="col">
-                  <div
-                    class="q-py-xs"
-                    v-for="(sym2,index3) in items.symptomCheck"
-                    :key="index3"
-                    align="left"
-                  >
-                    <span>{{ sym2.sym }}</span>
-                  </div>
-                </div>
-              </div>
-            </q-card>
-          </div>
-        </div>
+        </q-scroll-area>
       </div>
     </div>
 
@@ -339,6 +327,7 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      items: [{}, {}, {}, {}, {}, {}, {}],
       patientRoom: [],
       isDialogAddNewPatient: false,
       isLoading: false,
@@ -436,7 +425,6 @@ export default {
         .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
         .get()
         .then(doc => {
-          console.log("LOADING", doc.size);
           let dataTemp = [];
           doc.forEach(element => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
@@ -471,15 +459,15 @@ export default {
     },
     loadPatientLogInThisRoom() {
       db.collection("patientLog")
-        .where("hostpitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
         .where("patientRoomKey", "==", this.roomKey)
         .get()
         .then(doc => {
-          console.log(doc.size);
           let dataTemp = [];
           doc.forEach(element => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
           });
+          dataTemp = dataTemp.sort((a, b) => b.inputRound - a.inputRound);
           this.patientLog = dataTemp;
           this.loadingHide();
         });

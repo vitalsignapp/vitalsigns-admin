@@ -5,10 +5,12 @@ import routes from './routes'
 import VueAxios from 'vue-axios'
 import axios from "axios";
 import VueCryptojs from 'vue-cryptojs'
-
+import VueQRCodeComponent from 'vue-qrcode-component'
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
 Vue.use(VueCryptojs)
+Vue.component('qr-code', VueQRCodeComponent)
+
 
 /*
  * If not building with SSR mode, you can
