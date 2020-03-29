@@ -359,17 +359,25 @@ export default {
       isListenPatientData: "",
       currentPatientData: "",
       patientLog: "",
-      currentPatientLog: ""
+      currentPatientLog: "",
+      platForm: this.$q.platform.is
     };
   },
   methods: {
     showPatientData(key) {
       // console.log(this.patientData.filter(x => x.key == key));
       console.log(key);
-      this.loadingShow();
-      this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
-      this.currentPatientLog = this.patientLog.filter(x => x.patientKey == key);
-      this.loadingHide();
+      if (this.platForm.desktop) {
+        this.loadingShow();
+        this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
+        this.currentPatientLog = this.patientLog.filter(
+          x => x.patientKey == key
+        );
+        this.loadingHide();
+      } else {
+        // MOBILE ROUTE TO OTHER PAGE
+        console.log("MOBILE");
+      }
     },
     saveData() {
       let refs = db.collection("patientData");
