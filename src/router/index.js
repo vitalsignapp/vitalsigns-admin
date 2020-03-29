@@ -75,7 +75,7 @@ Vue.mixin({
       if (type == 1) {
         // object type
         // แปลงJSON กลับ
-        result = JSON.parse(result.toString(CryptoJS.enc.Utf8));
+        result = JSON.parse(result.toString(this.CryptoJS.enc.Utf8));
       } else if (type == 3) {
         // number type
         result = Number(result)
@@ -90,7 +90,7 @@ Vue.mixin({
 })
 
 
-export default function ( /* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

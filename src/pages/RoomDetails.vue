@@ -126,7 +126,7 @@
               </div>
 
               <div class="q-mb-xs" align="center">
-                <span>อาการตอนี้</span>
+                <span>อาการตอนนี้</span>
               </div>
               <q-separator />
 
