@@ -46,6 +46,7 @@
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
+            @click="showPatientData(items.key)"
           >
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
@@ -63,7 +64,93 @@
       </div>
 
       <!-- COLUMN ขวา -->
-      <div class="col relative-position desktop-only" align="center"></div>
+      <div class="col relative-position desktop-only" align="center">
+        <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
+          <div class>
+            <span class="font-h3">
+              <!-- {{ patientData.name }} -->
+              {{ currentPatientData.name }} {{ currentPatientData.surname }}
+            </span>
+            <br />
+            <div class="font-body q-mt-sm">
+              <span class="color-light-gray">รหัส</span>
+              <!-- {{ " " + patientData.NH + " " + "&nbsp;&nbsp;" }} -->
+              {{ currentPatientData.NH }}
+              <span class="color-light-gray">วันเกิด</span>
+              <!-- {{ " " + patientData.birth + " " + "&nbsp;&nbsp;" }} -->
+              {{ currentPatientData.dateOfBirth }}
+              <span
+                class="color-primary-500 cursor-pointer"
+                @click="isDetails = true"
+              >เพิ่มเติม</span>
+            </div>
+          </div>
+
+          <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
+            <q-card class="my-card font-body">
+              <div class="q-pa-sm" align="center">
+                <span>{{ items.inputDate }} {{ items.inputRound }}</span>
+              </div>
+
+              <q-separator />
+
+              <div class="row" style="padding:20px 30px;">
+                <div class="col-8">
+                  <div class="q-py-xs" align="left">
+                    <span>อุณหภูมิ</span>
+                  </div>
+                  <div class="q-py-xs" align="left">
+                    <span>ความดันโลหิต</span>
+                  </div>
+                  <div class="q-py-xs" align="left">
+                    <span>ออกซิเจนในเลือด</span>
+                  </div>
+                  <div class="q-py-xs" align="left">
+                    <span>การเต้นของหัวใจ</span>
+                  </div>
+                </div>
+                <div class="col" align="right">
+                  <div class="q-py-xs" align="right">
+                    <span>{{ items.temperature }} &#176;C</span>
+                  </div>
+                  <div class="q-py-xs" align="right">
+                    <span>{{ items.bloodPressure }}</span>
+                  </div>
+                  <div class="q-py-xs" align="right">
+                    <span>{{ items.oxygen }}%</span>
+                  </div>
+                  <div class="q-py-xs" align="right">
+                    <span>{{ items.heartRate }}/min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="q-mb-xs" align="center">
+                <span>อาการตอนี้</span>
+              </div>
+              <q-separator />
+
+              <div class="row q-my-md q-px-lg">
+                <div class="col-1" style="width:15px;">
+                  <div class="q-py-xs" v-for="(sym,index2) in items.symptomCheck" :key="index2">
+                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                  </div>
+                </div>
+                <div class="col">
+                  <div
+                    class="q-py-xs"
+                    v-for="(sym2,index3) in items.symptomCheck"
+                    :key="index3"
+                    align="left"
+                  >
+                    <span>{{ sym2.sym }}</span>
+                  </div>
+                </div>
+              </div>
+            </q-card>
+          </div>
+        </div>
+      </div>
     </div>
 
     <q-dialog v-model="isDialogAddNewPatient" persistent maximized>
@@ -269,10 +356,21 @@ export default {
         patientRoomKey: "",
         dianosis: ""
       },
-      isListenPatientData: ""
+      isListenPatientData: "",
+      currentPatientData: "",
+      patientLog: "",
+      currentPatientLog: ""
     };
   },
   methods: {
+    showPatientData(key) {
+      // console.log(this.patientData.filter(x => x.key == key));
+      console.log(key);
+      this.loadingShow();
+      this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
+      this.currentPatientLog = this.patientLog.filter(x => x.patientKey == key);
+      this.loadingHide();
+    },
     saveData() {
       let refs = db.collection("patientData");
 
@@ -360,6 +458,21 @@ export default {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
           });
           this.patientData = dataTemp;
+          this.loadPatientLogInThisRoom();
+        });
+    },
+    loadPatientLogInThisRoom() {
+      db.collection("patientLog")
+        .where("hostpitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .where("patientRoomKey", "==", this.roomKey)
+        .get()
+        .then(doc => {
+          console.log(doc.size);
+          let dataTemp = [];
+          doc.forEach(element => {
+            dataTemp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.patientLog = dataTemp;
           this.loadingHide();
         });
     }

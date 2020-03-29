@@ -190,7 +190,8 @@ export default {
       let user = auth.currentUser;
     }
   },
-  mounted() {
+  mounted() {},
+  beforeCreate() {
     let _this = this;
     auth.onAuthStateChanged(function(user) {
       if (user) {
