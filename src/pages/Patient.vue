@@ -8,12 +8,12 @@
           $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
         "
       >
-        <q-toolbar-title>
+        <q-toolbar-title v-if="!isSearch">
           <div class="q-px-md">
             <span class="font-h3">ผู้ป่วย</span>
           </div>
         </q-toolbar-title>
-        <div class="q-pa-sm font-body">
+        <div class="q-pa-sm font-body" v-if="!isSearch">
           <q-btn
             :disable="patientRoom.length == 0"
             dense
@@ -24,11 +24,30 @@
           ></q-btn>
           <q-btn flat round dense icon="search" @click="isSearch = true" />
         </div>
+        <div class="col q-px-sm" v-if="isSearch">
+          <q-input
+            class="font-body"
+            bg-color="white"
+            rounded
+            outlined
+            dense
+            v-model="search"
+            label="ค้นหา"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+
+            <template v-slot:after>
+              <span
+                class="font-body q-px-sm color-white cursor-pointer"
+                @click="isSearch = false"
+              >ยกเลิก</span>
+            </template>
+          </q-input>
+        </div>
       </q-toolbar>
-      <q-toolbar
-        class="col bg-primary-500 shadow-1"
-        v-if="$q.platform.is.desktop"
-      >
+      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <div class="row full-width" v-if="isShowDetails">
           <q-toolbar-title>
             <div class="q-px-xs">
@@ -48,16 +67,8 @@
                   (isNotification = !isNotification)
               "
             >
-              <q-img
-                v-if="!isNotification"
-                src="../statics/pic/Notification.png"
-                width="30px"
-              ></q-img>
-              <q-img
-                v-if="isNotification"
-                src="../statics/pic/Notification Mute.png"
-                width="30px"
-              ></q-img>
+              <q-img v-if="!isNotification" src="../statics/pic/Notification.png" width="30px"></q-img>
+              <q-img v-if="isNotification" src="../statics/pic/Notification Mute.png" width="30px"></q-img>
             </q-btn>
             <q-btn dense round flat class="q-mx-sm" size="14px">
               <q-img src="../statics/pic/Fax.png" width="30px"></q-img>
@@ -76,18 +87,10 @@
               <q-img src="../statics/pic/Option.png" width="30px"></q-img>
               <q-menu square :offset="[5, 16]">
                 <q-list style="min-width: 150px">
-                  <q-btn
-                    class="fit row no-border-radius"
-                    flat
-                    @click="editPatient()"
-                  >
+                  <q-btn class="fit row no-border-radius" flat @click="editPatient()">
                     <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
                   </q-btn>
-                  <q-btn
-                    class="fit row no-border-radius"
-                    flat
-                    @click="deletePatient()"
-                  >
+                  <q-btn class="fit row no-border-radius" flat @click="deletePatient()">
                     <div class="col text-red" align="left">ลบผู้ป่วย</div>
                   </q-btn>
                 </q-list>
@@ -98,10 +101,7 @@
       </q-toolbar>
 
       <q-dialog v-model="isDialogNotification" persistent>
-        <q-card
-          style="max-width: 280px"
-          class="q-py-xs q-px-sm no-border-radius"
-        >
+        <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
           <q-card-section class="q-pt-md">
             <div class="font-h3">
               <span v-if="isNotification">ยกเลิกการแจ้งเตือน</span>
@@ -110,23 +110,13 @@
           </q-card-section>
           <q-card-section class="q-pt-none">
             <span class="font-body">
-              <span v-if="isNotification"
-                >ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span
-              >
-              <span v-if="!isNotification"
-                >ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span
-              >
+              <span v-if="isNotification">ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
+              <span v-if="!isNotification">ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
             </span>
           </q-card-section>
 
           <div class="q-px-md q-pb-md q-pt-xs" align="right">
-            <q-btn
-              flat
-              class="button-action small"
-              dense
-              label="ปิด"
-              v-close-popup
-            />
+            <q-btn flat class="button-action small" dense label="ปิด" v-close-popup />
           </div>
         </q-card>
       </q-dialog>
@@ -135,7 +125,41 @@
     <!-- TODO : Container List Data -->
     <div class="row">
       <div
+        class="col-4 container-list bg-white"
+        v-if="isSearch"
+        :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
+      >
+        <div
+          class="relative-position cursor-pointer"
+          v-ripple
+          v-for="(item, index) in patientSearch"
+          :key="index"
+          @click="selectPatient(item)"
+        >
+          <div class="row q-py-sm font-body full-width">
+            <div class="col-1" style="width:30px;" align="center"></div>
+            <div class="col text-overflow" align="left">
+              <span class="no-padding">
+                {{
+                item.name + " " + item.surname
+                }}
+              </span>
+              <br />
+              <span class="color-light-gray">{{ "NH" + item.NH }}</span>
+            </div>
+            <div class="col-4 q-px-xs" style="max-width:120px;width:100%;" align="right">
+              <!-- <span>{{"รอบ " + patient.betweenTime + " น "}}</span> -->
+            </div>
+            <div class="col-1 self-center" style="width:30px;">
+              <q-icon name="chevron_right" size="24px"></q-icon>
+            </div>
+          </div>
+          <q-separator />
+        </div>
+      </div>
+      <div
         class="col-4 container-list"
+        v-else
         :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
       >
         <!-- TODO : List Data Component -->
@@ -144,8 +168,7 @@
             <span
               class="font-body color-primary-600 text-bold"
               style="font-size:14px;font-weight:bold;"
-              >{{ item.name }}</span
-            >
+            >{{ item.name }}</span>
           </div>
           <div
             class="relative-position cursor-pointer"
@@ -169,17 +192,15 @@
                 ></q-icon>-->
               </div>
               <div class="col text-overflow" align="left">
-                <span class="no-padding">{{
+                <span class="no-padding">
+                  {{
                   patient.name + " " + patient.surname
-                }}</span>
+                  }}
+                </span>
                 <br />
-                <span class="color-light-gray">{{ "NH" + patient.NH }}</span>
+                <span class="color-light-gray">{{ "HN" + patient.HN }}</span>
               </div>
-              <div
-                class="col-4 q-px-xs"
-                style="max-width:120px;width:100%;"
-                align="right"
-              >
+              <div class="col-4 q-px-xs" style="max-width:120px;width:100%;" align="right">
                 <!-- <span>{{"รอบ " + patient.betweenTime + " น "}}</span> -->
               </div>
               <div class="col-1 self-center" style="width:30px;">
@@ -193,18 +214,11 @@
 
       <!-- TODO : Container Show Data -->
       <div class="col" style="margin-top:30px;" v-if="$q.platform.is.desktop">
-        <div
-          class="font-h3 color q-ma-xl q-pa-xl color-light-gray"
-          v-if="!isShowDetails"
-        >
+        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isShowDetails">
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
         </div>
-        <div
-          class="q-px-xs"
-          style="max-width:330px;width:95%;margin:auto;"
-          v-if="isShowDetails"
-        >
+        <div class="q-px-xs" style="max-width:330px;width:95%;margin:auto;" v-if="isShowDetails">
           <div class>
             <span class="font-h3">
               <!-- {{ patientData.name }} -->
@@ -221,8 +235,7 @@
               <span
                 class="color-primary-500 cursor-pointer"
                 @click="isDetails = true"
-                >เพิ่มเติม</span
-              >
+              >เพิ่มเติม</span>
             </div>
           </div>
 
@@ -338,7 +351,7 @@
             </div>
             <div class="col q-my-xs">
               {{
-                "Covid-19 มีอาการปวดหัวข้างเดียวและอาการน้ำในหูไม่เท่ากันเพิ่มเติมขึ้นมา"
+              "Covid-19 มีอาการปวดหัวข้างเดียวและอาการน้ำในหูไม่เท่ากันเพิ่มเติมขึ้นมา"
               }}
             </div>
             <div class="col-12 q-my-xs">
@@ -360,23 +373,13 @@
           </div>
 
           <div align="right" class="q-mt-md">
-            <q-btn
-              flat
-              class="button-action small"
-              dense
-              label="ปิด"
-              @click="isDetails = false"
-            ></q-btn>
+            <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
           </div>
         </div>
       </q-card>
     </q-dialog>
 
-    <q-dialog
-      v-model="isDialogAddNewPatient"
-      persistent
-      :maximized="maximizedToggle"
-    >
+    <q-dialog v-model="isDialogAddNewPatient" persistent :maximized="maximizedToggle">
       <q-card class="q-pa-md bg-surface">
         <div align="right">
           <q-btn
@@ -401,10 +404,10 @@
             </div>
             <q-input
               outlined
-              label="NH"
+              label="HN"
               hide-bottom-space
-              ref="nh"
-              v-model="patientData.NH"
+              ref="hn"
+              v-model="patientData.HN"
               :rules="[val => !!val]"
             ></q-input>
           </div>
@@ -477,11 +480,7 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="qDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="patientData.dateOfBirth"
                         @input="() => $refs.qDateProxy.hide()"
@@ -508,11 +507,7 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="qDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="patientData.dateOfAdmit"
                         @input="() => $refs.qDateProxy.hide()"
@@ -527,11 +522,7 @@
             <div>
               <span class="font-body">ห้องผู้ป่วย</span>
             </div>
-            <div
-              class="q-my-xs"
-              v-for="(item, index) in patientRoom"
-              :key="index"
-            >
+            <div class="q-my-xs" v-for="(item, index) in patientRoom" :key="index">
               <q-radio
                 class="font-body"
                 dense
@@ -592,9 +583,16 @@ export default {
       },
       patientKey: "",
       diagnosisList: [],
+
+      // Patient Room & List Data
       patientRoom: [],
       patientList: [],
 
+      // Search Patient
+      search: "",
+      patientSearch: [],
+
+      // Active Function
       isShowDetails: false,
       isDetails: false,
       isNotification: false,
@@ -604,7 +602,7 @@ export default {
       isDialogAddNewPatient: false,
       maximizedToggle: true,
 
-      isSearch: false,
+      isSearch: true,
       isAddMode: true,
       isDisabled: false
     };
@@ -643,14 +641,14 @@ export default {
         ? db.collection("patientData")
         : db.collection("patientData").doc(this.patientKey);
 
-      this.$refs.nh.validate();
+      this.$refs.hn.validate();
       this.$refs.name.validate();
       this.$refs.surname.validate();
       this.$refs.birth.validate();
       this.$refs.admit.validate();
 
       if (
-        this.$refs.nh.hasError ||
+        this.$refs.hn.hasError ||
         this.$refs.name.hasError ||
         this.$refs.surname.hasError ||
         this.$refs.birth.hasError ||
@@ -680,7 +678,7 @@ export default {
           this.loadingHide();
           this.isDisabled = false;
           this.patientData = {
-            NH: "",
+            HN: "",
             name: "",
             surname: "",
             sex: "",
@@ -760,6 +758,15 @@ export default {
           // return "ไม่มีข้อมูลคนไข้";
         }
       });
+    }
+  },
+  computed: {
+    searchPatient() {
+      let getSearch = this.patientList.filter(x => {
+        return x.HN;
+      });
+
+      return this.data;
     }
   },
   mounted() {
