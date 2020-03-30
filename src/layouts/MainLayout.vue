@@ -23,13 +23,13 @@
           <q-item class="color-white q-py-sm" clickable @click="goToWard()" v-ripple>
             <q-item-section>
               <div align="center">
-                <img src="../statics/pic/Bed.png" style="width:50%;" />
+                <img src="../statics/pic/Bed.png" style="width:50%;" @ />
                 <div class="q-pb-sm" style="font-size:14px;margin-top:-7px;">ห้องพัก</div>
               </div>
             </q-item-section>
           </q-item>
 
-          <q-item class="color-white q-py-md" clickable v-ripple>
+          <q-item class="color-white q-py-md" clickable v-ripple @click="goToUser()">
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Support.png" style="width:50%;" />
@@ -38,7 +38,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item class="color-white q-py-md" clickable v-ripple>
+          <q-item class="color-white q-py-md" clickable v-ripple @click="goToAbout()">
             <q-item-section>
               <div align="center">
                 <img src="../statics/pic/Setting.png" style="width:50%;" />
@@ -108,11 +108,17 @@ export default {
     return {};
   },
   methods: {
+    goToUser() {
+      this.$router.push("/userlist");
+    },
     goToWard() {
       this.$router.push("/room");
     },
     goToPatient() {
       this.$router.push("/patient");
+    },
+    goToAbout() {
+      this.$router.push("/about");
     }
   }
 };

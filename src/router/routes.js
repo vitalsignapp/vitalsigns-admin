@@ -21,6 +21,13 @@ const routes = [{
       {
         path: "/roomdetails/:roomKey",
         component: () => import("pages/RoomDetails.vue")
+      },
+      {
+        path: "/userlist/",
+        component: () => import("pages/UserList.vue")
+      }, {
+        path: "/about/",
+        component: () => import("pages/About.vue")
       }
     ]
   },

@@ -27,7 +27,7 @@
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <q-toolbar-title>รายละเอียดผู้ป่วย</q-toolbar-title>
-        <q-btn icon="far fa-bell" flat></q-btn>
+        <q-btn icon="farq fa-bell" flat></q-btn>
         <q-btn flat icon="more_vert" class="no-border-radius">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
