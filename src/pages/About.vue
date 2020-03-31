@@ -4,7 +4,7 @@
       <div align="center" class="font-h3 q-mt-md">
         <div class="bg-primary-500 text-white q-pa-md rounded-borders">
           <div>ธานินทร์ สังข์โพธิ์</div>
-          <div>EMAIL@hotmail.com</div>
+          <div>email@hotmail.com</div>
         </div>
       </div>
 
@@ -13,7 +13,7 @@
           v-if="isAdmin"
           class="font-body color-primary-500 relative-position cursor-pointer row items-center"
           v-ripple
-          @click="configVitalSigns()"
+          @click="isShowConfigVitalSigns = true"
         >
           <q-icon size="24px" name="gavel"></q-icon>
           <span class="q-pl-sm">เลือกข้อมูลที่ต้องการให้คนไข้กรอก</span>
@@ -60,6 +60,7 @@
         <div
           v-ripple
           class="font-body color-primary-500 relative-position cursor-pointer q-mt-md row items-center"
+          @click="logout()"
         >
           <q-icon name="no_meeting_room" size="24px"></q-icon>
           <span class="q-pl-sm">ออกจากระบบ</span>
@@ -109,29 +110,123 @@
     </div>
     <q-dialog v-model="isShowConfigVitalSigns" maximized>
       <q-card>
-        <q-card-section>เลือกข้อมูลที่ต้องการให้คนไข้กรอก</q-card-section>
+        <div align="right">
+          <q-btn v-close-popup icon="fas fa-times" flat></q-btn>
+        </div>
+        <q-card-section style="max-width:360px;width:95%;margin:auto">
+          <div align="center" class="font-h4 q-pb-md">เลือกข้อมูลที่ต้องการให้คนไข้กรอก</div>
+          <div>
+            <q-toolbar
+              class="q-pa-xs"
+              v-for="(items,index) in vitalSignsArr"
+              :key="index"
+              @click="items.status = !items.status"
+            >
+              <div class="fit border-light-gray rounded-borders row">
+                <div class="col-12">
+                  <q-checkbox v-model="items.status" keep-color color="teal">
+                    <span>{{ items.sym }}</span>
+                  </q-checkbox>
+                </div>
+              </div>
+            </q-toolbar>
+          </div>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn
+            @click="saveConfig()"
+            label="บันทึก"
+            style="min-width:80px;"
+            class="bg-call-action"
+          ></q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </q-page>
 </template>
 
 <script>
+import { db, auth } from "../router";
 export default {
   data() {
     return {
       isChangeLanguage: this.$i18n.locale,
       userData: "",
       isAdmin: true,
-      isShowConfigVitalSigns: true
+      isShowConfigVitalSigns: false,
+      vitalSignsArr: [
+        {
+          sym: "อุณหภูมิร่างกาย",
+          status: false
+        },
+        {
+          sym: "ค่าออกซิเจนในเลือด",
+          status: false
+        },
+        {
+          sym: "ค่าความดันเลือด",
+          status: false
+        },
+        {
+          sym: "อัตราการเต้นของหัวใจ",
+          status: false
+        },
+        {
+          sym: "อาการตอนนี้",
+          status: false
+        }
+      ]
     };
   },
   methods: {
-    configVitalSigns() {},
+    logout() {
+      // TODO : message ต้องเปลี่ยน
+      this.$q
+        .dialog({
+          title: "ออกจากระบบ",
+          message: "คุณต้องการออกจากระบบใช่หรือไม่?",
+          cancel: true,
+          ok: { color: "orange-5" }
+        })
+        .onOk(() => {
+          auth.signOut().then(() => {
+            this.$router.push("/");
+          });
+        });
+    },
+    saveConfig() {
+      this.loadingShow();
+
+      db.collection("hospital")
+        .doc("d9lzg1cDW3csxvCzlq0i")
+        .update({
+          vitalSignsConfig: this.vitalSignsArr
+        })
+        .then(() => {
+          this.loadingHide();
+        });
+    },
     loadUserData() {},
     changeLanguage(lang) {
       this.$i18n.locale = lang;
       this.isChangeLanguage = lang;
+    },
+    loadCurrentConfig() {
+      this.loadingShow();
+      db.collection("hospital")
+        .doc("d9lzg1cDW3csxvCzlq0i")
+        .get()
+        .then(doc => {
+          if (doc.data().vitalSignsConfig) {
+            console.log(doc.data().vitalSignsConfig);
+            this.vitalSignsArr = doc.data().vitalSignsConfig;
+          }
+          this.loadingHide();
+        });
     }
+  },
+  mounted() {
+    this.loadCurrentConfig();
   }
 };
 </script>

@@ -45,7 +45,7 @@
         ></q-input>
       </div>
       <div>
-        <q-input outlined :label="$t('passwordLabel')" v-model="password"></q-input>
+        <q-input @keyup.enter="signIn()" outlined :label="$t('passwordLabel')" v-model="password"></q-input>
       </div>
 
       <div class="q-pa-xl" align="center">
@@ -76,10 +76,13 @@ export default {
   },
   methods: {
     signIn() {
+      let _this = this;
+      this.loadingShow();
       auth
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
           auth.onAuthStateChanged(user => {
+            this.loadingHide();
             if (user) {
               console.log(user);
               // this.$router.push("/patient");
@@ -90,14 +93,17 @@ export default {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (error) {
-            console.log(errorCode);
-            console.log(errorMessage);
-            if (errorCode == "auth/invalid-email") {
-              // กรณีรูปแบบอีเมลผิดพลาด
-            } else {
-              // code auth/wrong-password
-              // กรณี invalid user and password
-            }
+            // console.log(errorCode);
+            // console.log(errorMessage);
+
+            // if (errorCode == "auth/user-not-found") {
+            // กรณีรูปแบบอีเมลผิดพลาด
+            _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
+            // } else {
+            //   // code auth/wrong-password
+            //   // กรณี invalid user and password
+            // }
+            _this.loadingHide();
           }
         });
     },

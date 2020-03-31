@@ -88,6 +88,16 @@ Vue.mixin({
       return result
 
     },
+    popUpDialog(title, message) {
+      this.$q
+        .dialog({
+          title: title,
+          message: message,
+          ok: {
+            color: "orange-5"
+          }
+        })
+    }
   },
 })
 
