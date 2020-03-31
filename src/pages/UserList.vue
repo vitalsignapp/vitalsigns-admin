@@ -260,9 +260,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.notifyBg {
-  background-color: #202020;
-}
 .positionLabel {
   position: relative;
   top: 8px;

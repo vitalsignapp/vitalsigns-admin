@@ -97,7 +97,14 @@ Vue.mixin({
             color: "orange-5"
           }
         })
+    },
+    vnotify(message) {
+      this.$q.notify({
+        message: message,
+        classes: "notifyBg"
+      });
     }
+
   },
 })
 

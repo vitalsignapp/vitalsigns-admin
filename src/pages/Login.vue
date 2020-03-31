@@ -108,13 +108,7 @@ export default {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (error) {
-            this.$q.dialog({
-              title: "ผิดพลาด",
-              message: "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ",
-              ok: {
-                color: "orange-5"
-              }
-            });
+            _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
             _this.loadingHide();
           }
         });
@@ -124,7 +118,9 @@ export default {
       console.log(this.$i18n.locale);
     }
   },
-  mounted() {},
+  mounted() {
+    this.vnotify("test");
+  },
   beforeCreate() {
     let _this = this;
     auth.onAuthStateChanged(function(user) {

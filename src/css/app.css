@@ -56,6 +56,12 @@
   background-color: #ffffff;
 }
 
+
+.notifyBg {
+  background-color: #202020;
+}
+
+
 /* TODO : Font Color */
 .color-primary-500 {
   color: #009688;
