@@ -45,7 +45,21 @@
         ></q-input>
       </div>
       <div>
-        <q-input @keyup.enter="signIn()" outlined :label="$t('passwordLabel')" v-model="password"></q-input>
+        <q-input
+          v-model="password"
+          @keyup.enter="signIn()"
+          outlined
+          :type="isPwd ? 'password' : 'text'"
+          :label="$t('passwordLabel')"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
       </div>
 
       <div class="q-pa-xl" align="center">
@@ -61,6 +75,7 @@ export default {
   name: "PageIndex",
   data() {
     return {
+      isPwd: true,
       email: "",
       password: "",
       isChangeLanguage: "th",
@@ -93,16 +108,13 @@ export default {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (error) {
-            // console.log(errorCode);
-            // console.log(errorMessage);
-
-            // if (errorCode == "auth/user-not-found") {
-            // กรณีรูปแบบอีเมลผิดพลาด
-            _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
-            // } else {
-            //   // code auth/wrong-password
-            //   // กรณี invalid user and password
-            // }
+            this.$q.dialog({
+              title: "ผิดพลาด",
+              message: "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ",
+              ok: {
+                color: "orange-5"
+              }
+            });
             _this.loadingHide();
           }
         });
@@ -124,3 +136,8 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.backdrop {
+  opacity: 0.3;
+}
+</style>

@@ -60,7 +60,7 @@
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
                 <br />
-                <span class="color-light-gray">{{ items.HN }}</span>
+                <span class="color-light-gray">HN{{ items.HN }}</span>
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>

@@ -12,22 +12,27 @@ const routes = [{
     component: () => import("layouts/MainLayout.vue"),
     children: [{
         path: "/patient",
-        component: () => import("pages/Patient.vue")
+        component: () => import("pages/Patient.vue"),
+        name: "patient"
       },
       {
         path: "/room",
-        component: () => import("pages/Room.vue")
+        component: () => import("pages/Room.vue"),
+        name: "room"
       },
       {
         path: "/roomdetails/:roomKey",
-        component: () => import("pages/RoomDetails.vue")
+        component: () => import("pages/RoomDetails.vue"),
+        name: "roomdetails"
       },
       {
         path: "/userlist/",
-        component: () => import("pages/UserList.vue")
+        component: () => import("pages/UserList.vue"),
+        name: "userlist"
       }, {
         path: "/about/",
-        component: () => import("pages/About.vue")
+        component: () => import("pages/About.vue"),
+        name: "about"
       }
     ]
   },
