@@ -35,7 +35,7 @@
     </q-toolbar>
 
     <div align="center" class="font-h3 q-pt-lg">โรงพยาบาลศิริราช</div>
-    <div style="max-width:330px;margin:auto" class="q-gutter-md q-pt-md">
+    <div style="max-width:330px;margin:auto;width:90%" class="q-pt-md">
       <div>
         <q-input
           outlined
@@ -44,7 +44,7 @@
           v-model="email"
         ></q-input>
       </div>
-      <div>
+      <div class="q-pt-md">
         <q-input
           v-model="password"
           @keyup.enter="signIn()"
@@ -117,9 +117,6 @@ export default {
       this.$i18n.locale = lang;
       console.log(this.$i18n.locale);
     }
-  },
-  mounted() {
-    this.vnotify("test");
   },
   beforeCreate() {
     let _this = this;

@@ -33,7 +33,18 @@ const routes = [{
         path: "/about/",
         component: () => import("pages/About.vue"),
         name: "about"
-      }
+      },
+      {
+        path: "/patientDetails/",
+        component: () => import("pages/PatientDetails.vue"),
+        name: "patientDetails"
+      },
+      {
+        path: "/userData/:key",
+        component: () => import("pages/UserData.vue"),
+        name: "userData"
+      },
+
     ]
   },
   {
