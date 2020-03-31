@@ -60,7 +60,7 @@
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
                 <br />
-                <span class="color-light-gray">{{ items.NH }}</span>
+                <span class="color-light-gray">{{ items.HN }}</span>
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -81,7 +81,7 @@
               <br />
               <div class="font-body q-mt-sm">
                 <span class="color-light-gray">รหัส</span>
-                {{ currentPatientData.NH }}
+                {{ currentPatientData.HN }}
                 <span class="color-light-gray">วันเกิด</span>
                 {{ currentPatientData.dateOfBirth }}
                 <span
@@ -336,7 +336,7 @@ export default {
       roomData: "",
       isDisabled: false,
       patientObj: {
-        NH: "",
+        HN: "",
         name: "",
         surname: "",
         sex: "male",
@@ -407,7 +407,7 @@ export default {
         this.loadingHide();
         this.isDisabled = false;
         this.patientObj = {
-          NH: "",
+          HN: "",
           name: "",
           surname: "",
           sex: "",

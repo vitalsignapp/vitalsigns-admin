@@ -85,7 +85,7 @@
         </div>
         <q-space></q-space>
         <div class="col" align="center">
-          <div v-ripple class="relative-position no-border-radius fit q-py-xs">
+          <div v-ripple class="relative-position no-border-radius fit q-py-xs" @click="goToAbout()">
             <div align="center">
               <img src="../statics/pic/Setting.png" style="width:30px;" />
               <div style="font-size:14px;margin-top:-7px;">เพิ่มเติม</div>
