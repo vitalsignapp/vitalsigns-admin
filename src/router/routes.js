@@ -39,6 +39,11 @@ const routes = [{
         component: () => import("pages/PatientDetails.vue"),
         name: "patientDetails"
       },
+      {
+        path: "/userData/:key",
+        component: () => import("pages/UserData.vue"),
+        name: "userData"
+      },
 
     ]
   },

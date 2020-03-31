@@ -182,13 +182,20 @@ export default {
       user: {},
       isShowAddRoomDialog: false,
       userData: "",
-      currentUserData: ""
+      currentUserData: "",
+      platform: this.$q.platform.is
     };
   },
   methods: {
     showUserData(index) {
-      this.isClickedUserData = true;
-      this.currentUserData = this.userData[index];
+      if (this.platform.desktop) {
+        console.log("DESKTOP");
+        this.isClickedUserData = true;
+        this.currentUserData = this.userData[index];
+      } else {
+        console.log("MOBILE");
+        this.$router.push("/userdata/" + this.userData[index].key);
+      }
     },
     showAddUserDialog() {
       this.user = {};
