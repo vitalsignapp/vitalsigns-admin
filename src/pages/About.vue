@@ -67,12 +67,12 @@
 
         <q-separator class="q-my-lg" />
 
-        <div class="q-mb-sm" style="font-size:18px;font-weight:600">About project</div>
+        <div class="q-mb-sm font-h4">About project</div>
         <div
           class="font-body q-mb-sm"
         >VitalSign เป็นระบบส่งผลการตรวจร่างการ เบื้องต้นด้วยตนเอง เพื่อลดความเสี่ยงให้ บุคลากรทางการแพทย์และเพิ่มความสามารถในการรองรับผู้ป่วยให้กับโรงพยาบาล</div>
 
-        <div style="font-size:18px;font-weight:600" class="q-mb-sm">Contributor</div>
+        <div class="q-mb-sm font-h4">Contributor</div>
 
         <div class="font-body q-mb-sm">@art @arm @neung</div>
         <div class="font-body q-mb-sm">
@@ -84,7 +84,7 @@
           <span class="color-light-gray">from Ahancer</span>
         </div>
 
-        <div class="q-mt-lg" style="font-size:18px;font-weight:600">Join the Project</div>
+        <div class="q-mt-lg font-h4">Join the Project</div>
 
         <div class="q-mt-md row">
           <div class="q-pr-sm">
@@ -107,7 +107,11 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="isShowConfigVitalSigns" maximized></q-dialog>
+    <q-dialog v-model="isShowConfigVitalSigns" maximized>
+      <q-card>
+        <q-card-section>เลือกข้อมูลที่ต้องการให้คนไข้กรอก</q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
