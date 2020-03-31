@@ -132,20 +132,16 @@
         <div
           class="relative-position cursor-pointer"
           v-ripple
-          v-for="(item, index) in patientSearch"
+          v-for="(item, index) in searchPatient"
           :key="index"
-          @click="selectPatient(item)"
+          @click="loadPatientLog(item.key)"
         >
           <div class="row q-py-sm font-body full-width">
             <div class="col-1" style="width:30px;" align="center"></div>
             <div class="col text-overflow" align="left">
-              <span class="no-padding">
-                {{
-                item.name + " " + item.surname
-                }}
-              </span>
+              <span class="no-padding">{{ item.name + " " + item.surname }}</span>
               <br />
-              <span class="color-light-gray">{{ "NH" + item.NH }}</span>
+              <span class="color-light-gray">{{ "HN" + item.HN }}</span>
             </div>
             <div class="col-4 q-px-xs" style="max-width:120px;width:100%;" align="right">
               <!-- <span>{{"รอบ " + patient.betweenTime + " น "}}</span> -->
@@ -168,15 +164,31 @@
             <span
               class="font-body color-primary-600 text-bold"
               style="font-size:14px;font-weight:bold;"
-            >{{ item.name }}</span>
+            >
+              {{
+              item.name +
+              " ( " +
+              patientList.filter(x => {
+              return x.patientRoomKey == item.key;
+              }).length +
+              " คน )"
+              }}
+            </span>
           </div>
+          <q-separator
+            v-if="
+              patientList.filter(x => {
+                return x.patientRoomKey == item.key;
+              }).length == 0
+            "
+          />
           <div
             class="relative-position cursor-pointer"
             v-ripple
             v-for="(patient, index2) in patientList"
             :key="index2"
             v-show="patient.patientRoomKey == item.key"
-            @click="selectPatient(patient)"
+            @click="loadPatientLog(patient.key)"
           >
             <div class="row q-py-sm font-body full-width">
               <div class="col-1" style="width:30px;" align="center">
@@ -192,11 +204,7 @@
                 ></q-icon>-->
               </div>
               <div class="col text-overflow" align="left">
-                <span class="no-padding">
-                  {{
-                  patient.name + " " + patient.surname
-                  }}
-                </span>
+                <span class="no-padding">{{ patient.name + " " + patient.surname }}</span>
                 <br />
                 <span class="color-light-gray">{{ "HN" + patient.HN }}</span>
               </div>
@@ -213,25 +221,25 @@
       </div>
 
       <!-- TODO : Container Show Data -->
-      <div class="col" style="margin-top:30px;" v-if="$q.platform.is.desktop">
+      <div class="col container-list" v-if="$q.platform.is.desktop">
+        <!-- NOTE ยังไม่มีการโชว์ข้อมูลผู้ป่วย -->
         <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isShowDetails">
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
         </div>
+
+        <!-- NOTE โชว์ข้อมูลในกรณีที่กดเลือกข้อมูลผู้ป่วยแล้ว -->
         <div class="q-px-xs" style="max-width:330px;width:95%;margin:auto;" v-if="isShowDetails">
-          <div class>
-            <span class="font-h3">
-              <!-- {{ patientData.name }} -->
-              ทดสอบ
-            </span>
+          <div class="q-mt-lg">
+            <span class="font-h3">{{ patientFilter("name") }}</span>
             <br />
             <div class="font-body q-mt-sm">
               <span class="color-light-gray">รหัส</span>
-              <!-- {{ " " + patientData.NH + " " + "&nbsp;&nbsp;" }} -->
-              {{ "1234567890" + "&nbsp;" }}
-              <span class="color-light-gray">วันเกิด</span>
-              <!-- {{ " " + patientData.birth + " " + "&nbsp;&nbsp;" }} -->
-              {{ " 00/00/0000" + "&nbsp;" }}
+              {{ " " + patientFilter("HN") + " " + "&nbsp;" }}
+              <span
+                class="color-light-gray"
+              >วันเกิด</span>
+              {{ " " + patientFilter("birth") + "&nbsp;" }}
               <span
                 class="color-primary-500 cursor-pointer"
                 @click="isDetails = true"
@@ -239,88 +247,82 @@
             </div>
           </div>
 
-          <div class="q-mt-md">
-            <q-card class="my-card font-body">
-              <div class="q-pa-sm" align="center">
-                <span>12 มีนาคม 2562 รอบ 2:00 น.</span>
-              </div>
+          <!-- <q-infinite-scroll @load="loadPatientLog" :offset="250"> -->
+          <div>
+            <div class="q-mt-md q-mb-md" v-for="(item, index) in patientDiagnosisList" :key="index">
+              <q-card class="my-card font-body">
+                <div class="q-pa-sm" align="center">
+                  <span>12 มีนาคม 2562 รอบ 2:00 น.</span>
+                </div>
 
-              <q-separator />
+                <q-separator />
 
-              <div class="row" style="padding:20px 30px;">
-                <div class="col-8">
-                  <div class="q-py-xs">
-                    <span>อุณหภูมิ</span>
+                <div class="row" style="padding:20px 30px;">
+                  <div class="col-8">
+                    <div class="q-py-xs" v-if="item.temperature">
+                      <span>อุณหภูมิ</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
+                      <span>ความดันโลหิต</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.oxygen">
+                      <span>ออกซิเจนในเลือด</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.heartRate">
+                      <span>การเต้นของหัวใจ</span>
+                    </div>
                   </div>
-                  <div class="q-py-xs">
-                    <span>ความดันโลหิต</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>ออกซิเจนในเลือด</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>การเต้นของหัวใจ</span>
+                  <div class="col" align="right">
+                    <div class="q-py-xs" v-if="item.temperature">
+                      <span>{{ item.temperature }} &#176;C</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
+                      <span>{{ item.bloodPressure }}</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.oxygen">
+                      <span>{{ item.oxygen }}%</span>
+                    </div>
+                    <div class="q-py-xs" v-if="item.heartRate">
+                      <span>{{ item.heartRate }}/min</span>
+                    </div>
                   </div>
                 </div>
-                <div class="col" align="right">
-                  <div class="q-py-xs">
-                    <span>37.5 &#176;C</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>150/50</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>90%</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>150/min</span>
-                  </div>
-                </div>
-              </div>
 
-              <div class="q-mb-xs" align="center">
-                <span>อาการตอนี้</span>
-              </div>
-              <q-separator />
-
-              <div class="row q-my-md q-px-lg">
-                <div class="col-1" style="width:15px;">
-                  <div class="q-py-xs">
-                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
-                  </div>
-                  <div class="q-py-xs">
-                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
-                  </div>
-                  <div class="q-py-xs">
-                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
-                  </div>
-                  <div class="q-py-xs">
-                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                <div class="q-mb-xs" align="center">
+                  <span>อาการตอนี้</span>
+                </div>
+                <q-separator />
+                <div class="q-my-md q-px-lg">
+                  <div
+                    class="row"
+                    v-for="(diag, index2) in item.symptomsCheck"
+                    :key="index2"
+                    v-show="diag.status"
+                  >
+                    <div class="col-1" style="width:15px;">
+                      <div class="q-py-xs">
+                        <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="q-py-xs">
+                        <span>{{ diag.sym }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="q-py-xs">
-                    <span>ไอ</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>แน่นหน้าอก: หายใจไม่สะดวก</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>อาเจียน</span>
-                  </div>
-                  <div class="q-py-xs">
-                    <span>อื่นๆ:มึนหัวเริ่มรู้สึกบ้านหมุน</span>
-                  </div>
-                </div>
-              </div>
-            </q-card>
+              </q-card>
+            </div>
           </div>
+          <!-- </q-infinite-scroll> -->
+
+          <div></div>
         </div>
       </div>
     </div>
 
     <!-- TODO : Container Dialog Model -->
-    <q-dialog v-model="isDetails">
+    <q-dialog v-model="isDetails" v-if="isDetails">
       <q-card class="my-card font-body" style="max-width:320px;width:100%;">
         <div class="q-pa-sm" align="center">
           <span>ข้อมูลผู้ป่วย</span>
@@ -330,37 +332,28 @@
 
         <div class="q-my-md q-px-sm">
           <div>
-            <span class="font-h3">
-              <!-- {{ patientData.name }} -->
-              ทดสอบ
-            </span>
+            <span class="font-h3">{{ patientFilter("name") }}</span>
           </div>
           <div class="row q-mt-sm">
             <div class="col-6 q-my-xs">
               <span class="color-light-gray">รหัส</span>
-              <!-- {{ " " + patientData.NH + " " + "&nbsp;" }} -->
-              {{ " 1234567890 " + "&nbsp;" }}
+              {{ " " + patientFilter("HN") + " " + "&nbsp;" }}
             </div>
             <div class="col-6 q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
-              <!-- {{ " " + patientData.birth }} -->
-              {{ " 00/00/0000 " }}
+              {{ " " + patientFilter("birth") }}
             </div>
             <div class="col-2 q-my-xs" style="width:75px;">
               <span class="color-light-gray">Diagnosis</span>
             </div>
-            <div class="col q-my-xs">
-              {{
-              "Covid-19 มีอาการปวดหัวข้างเดียวและอาการน้ำในหูไม่เท่ากันเพิ่มเติมขึ้นมา"
-              }}
-            </div>
+            <div class="col q-my-xs">{{patientFilter("diagnosis")}}</div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">อายุ</span>
-              {{ " " + "43" }}
+              {{ " " + patientFilter("age") }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เพศ</span>
-              {{ " " + "ชาย" }}
+              {{ " " + patientFilter("sex")}}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">ห้อง</span>
@@ -480,10 +473,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="dateofbirth"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="patientData.dateOfBirth"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.dateofbirth.hide()"
+                        mask="DD/MM/YYYY"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -507,10 +505,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="dateofadmit"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="patientData.dateOfAdmit"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.dateofadmit.hide()"
+                        mask="DD/MM/YYYY"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -570,8 +573,9 @@ import { db } from "../router/index.js";
 export default {
   data() {
     return {
+      // NOTE  Patient Data Save to DB
       patientData: {
-        NH: "",
+        HN: "",
         name: "",
         surname: "",
         sex: "",
@@ -581,42 +585,120 @@ export default {
         hospitalKey: "",
         patientRoomKey: ""
       },
-      patientKey: "",
-      diagnosisList: [],
 
-      // Patient Room & List Data
+      // NOTE  Patient Data List From DB
+      patientKey: "",
+      patientDiagnosisList: [],
+      items: [{}, {}, {}, {}, {}, {}, {}],
+
+      // NOTE  Patient Room & List Data
       patientRoom: [],
       patientList: [],
 
-      // Search Patient
+      // NOTE  Search Patient
       search: "",
       patientSearch: [],
 
-      // Active Function
+      // NOTE Current Date
+      currentDate: "",
+
+      // NOTE  Active Function
       isShowDetails: false,
       isDetails: false,
       isNotification: false,
       isDialogNotification: false,
 
-      // Dialog Add New Patient
+      // NOTE  Dialog Add New Patient
       isDialogAddNewPatient: false,
       maximizedToggle: true,
 
-      isSearch: true,
+      isSearch: false,
       isAddMode: true,
-      isDisabled: false
+      isDisabled: false,
+
+      // NOTE  sync
+      syncRoom: "",
+      syncPatient: "",
+
+      date: "2020/03/20"
     };
   },
   methods: {
-    selectPatient(data) {
-      this.patientKey = data.key;
-      this.isShowDetails = true;
+    patientFilter(type) {
+      let getPatient = this.patientList.filter(x => {
+        return x.key == this.patientKey;
+      })[0];
+
+      if (type == "name") {
+        return getPatient.name + " " + getPatient.surname;
+      } else if (type == "HN") {
+        return getPatient.HN;
+      } else if (type == "birth") {
+        return getPatient.dateOfBirth;
+      } else if (type == "sex") {
+        let sex = "";
+
+        if (getPatient.sex == "male") {
+          sex = "ชาย";
+        } else {
+          sex = "หญิง";
+        }
+
+        return sex;
+      } else if (type == "age") {
+        let newdob =
+          getPatient.dateOfBirth.substr(6) +
+          getPatient.dateOfBirth.substr(0, 2) +
+          getPatient.dateOfBirth.substr(3, 2);
+
+        let currentDate =
+          Number(this.currentDate.date.substr(6)) +
+          Number(543) +
+          "-" +
+          this.currentDate.date.substr(3, 2) +
+          "-" +
+          this.currentDate.date.substr(0, 2);
+
+        let dob = newdob;
+        let year = Number(dob.substr(0, 4));
+        let month = Number(dob.substr(4, 2)) - 1;
+        let day = Number(dob.substr(6, 2));
+        let today = new Date(currentDate);
+
+        let age = today.getFullYear() - year;
+        if (
+          today.getMonth() < month ||
+          (today.getMonth() == month && today.getDate() < day)
+        ) {
+          age--;
+        }
+
+        return age;
+      } else if (type == "dateOfAdmit") {
+        return getPatient.dateOfAdmit;
+      } else if (type == "hospital") {
+        let getHospital = this.patientRoom.filter(x => {
+          return (x.key = getPatient.hospitalKey);
+        })[0];
+
+        return getHospital.name;
+      } else if (type == "room") {
+        let getRoom = this.patientRoom.filter(x => {
+          return (x.key = getPatient.patientRoomKey);
+        })[0];
+
+        return getRoom.name;
+      } else if (type == "diagnosis") {
+        return getPatient.diagnosis == "" ? "-" : getPatient.diagnosis;
+      }
     },
     editPatient() {
       this.isDialogAddNewPatient = true;
       this.isAddMode = false;
 
-      let setData = this.patientList.filter(x => {
+      let copyPatient = [...this.patientList];
+
+      let setData = copyPatient.filter(x => {
         return x.key == this.patientKey;
       })[0];
 
@@ -624,6 +706,7 @@ export default {
     },
     deletePatient() {},
     closeDialogAddPatient() {
+      this.isAddMode = true;
       this.patientData = {
         NH: "",
         name: "",
@@ -669,43 +752,49 @@ export default {
       }
 
       this.loadingShow();
-      this.isDisabled = true;
 
-      this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
+      setTimeout(() => {
+        this.isDisabled = true;
 
-      if (this.isAddMode) {
-        refs.add(this.patientData).then(() => {
-          this.loadingHide();
-          this.isDisabled = false;
-          this.patientData = {
-            HN: "",
-            name: "",
-            surname: "",
-            sex: "",
-            dateOfAdmit: "",
-            dateOfBirth: "",
-            diagnosis: "",
-            hospitalKey: "",
-            patientRoomKey: ""
-          };
-        });
-      } else {
-        delete this.patientData.key;
+        this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
 
-        refs.update(this.patientData).then(() => {
-          this.loadingHide();
-          this.isDisabled = false;
-        });
-      }
+        if (this.isAddMode) {
+          refs.add(this.patientData).then(() => {
+            this.loadingHide();
+            this.isDisabled = false;
+            this.patientData = {
+              HN: "",
+              name: "",
+              surname: "",
+              sex: "",
+              dateOfAdmit: "",
+              dateOfBirth: "",
+              diagnosis: "",
+              hospitalKey: "",
+              patientRoomKey: ""
+            };
+          });
+        } else {
+          let copyPatientDate = { ...this.patientData };
+          delete copyPatientDate.key;
+
+          refs.update(copyPatientDate).then(() => {
+            this.loadingHide();
+            this.isDisabled = false;
+          });
+        }
+      }, 1500);
     },
-    loadRoom() {
+    async loadRoom() {
+      this.currentDate = await this.getDate();
+
       let refs = db
         .collection("patientRoom")
         .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
 
       this.loadingShow();
 
-      refs.onSnapshot(doc => {
+      this.syncRoom = refs.onSnapshot(doc => {
         let temp = [];
         if (doc.size) {
           doc.forEach(result => {
@@ -727,6 +816,7 @@ export default {
 
           // return "ส่งข้อมูลเรียบร้อย";
         } else {
+          this.loadingHide();
           // return "ไม่มีข้อมูลห้องผู้ป่วย";
         }
       });
@@ -736,7 +826,7 @@ export default {
         .collection("patientData")
         .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
 
-      refs.onSnapshot(doc => {
+      this.syncPatient = refs.onSnapshot(doc => {
         let temp = [];
 
         if (doc.size) {
@@ -755,22 +845,56 @@ export default {
 
           // return "ส่งข้อมูลเรียบร้อย";
         } else {
+          this.loadingHide();
           // return "ไม่มีข้อมูลคนไข้";
         }
+      });
+    },
+    loadPatientLog(key) {
+      this.patientKey = key;
+
+      this.loadingShow();
+
+      let refs = db.collection("patientLog").where("patientKey", "==", key);
+
+      refs.get().then(doc => {
+        let temp = [];
+
+        doc.forEach(result => {
+          let setData = {
+            key: result.id,
+            ...result.data()
+          };
+
+          temp.push(setData);
+        });
+
+        this.patientDiagnosisList = temp;
+
+        this.isShowDetails = true;
+
+        this.loadingHide();
       });
     }
   },
   computed: {
     searchPatient() {
-      let getSearch = this.patientList.filter(x => {
-        return x.HN;
-      });
+      let getSearch = "";
+      if (this.search != "") {
+        getSearch = this.patientList.filter(x => {
+          return x.HN.includes(this.search) || x.name.includes(this.search);
+        });
+      }
 
-      return this.data;
+      return getSearch;
     }
   },
   mounted() {
     this.loadRoom();
+  },
+  beforeDestroy() {
+    this.syncRoom();
+    this.syncPatient();
   }
 };
 </script>
