@@ -228,151 +228,17 @@
           เพื่อดูรายละเอียด
         </div>
 
-        <!-- NOTE โชว์ข้อมูลในกรณีที่กดเลือกข้อมูลผู้ป่วยแล้ว -->
-        <div class="q-px-xs" style="max-width:330px;width:95%;margin:auto;" v-if="isShowDetails">
-          <div class="q-mt-lg">
-            <span class="font-h3">{{ patientFilter("name") }}</span>
-            <br />
-            <div class="font-body q-mt-sm">
-              <span class="color-light-gray">รหัส</span>
-              {{ " " + patientFilter("HN") + " " + "&nbsp;" }}
-              <span
-                class="color-light-gray"
-              >วันเกิด</span>
-              {{ " " + patientFilter("birth") + "&nbsp;" }}
-              <span
-                class="color-primary-500 cursor-pointer"
-                @click="isDetails = true"
-              >เพิ่มเติม</span>
-            </div>
-          </div>
-
-          <!-- <q-infinite-scroll @load="loadPatientLog" :offset="250"> -->
-          <div>
-            <div class="q-mt-md q-mb-md" v-for="(item, index) in patientDiagnosisList" :key="index">
-              <q-card class="my-card font-body">
-                <div class="q-pa-sm" align="center">
-                  <span>12 มีนาคม 2562 รอบ 2:00 น.</span>
-                </div>
-
-                <q-separator />
-
-                <div class="row" style="padding:20px 30px;">
-                  <div class="col-8">
-                    <div class="q-py-xs" v-if="item.temperature">
-                      <span>อุณหภูมิ</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
-                      <span>ความดันโลหิต</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.oxygen">
-                      <span>ออกซิเจนในเลือด</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.heartRate">
-                      <span>การเต้นของหัวใจ</span>
-                    </div>
-                  </div>
-                  <div class="col" align="right">
-                    <div class="q-py-xs" v-if="item.temperature">
-                      <span>{{ item.temperature }} &#176;C</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
-                      <span>{{ item.bloodPressure }}</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.oxygen">
-                      <span>{{ item.oxygen }}%</span>
-                    </div>
-                    <div class="q-py-xs" v-if="item.heartRate">
-                      <span>{{ item.heartRate }}/min</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="q-mb-xs" align="center">
-                  <span>อาการตอนี้</span>
-                </div>
-                <q-separator />
-                <div class="q-my-md q-px-lg">
-                  <div
-                    class="row"
-                    v-for="(diag, index2) in item.symptomsCheck"
-                    :key="index2"
-                    v-show="diag.status"
-                  >
-                    <div class="col-1" style="width:15px;">
-                      <div class="q-py-xs">
-                        <q-icon name="fiber_manual_record" size="7px"></q-icon>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="q-py-xs">
-                        <span>{{ diag.sym }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </q-card>
-            </div>
-          </div>
-          <!-- </q-infinite-scroll> -->
-
-          <div></div>
-        </div>
+        <!-- NOTE  รายละเอียด ผู้ป่วย -->
+        <patient-details v-if="isShowDetails" :dataKey="patientKey" :dataRoute="$route.name"></patient-details>
       </div>
     </div>
 
-    <!-- TODO : Container Dialog Model -->
-    <q-dialog v-model="isDetails" v-if="isDetails">
-      <q-card class="my-card font-body" style="max-width:320px;width:100%;">
-        <div class="q-pa-sm" align="center">
-          <span>ข้อมูลผู้ป่วย</span>
-        </div>
-
-        <q-separator />
-
-        <div class="q-my-md q-px-sm">
-          <div>
-            <span class="font-h3">{{ patientFilter("name") }}</span>
-          </div>
-          <div class="row q-mt-sm">
-            <div class="col-6 q-my-xs">
-              <span class="color-light-gray">รหัส</span>
-              {{ " " + patientFilter("HN") + " " + "&nbsp;" }}
-            </div>
-            <div class="col-6 q-my-xs" align="right">
-              <span class="color-light-gray">วันเกิด</span>
-              {{ " " + patientFilter("birth") }}
-            </div>
-            <div class="col-2 q-my-xs" style="width:75px;">
-              <span class="color-light-gray">Diagnosis</span>
-            </div>
-            <div class="col q-my-xs">{{patientFilter("diagnosis")}}</div>
-            <div class="col-12 q-my-xs">
-              <span class="color-light-gray">อายุ</span>
-              {{ " " + patientFilter("age") }}
-            </div>
-            <div class="col-12 q-my-xs">
-              <span class="color-light-gray">เพศ</span>
-              {{ " " + patientFilter("sex")}}
-            </div>
-            <div class="col-12 q-my-xs">
-              <span class="color-light-gray">ห้อง</span>
-              {{ " " + "ห้องพิเศษ 1" }}
-            </div>
-            <div class="col-12 q-my-xs">
-              <span class="color-light-gray">เข้ารักษา</span>
-              {{ " " + "23/01/2563" }}
-            </div>
-          </div>
-
-          <div align="right" class="q-mt-md">
-            <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
-          </div>
-        </div>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="isDialogAddNewPatient" persistent :maximized="maximizedToggle">
+    <q-dialog
+      v-model="isDialogAddNewPatient"
+      persistent
+      :maximized="maximizedToggle"
+      v-if="isDialogAddNewPatient"
+    >
       <q-card class="q-pa-md bg-surface">
         <div align="right">
           <q-btn
@@ -570,7 +436,11 @@
 
 <script>
 import { db } from "../router/index.js";
+import patientDetails from "../components/patientLog.vue";
 export default {
+  components: {
+    patientDetails
+  },
   data() {
     return {
       // NOTE  Patient Data Save to DB
@@ -618,80 +488,10 @@ export default {
 
       // NOTE  sync
       syncRoom: "",
-      syncPatient: "",
-
-      date: "2020/03/20"
+      syncPatient: ""
     };
   },
   methods: {
-    patientFilter(type) {
-      let getPatient = this.patientList.filter(x => {
-        return x.key == this.patientKey;
-      })[0];
-
-      if (type == "name") {
-        return getPatient.name + " " + getPatient.surname;
-      } else if (type == "HN") {
-        return getPatient.HN;
-      } else if (type == "birth") {
-        return getPatient.dateOfBirth;
-      } else if (type == "sex") {
-        let sex = "";
-
-        if (getPatient.sex == "male") {
-          sex = "ชาย";
-        } else {
-          sex = "หญิง";
-        }
-
-        return sex;
-      } else if (type == "age") {
-        let newdob =
-          getPatient.dateOfBirth.substr(6) +
-          getPatient.dateOfBirth.substr(0, 2) +
-          getPatient.dateOfBirth.substr(3, 2);
-
-        let currentDate =
-          Number(this.currentDate.date.substr(6)) +
-          Number(543) +
-          "-" +
-          this.currentDate.date.substr(3, 2) +
-          "-" +
-          this.currentDate.date.substr(0, 2);
-
-        let dob = newdob;
-        let year = Number(dob.substr(0, 4));
-        let month = Number(dob.substr(4, 2)) - 1;
-        let day = Number(dob.substr(6, 2));
-        let today = new Date(currentDate);
-
-        let age = today.getFullYear() - year;
-        if (
-          today.getMonth() < month ||
-          (today.getMonth() == month && today.getDate() < day)
-        ) {
-          age--;
-        }
-
-        return age;
-      } else if (type == "dateOfAdmit") {
-        return getPatient.dateOfAdmit;
-      } else if (type == "hospital") {
-        let getHospital = this.patientRoom.filter(x => {
-          return (x.key = getPatient.hospitalKey);
-        })[0];
-
-        return getHospital.name;
-      } else if (type == "room") {
-        let getRoom = this.patientRoom.filter(x => {
-          return (x.key = getPatient.patientRoomKey);
-        })[0];
-
-        return getRoom.name;
-      } else if (type == "diagnosis") {
-        return getPatient.diagnosis == "" ? "-" : getPatient.diagnosis;
-      }
-    },
     editPatient() {
       this.isDialogAddNewPatient = true;
       this.isAddMode = false;
@@ -719,7 +519,7 @@ export default {
         patientRoomKey: ""
       };
     },
-    saveData() {
+    async saveData() {
       let refs = this.isAddMode
         ? db.collection("patientData")
         : db.collection("patientData").doc(this.patientKey);
@@ -751,6 +551,13 @@ export default {
         return;
       }
 
+      let checkHN = await refs.where("HN", "==", this.patientData.HN).get();
+
+      if (checkHN.size) {
+        alert("มีข้อมูล HN นี้แล้ว");
+        return;
+      }
+
       this.loadingShow();
 
       setTimeout(() => {
@@ -761,7 +568,9 @@ export default {
         if (this.isAddMode) {
           refs.add(this.patientData).then(() => {
             this.loadingHide();
+
             this.isDisabled = false;
+
             this.patientData = {
               HN: "",
               name: "",
@@ -773,6 +582,10 @@ export default {
               hospitalKey: "",
               patientRoomKey: ""
             };
+
+            this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");
+
+            this.isDialogAddNewPatient = false;
           });
         } else {
           let copyPatientDate = { ...this.patientData };
@@ -780,13 +593,18 @@ export default {
 
           refs.update(copyPatientDate).then(() => {
             this.loadingHide();
+
+            this.vnotify("แก้ไขข้อมูลผู้ป่วยแล้ว");
             this.isDisabled = false;
+            this.isDialogAddNewPatient = false;
           });
         }
       }, 1500);
     },
     async loadRoom() {
       this.currentDate = await this.getDate();
+
+      // console.log();
 
       let refs = db
         .collection("patientRoom")
@@ -853,28 +671,11 @@ export default {
     loadPatientLog(key) {
       this.patientKey = key;
 
-      this.loadingShow();
+      this.isShowDetails = false;
 
-      let refs = db.collection("patientLog").where("patientKey", "==", key);
-
-      refs.get().then(doc => {
-        let temp = [];
-
-        doc.forEach(result => {
-          let setData = {
-            key: result.id,
-            ...result.data()
-          };
-
-          temp.push(setData);
-        });
-
-        this.patientDiagnosisList = temp;
-
+      setTimeout(() => {
         this.isShowDetails = true;
-
-        this.loadingHide();
-      });
+      }, 500);
     }
   },
   computed: {
