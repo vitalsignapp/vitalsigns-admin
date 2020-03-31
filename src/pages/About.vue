@@ -2,7 +2,10 @@
   <q-page>
     <div style="max-width:360px;margin:auto" class>
       <div align="center" class="font-h3 q-mt-md">
-        <div class="bg-primary-500 text-white q-pa-md rounded-borders">
+        <div
+          class="bg-primary-500 text-white q-pa-md rounded-borders"
+          style="width:90%;margin:auto"
+        >
           <div>ธานินทร์ สังข์โพธิ์</div>
           <div>email@hotmail.com</div>
         </div>

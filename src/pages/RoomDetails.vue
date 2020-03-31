@@ -355,7 +355,6 @@ export default {
   methods: {
     showPatientData(key) {
       // console.log(this.patientData.filter(x => x.key == key));
-      console.log(key);
       if (this.platForm.desktop) {
         this.loadingShow();
         this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
@@ -365,7 +364,7 @@ export default {
         this.loadingHide();
       } else {
         // MOBILE ROUTE TO OTHER PAGE
-        console.log("MOBILE");
+        this.$router.push("/patientDetails");
       }
     },
     saveData() {

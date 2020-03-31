@@ -118,9 +118,6 @@ export default {
       console.log(this.$i18n.locale);
     }
   },
-  mounted() {
-    this.vnotify("test");
-  },
   beforeCreate() {
     let _this = this;
     auth.onAuthStateChanged(function(user) {

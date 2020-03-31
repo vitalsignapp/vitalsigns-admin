@@ -78,7 +78,10 @@
 
     <!-- TODO : Memu Bar Bottom is Mobile Mode -->
     <q-footer elevated v-if="$q.platform.is.mobile">
-      <q-toolbar class="bg-black no-padding" v-show="$route.name != 'roomdetails'">
+      <q-toolbar
+        class="bg-black no-padding"
+        v-show="$route.name != 'roomdetails' && $route.name != 'patientDetails'"
+      >
         <div class="col" align="center">
           <div
             v-ripple
