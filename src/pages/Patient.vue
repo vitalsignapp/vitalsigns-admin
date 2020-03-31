@@ -262,7 +262,7 @@
                     <div class="q-py-xs" v-if="item.temperature">
                       <span>อุณหภูมิ</span>
                     </div>
-                    <div class="q-py-xs" v-if="item.bloodPressure">
+                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
                       <span>ความดันโลหิต</span>
                     </div>
                     <div class="q-py-xs" v-if="item.oxygen">
@@ -276,7 +276,7 @@
                     <div class="q-py-xs" v-if="item.temperature">
                       <span>{{ item.temperature }} &#176;C</span>
                     </div>
-                    <div class="q-py-xs" v-if="item.bloodPressure">
+                    <div class="q-py-xs" v-if="item.bloodPressure != 'null/null'">
                       <span>{{ item.bloodPressure }}</span>
                     </div>
                     <div class="q-py-xs" v-if="item.oxygen">
@@ -473,10 +473,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="dateofbirth"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="patientData.dateOfBirth"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.dateofbirth.hide()"
+                        mask="DD/MM/YYYY"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -500,10 +505,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="dateofadmit"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="patientData.dateOfAdmit"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.dateofadmit.hide()"
+                        mask="DD/MM/YYYY"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -608,7 +618,9 @@ export default {
 
       // NOTE  sync
       syncRoom: "",
-      syncPatient: ""
+      syncPatient: "",
+
+      date: "2020/03/20"
     };
   },
   methods: {
