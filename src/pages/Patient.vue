@@ -20,7 +20,7 @@
             label="+ เพิ่มผู้ป่วย"
             class="q-mx-sm"
             flat
-            @click="isDialogAddNewPatient = true"
+            @click="addPatient()"
           ></q-btn>
           <q-btn flat round dense icon="search" @click="isSearch = true" />
         </div>
@@ -134,7 +134,7 @@
           v-ripple
           v-for="(item, index) in searchPatient"
           :key="index"
-          @click="loadPatientLog(item.key)"
+          @click="selectPatient(item.key)"
         >
           <div class="row q-py-sm font-body full-width">
             <div class="col-1" style="width:30px;" align="center"></div>
@@ -154,7 +154,7 @@
         </div>
       </div>
       <div
-        class="col-4 container-list"
+        class="col-4 container-list bg-white"
         v-else
         :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
       >
@@ -188,7 +188,7 @@
             v-for="(patient, index2) in patientList"
             :key="index2"
             v-show="patient.patientRoomKey == item.key"
-            @click="loadPatientLog(patient.key)"
+            @click="selectPatient(patient.key)"
           >
             <div class="row q-py-sm font-body full-width">
               <div class="col-1" style="width:30px;" align="center">
@@ -233,229 +233,25 @@
       </div>
     </div>
 
-    <q-dialog
-      v-model="isDialogAddNewPatient"
-      persistent
-      :maximized="maximizedToggle"
+    <add-edit-patient
       v-if="isDialogAddNewPatient"
-    >
-      <q-card class="q-pa-md bg-surface">
-        <div align="right">
-          <q-btn
-            dense
-            round
-            flat
-            class="color-black"
-            v-close-popup
-            @click="closeDialogAddPatient()"
-          >
-            <q-icon name="close" size="45px"></q-icon>
-          </q-btn>
-        </div>
-
-        <div class="dialog-container">
-          <div>
-            <div class="font-h3" align="center">เพิ่มผู้ป่วยใหม่</div>
-          </div>
-          <div class="q-pa-xs q-mt-md">
-            <div>
-              <span class="font-body">รหัสผู้ป่วย</span>
-            </div>
-            <q-input
-              outlined
-              label="HN"
-              hide-bottom-space
-              ref="hn"
-              v-model="patientData.HN"
-              :rules="[val => !!val]"
-            ></q-input>
-          </div>
-          <div class="q-pa-xs q-mt-sm row">
-            <div class="col-12">
-              <span class="font-body">ชื่อและนามสกุล</span>
-            </div>
-            <div class="col-5">
-              <q-input
-                outlined
-                class="q-mr-xs"
-                hide-bottom-space
-                label="ชื่อจริง"
-                ref="name"
-                v-model="patientData.name"
-                :rules="[val => !!val]"
-              ></q-input>
-            </div>
-            <div class="col">
-              <q-input
-                outlined
-                hide-bottom-space
-                class="q-ml-xs"
-                label="นามสกุล"
-                ref="surname"
-                v-model="patientData.surname"
-                :rules="[val => !!val]"
-              ></q-input>
-            </div>
-          </div>
-          <div class="q-pa-xs q-mt-sm">
-            <div>
-              <span class="font-body">เพศ</span>
-            </div>
-            <div class="q-my-sm">
-              <q-radio
-                dense
-                v-model="patientData.sex"
-                name="sex"
-                val="male"
-                label="ชาย"
-                color="teal"
-              />
-            </div>
-            <div>
-              <q-radio
-                dense
-                class="font-body"
-                v-model="patientData.sex"
-                name="sex"
-                val="female"
-                label="หญิง"
-                color="teal"
-              />
-            </div>
-          </div>
-          <div class="q-pa-xs q-mt-md">
-            <div>
-              <span class="font-body">วันเดือนปีเกิด</span>
-            </div>
-            <div>
-              <q-input
-                hide-bottom-space
-                outlined
-                v-model="patientData.dateOfBirth"
-                mask="##/##/####"
-                label="เลือกวันที่"
-                ref="birth"
-                :rules="[val => val.length == 10]"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="dateofbirth"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date
-                        v-model="patientData.dateOfBirth"
-                        @input="() => $refs.dateofbirth.hide()"
-                        mask="DD/MM/YYYY"
-                      />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-          </div>
-          <div class="q-pa-xs q-mt-sm">
-            <div>
-              <span class="font-body">วันที่เข้าทำการรักษา</span>
-            </div>
-            <div>
-              <q-input
-                outlined
-                v-model="patientData.dateOfAdmit"
-                mask="##/##/####"
-                label="เลือกวันที่"
-                ref="admit"
-                hide-bottom-space
-                :rules="[val => val.length == 10]"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="dateofadmit"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date
-                        v-model="patientData.dateOfAdmit"
-                        @input="() => $refs.dateofadmit.hide()"
-                        mask="DD/MM/YYYY"
-                      />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-          </div>
-          <div class="q-pa-xs q-mt-sm">
-            <div>
-              <span class="font-body">ห้องผู้ป่วย</span>
-            </div>
-            <div class="q-my-xs" v-for="(item, index) in patientRoom" :key="index">
-              <q-radio
-                class="font-body"
-                dense
-                v-model="patientData.patientRoomKey"
-                name="sex"
-                :val="item.key"
-                :label="item.name"
-                color="teal"
-              />
-            </div>
-          </div>
-          <div class="q-pa-xs q-mt-md">
-            <div>
-              <span class="font-body">Diagnosis</span>
-            </div>
-            <div>
-              <q-input
-                outlined
-                hide-bottom-space
-                class
-                type="textarea"
-                label="ระบุอาการและโรคที่เป็น"
-                v-model="patientData.diagnosis"
-              ></q-input>
-            </div>
-          </div>
-
-          <div class="q-mt-lg q-pa-xs" align="center">
-            <q-btn
-              :disable="isDisabled"
-              dense
-              class="button-action small"
-              label="บันทึก"
-              @click="saveData()"
-            ></q-btn>
-          </div>
-        </div>
-      </q-card>
-    </q-dialog>
+      @sendBack="closePopup"
+      :sendData="{patientKey:patientKey,isAddMode:isAddMode,isDialogAddNewPatient:isDialogAddNewPatient}"
+    ></add-edit-patient>
   </q-page>
 </template>
 
 <script>
 import { db } from "../router/index.js";
-import patientDetails from "../components/patientLog.vue";
+import patientDetails from "../components/patientDetails.vue";
+import addEditPatient from "../components/addEditPatient.vue";
 export default {
   components: {
-    patientDetails
+    patientDetails,
+    addEditPatient
   },
   data() {
     return {
-      // NOTE  Patient Data Save to DB
-      patientData: {
-        HN: "",
-        name: "",
-        surname: "",
-        sex: "",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
-        hospitalKey: "",
-        patientRoomKey: ""
-      },
-
       // NOTE  Patient Data List From DB
       patientKey: "",
       patientDiagnosisList: [],
@@ -477,10 +273,7 @@ export default {
       isDetails: false,
       isNotification: false,
       isDialogNotification: false,
-
-      // NOTE  Dialog Add New Patient
       isDialogAddNewPatient: false,
-      maximizedToggle: true,
 
       isSearch: false,
       isAddMode: true,
@@ -492,119 +285,48 @@ export default {
     };
   },
   methods: {
+    closePopup(val) {
+      this.isDialogAddNewPatient = val.isDialogAddNewPatient;
+    },
+    selectPatient(key) {
+      this.patientKey = key;
+
+      if (this.$q.platform.is.desktop) {
+        this.isShowDetails = false;
+
+        setTimeout(() => {
+          this.isShowDetails = true;
+        }, 500);
+      } else {
+        this.$router.push("/patientDetails/" + key + "/" + this.$route.name);
+      }
+    },
+    addPatient() {
+      this.isDialogAddNewPatient = true;
+      this.isAddMode = true;
+    },
     editPatient() {
       this.isDialogAddNewPatient = true;
       this.isAddMode = false;
-
-      let copyPatient = [...this.patientList];
-
-      let setData = copyPatient.filter(x => {
-        return x.key == this.patientKey;
-      })[0];
-
-      this.patientData = setData;
     },
-    deletePatient() {},
-    closeDialogAddPatient() {
-      this.isAddMode = true;
-      this.patientData = {
-        NH: "",
-        name: "",
-        surname: "",
-        sex: "",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
-        hospitalKey: "",
-        patientRoomKey: ""
-      };
-    },
-    async saveData() {
-      let refs = this.isAddMode
-        ? db.collection("patientData")
-        : db.collection("patientData").doc(this.patientKey);
-
-      this.$refs.hn.validate();
-      this.$refs.name.validate();
-      this.$refs.surname.validate();
-      this.$refs.birth.validate();
-      this.$refs.admit.validate();
-
-      if (
-        this.$refs.hn.hasError ||
-        this.$refs.name.hasError ||
-        this.$refs.surname.hasError ||
-        this.$refs.birth.hasError ||
-        this.$refs.admit.hasError
-      ) {
-        alert("กรุณากรอกข้อมูลให้ไม่ครบ");
-        return;
-      }
-
-      if (this.patientData.sex == "") {
-        alert("กรุณาเลือกเพศ");
-        return;
-      }
-
-      if (this.patientData.patientRoomKey == "") {
-        alert("กรุณาเลือกห้องผู้ป่วย");
-        return;
-      }
-
-      let checkHN = await refs.where("HN", "==", this.patientData.HN).get();
-
-      if (checkHN.size) {
-        alert("มีข้อมูล HN นี้แล้ว");
-        return;
-      }
-
+    deletePatient() {
       this.loadingShow();
 
       setTimeout(() => {
-        this.isDisabled = true;
-
-        this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
-
-        if (this.isAddMode) {
-          refs.add(this.patientData).then(() => {
-            this.loadingHide();
-
-            this.isDisabled = false;
-
-            this.patientData = {
-              HN: "",
-              name: "",
-              surname: "",
-              sex: "",
-              dateOfAdmit: "",
-              dateOfBirth: "",
-              diagnosis: "",
-              hospitalKey: "",
-              patientRoomKey: ""
-            };
-
-            this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");
-
-            this.isDialogAddNewPatient = false;
+        db.collection("patientData")
+          .doc(this.patientKey)
+          .delete()
+          .then(() => {
+            this.isShowDetails = false;
+            setTimeout(() => {
+              this.loadingHide();
+            }, 1500);
           });
-        } else {
-          let copyPatientDate = { ...this.patientData };
-          delete copyPatientDate.key;
-
-          refs.update(copyPatientDate).then(() => {
-            this.loadingHide();
-
-            this.vnotify("แก้ไขข้อมูลผู้ป่วยแล้ว");
-            this.isDisabled = false;
-            this.isDialogAddNewPatient = false;
-          });
-        }
-      }, 1500);
+      }, 1000);
     },
+
     async loadRoom() {
       this.currentDate = await this.getDate();
-
-      // console.log();
 
       let refs = db
         .collection("patientRoom")
@@ -667,15 +389,6 @@ export default {
           // return "ไม่มีข้อมูลคนไข้";
         }
       });
-    },
-    loadPatientLog(key) {
-      this.patientKey = key;
-
-      this.isShowDetails = false;
-
-      setTimeout(() => {
-        this.isShowDetails = true;
-      }, 500);
     }
   },
   computed: {

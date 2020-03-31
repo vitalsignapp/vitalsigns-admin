@@ -1,4 +1,5 @@
-const routes = [{
+const routes = [
+  {
     path: "/",
     component: () => import("pages/Login.vue")
   },
@@ -10,7 +11,8 @@ const routes = [{
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{
+    children: [
+      {
         path: "/patient",
         component: () => import("pages/Patient.vue"),
         name: "patient"
@@ -29,13 +31,14 @@ const routes = [{
         path: "/userlist/",
         component: () => import("pages/UserList.vue"),
         name: "userlist"
-      }, {
+      },
+      {
         path: "/about/",
         component: () => import("pages/About.vue"),
         name: "about"
       },
       {
-        path: "/patientDetails/",
+        path: "/patientDetails/:key/:routeName",
         component: () => import("pages/PatientDetails.vue"),
         name: "patientDetails"
       },
@@ -43,8 +46,7 @@ const routes = [{
         path: "/userData/:key",
         component: () => import("pages/UserData.vue"),
         name: "userData"
-      },
-
+      }
     ]
   },
   {
