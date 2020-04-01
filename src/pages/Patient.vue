@@ -56,19 +56,17 @@
           </q-toolbar-title>
           <q-space />
           <div>
-            <q-btn
-              dense
-              round
-              flat
-              class="q-mx-sm"
-              size="14px"
-              @click="
-                (isDialogNotification = true),
-                  (isNotification = !isNotification)
-              "
-            >
-              <q-img v-if="!isNotification" src="../statics/pic/Notification.png" width="30px"></q-img>
-              <q-img v-if="isNotification" src="../statics/pic/Notification Mute.png" width="30px"></q-img>
+            <q-btn dense round flat class="q-mx-sm" size="14px" @click="changeNotify()">
+              <q-img
+                v-if="patientSelected.isShowNotify"
+                src="../statics/pic/Notification.png"
+                width="30px"
+              ></q-img>
+              <q-img
+                v-if="!patientSelected.isShowNotify"
+                src="../statics/pic/Notification Mute.png"
+                width="30px"
+              ></q-img>
             </q-btn>
             <q-btn dense round flat class="q-mx-sm" size="14px">
               <q-img src="../statics/pic/Fax.png" width="30px"></q-img>
@@ -98,28 +96,32 @@
             </q-btn>
           </div>
         </div>
-      </q-toolbar>
 
-      <q-dialog v-model="isDialogNotification" persistent>
-        <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
-          <q-card-section class="q-pt-md">
-            <div class="font-h3">
-              <span v-if="isNotification">ยกเลิกการแจ้งเตือน</span>
-              <span v-if="!isNotification">เปิดการแจ้งเตือน</span>
+        <q-dialog v-model="isDialogNotification" persistent>
+          <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
+            <q-card-section class="q-pt-md">
+              <div class="font-h3">
+                <span v-if="!patientSelected.isShowNotify">ยกเลิกการแจ้งเตือน</span>
+                <span v-if="patientSelected.isShowNotify">เปิดการแจ้งเตือน</span>
+              </div>
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+              <span class="font-body">
+                <span
+                  v-if="!patientSelected.isShowNotify"
+                >ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
+                <span
+                  v-if="patientSelected.isShowNotify"
+                >ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
+              </span>
+            </q-card-section>
+
+            <div class="q-px-md q-pb-md q-pt-xs" align="right">
+              <q-btn flat class="button-action small" dense label="ปิด" v-close-popup />
             </div>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <span class="font-body">
-              <span v-if="isNotification">ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
-              <span v-if="!isNotification">ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
-            </span>
-          </q-card-section>
-
-          <div class="q-px-md q-pb-md q-pt-xs" align="right">
-            <q-btn flat class="button-action small" dense label="ปิด" v-close-popup />
-          </div>
-        </q-card>
-      </q-dialog>
+          </q-card>
+        </q-dialog>
+      </q-toolbar>
     </q-header>
 
     <!-- TODO : Container List Data -->
@@ -143,8 +145,26 @@
               <br />
               <span class="color-light-gray">{{ "HN" + item.HN }}</span>
             </div>
-            <div class="col-4 q-px-xs" style="max-width:120px;width:100%;" align="right">
-              <!-- <span>{{"รอบ " + patient.betweenTime + " น "}}</span> -->
+            <div
+              class="col-4 q-pr-sm"
+              :class="!item.lastRecord ? 'self-center' : null"
+              style="max-width:125px;width:100%;font-size:14px;"
+              align="right"
+            >
+              <div v-if="!item.lastRecord">
+                <span class="color-error">{{"ยังไม่มีข้อมูล"}}</span>
+              </div>
+              <div v-if="item.lastRecord">
+                <div v-if="item.lastRecord.date == currentDate">
+                  <span>{{"รอบ " + item.lastRecord.round + ":00 น."}}</span>
+                </div>
+                <div v-if="item.lastRecord.date != currentDate" class="color-error">
+                  <span>{{item.lastRecord.dateShow}}</span>
+                  <br />
+                  <q-icon name="fas fa-bell"></q-icon>
+                  <span>ไม่ได้ส่งข้อมูลล่าสุด</span>
+                </div>
+              </div>
             </div>
             <div class="col-1 self-center" style="width:30px;">
               <q-icon name="chevron_right" size="24px"></q-icon>
@@ -184,6 +204,7 @@
           />
           <div
             class="relative-position cursor-pointer"
+            :class="patient.key == patientSelected.key ? 'bg-placeholder' : null"
             v-ripple
             v-for="(patient, index2) in patientList"
             :key="index2"
@@ -192,24 +213,58 @@
           >
             <div class="row q-py-sm font-body full-width">
               <div class="col-1" style="width:30px;" align="center">
-                <!-- <q-icon
-                  v-if="item.status != 'read'"
-                  name="fiber_manual_record"
-                  size="10px"
-                  :class="
-                    item.date < 27 && item.status == 'readNoMark'
-                      ? 'color-error'
-                      : 'color-primary-500'
-                  "
-                ></q-icon>-->
+                <div v-if="patient.isShowNotify">
+                  <div v-if="!patient.lastRecord">
+                    <q-icon
+                      v-if="!patient.isRead"
+                      name="fiber_manual_record"
+                      size="10px"
+                      class="color-primary-500"
+                    ></q-icon>
+                  </div>
+                  <div v-if="patient.lastRecord">
+                    <q-icon
+                      v-if="patient.lastRecord.date != currentDate"
+                      name="fiber_manual_record"
+                      size="10px"
+                      class="color-error"
+                    ></q-icon>
+                  </div>
+                </div>
               </div>
               <div class="col text-overflow" align="left">
                 <span class="no-padding">{{ patient.name + " " + patient.surname }}</span>
                 <br />
                 <span class="color-light-gray">{{ "HN" + patient.HN }}</span>
               </div>
-              <div class="col-4 q-px-xs" style="max-width:120px;width:100%;" align="right">
-                <!-- <span>{{"รอบ " + patient.betweenTime + " น "}}</span> -->
+              <div
+                class="col-4 q-pr-sm"
+                :class="!patient.lastRecord ? 'self-center' : null"
+                style="max-width:135px;width:100%;font-size:14px;"
+                align="right"
+              >
+                <div v-if="!patient.lastRecord">
+                  <span class="color-error">{{"ยังไม่มีข้อมูล"}}</span>
+                </div>
+                <div v-if="patient.lastRecord">
+                  <div v-if="patient.lastRecord.date == currentDate">
+                    <span>{{"รอบ " + patient.lastRecord.round + ":00 น."}}</span>
+                  </div>
+                  <div
+                    v-if="patient.lastRecord.date != currentDate"
+                    :class="patient.isShowNotify ? 'color-error' : 'color-light-gray'"
+                  >
+                    <span>{{patient.lastRecord.dateShow}}</span>
+                    <br />
+                    <q-icon
+                      v-if="!patient.isShowNotify"
+                      name="fas fa-bell-slash"
+                      class="q-pr-sm"
+                      size="16px"
+                    ></q-icon>
+                    <span>ไม่ได้ส่งข้อมูลล่าสุด</span>
+                  </div>
+                </div>
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -254,18 +309,19 @@ export default {
     return {
       // NOTE  Patient Data List From DB
       patientKey: "",
-      patientDiagnosisList: [],
-      items: [{}, {}, {}, {}, {}, {}, {}],
 
       // NOTE  Patient Room & List Data
       patientRoom: [],
       patientList: [],
+      patientCheckLog: [],
+      patientSelected: "",
 
       // NOTE  Search Patient
       search: "",
       patientSearch: [],
 
       // NOTE Current Date
+      dateTime: "",
       currentDate: "",
 
       // NOTE  Active Function
@@ -281,12 +337,43 @@ export default {
 
       // NOTE  sync
       syncRoom: "",
-      syncPatient: ""
+      syncPatient: "",
+      syncCheckLog: ""
     };
   },
   methods: {
     printBtn() {
-      this.$router.push("/QRCode/" + this.patientKey);
+      let routeData = this.$router.resolve({
+        path: "/QRCode/" + this.patientKey
+      });
+      window.open(routeData.href, "_blank");
+
+      // this.$router.push("/QRCode/" + this.patientKey);
+    },
+    changeNotify() {
+      this.isDialogNotification = true;
+
+      let currentPatientDataSnapshot = this.patientList.filter(
+        x => x.key == this.patientKey
+      )[0];
+
+      let showNotify = false;
+
+      if (currentPatientDataSnapshot.isShowNotify == undefined) {
+        showNotify = false;
+      } else {
+        showNotify = !currentPatientDataSnapshot.isShowNotify;
+      }
+
+      db.collection("patientData")
+        .doc(this.patientKey)
+        .update({
+          isShowNotify: showNotify
+        });
+
+      this.patientSelected.isShowNotify = showNotify;
+
+      // console.log(this.currentPatientData);
     },
     closePopup(val) {
       this.isDialogAddNewPatient = val.isDialogAddNewPatient;
@@ -294,11 +381,22 @@ export default {
     selectPatient(key) {
       this.patientKey = key;
 
+      let currentPatient = this.patientList.filter(
+        x => x.key == this.patientKey
+      )[0];
+
+      this.patientSelected = currentPatient;
+
+      let refs = db.collection("patientData").doc(key);
+
       if (this.$q.platform.is.desktop) {
         this.isShowDetails = false;
 
         setTimeout(() => {
           this.isShowDetails = true;
+          refs.update({
+            isRead: true
+          });
         }, 500);
       } else {
         this.$router.push("/patientDetails/" + key + "/" + this.$route.name);
@@ -329,7 +427,16 @@ export default {
     },
 
     async loadRoom() {
-      this.currentDate = await this.getDate();
+      this.dateTime = await this.getDate();
+
+      let newYear = Number(this.dateTime.date.substr(6)) + Number(543);
+
+      this.currentDate =
+        this.dateTime.date.substr(0, 2) +
+        " " +
+        this.showMonthName(this.dateTime.date.substr(3, 2)) +
+        " " +
+        newYear;
 
       let refs = db
         .collection("patientRoom")
@@ -371,11 +478,11 @@ export default {
 
       this.syncPatient = refs.onSnapshot(doc => {
         let temp = [];
-
         if (doc.size) {
           doc.forEach(result => {
             let setData = {
               key: result.id,
+              lastRecord: null,
               ...result.data()
             };
 
@@ -392,6 +499,57 @@ export default {
           // return "ไม่มีข้อมูลคนไข้";
         }
       });
+    },
+    loadPatientLog() {
+      let refs = db.collection("patientLog");
+
+      this.syncCheckLog = refs.onSnapshot(doc => {
+        let temp = [];
+        doc.forEach(result => {
+          let setMonth = result.data().inputDate.substr(3, 2);
+
+          let newMonth =
+            result.data().inputDate.substr(0, 2) +
+            " " +
+            this.showMonthName(setMonth);
+
+          let newDate =
+            result.data().inputDate.substr(0, 2) +
+            " " +
+            this.showMonthName(setMonth) +
+            " " +
+            result.data().inputDate.substr(6);
+
+          let setData = {
+            key: result.data().patientKey,
+            round: result.data().inputRound,
+            dateShow: newMonth,
+            date: newDate
+          };
+
+          temp.push(setData);
+        });
+
+        temp.sort((a, b) => {
+          return b.microtime - a.microtime;
+        });
+
+        this.patientCheckLog = temp;
+
+        this.patientList.forEach(patientResult => {
+          let patientLength = temp.filter(x => {
+            return x.key == patientResult.key;
+          }).length;
+
+          if (patientLength) {
+            patientResult.lastRecord = temp.filter(x => {
+              return x.key == patientResult.key;
+            })[0];
+          } else {
+            patientResult.lastRecord = null;
+          }
+        });
+      });
     }
   },
   computed: {
@@ -406,12 +564,19 @@ export default {
       return getSearch;
     }
   },
+  watch: {
+    deep: true,
+    patientList() {
+      this.loadPatientLog();
+    }
+  },
   mounted() {
     this.loadRoom();
   },
   beforeDestroy() {
     this.syncRoom();
     this.syncPatient();
+    this.syncCheckLog();
   }
 };
 </script>

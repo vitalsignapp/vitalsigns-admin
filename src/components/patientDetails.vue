@@ -57,11 +57,18 @@
               </div>
             </div>
 
-            <div class="q-mb-xs" align="center" v-if="item.symptomsCheck != null">
+            <div
+              class="q-mb-xs"
+              align="center"
+              v-if="item.symptomsCheck != null || item.otherSymptoms"
+            >
               <span>อาการตอนนี้</span>
             </div>
-            <q-separator v-if="item.symptomsCheck != null" />
-            <div class="q-px-lg" :class="{'q-mt-md q-pb-sm':item.symptomsCheck != null}">
+            <q-separator v-if="item.symptomsCheck != null || item.otherSymptoms" />
+            <div
+              class="q-px-lg"
+              :class="{'q-mt-md q-pb-sm':item.symptomsCheck != null || item.otherSymptoms}"
+            >
               <div
                 class="row"
                 v-for="(diag, index2) in item.symptomsCheck"
@@ -76,6 +83,18 @@
                 <div class="col">
                   <div class="q-py-xs">
                     <span>{{ diag.sym }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row" v-if="item.otherSymptoms">
+                <div class="col-1" style="width:15px;">
+                  <div class="q-py-xs">
+                    <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="q-py-xs">
+                    <span>{{"อื่นๆ: " + item.otherSymptoms }}</span>
                   </div>
                 </div>
               </div>
@@ -163,7 +182,9 @@ export default {
       currentDate: "",
 
       isLoadData: false,
-      isDetails: false
+      isDetails: false,
+
+      syncDiagnosis: null
     };
   },
   methods: {
@@ -179,6 +200,8 @@ export default {
       refs.get().then(result => {
         if (result.exists) {
           this.patient = result.data();
+
+          this.$emit("patientData", this.patient);
 
           this.loadRoom();
 
@@ -227,7 +250,13 @@ export default {
         .collection("patientLog")
         .where("patientKey", "==", this.dataKey);
 
-      refs.get().then(doc => {
+      this.syncDiagnosis = refs.onSnapshot(doc => {
+        db.collection("patientData")
+          .doc(this.dataKey)
+          .update({
+            isRead: true
+          });
+
         let temp = [];
         if (doc.size) {
           doc.forEach(result => {
@@ -250,6 +279,10 @@ export default {
             };
 
             temp.push(setData);
+          });
+
+          temp.sort((a, b) => {
+            return b.microtime - a.microtime;
           });
 
           this.diagnosisList = temp;
@@ -295,6 +328,9 @@ export default {
   },
   mounted() {
     this.loadPaitent();
+  },
+  beforeDestroy() {
+    this.syncDiagnosis();
   }
 };
 </script>

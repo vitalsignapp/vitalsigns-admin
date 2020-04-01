@@ -206,7 +206,7 @@ export default {
         HN: "",
         name: "",
         surname: "",
-        sex: "",
+        sex: "male",
         dateOfAdmit: "",
         dateOfBirth: "",
         diagnosis: "",
@@ -236,12 +236,12 @@ export default {
         NH: "",
         name: "",
         surname: "",
-        sex: "",
+        sex: "male",
         dateOfAdmit: "",
         dateOfBirth: "",
         diagnosis: "",
         hospitalKey: "",
-        patientRoomKey: ""
+        patientRoomKey: this.room[0].key
       };
     },
     async saveData() {
@@ -300,12 +300,12 @@ export default {
               HN: "",
               name: "",
               surname: "",
-              sex: "",
+              sex: "male",
               dateOfAdmit: "",
               dateOfBirth: "",
               diagnosis: "",
               hospitalKey: "",
-              patientRoomKey: ""
+              patientRoomKey: this.room[0].key
             };
 
             this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");
@@ -355,6 +355,7 @@ export default {
           });
 
           this.room = temp;
+          this.patientData.patientRoomKey = temp[0].key;
 
           if (!this.isAddMode) {
             this.loadPatient();

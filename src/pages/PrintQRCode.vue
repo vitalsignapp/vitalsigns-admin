@@ -81,24 +81,38 @@ export default {
   methods: {
     loadPatient() {
       let patientKey = this.$route.params.key;
+
       let refs = db.collection("patientData").doc(patientKey);
 
       this.loadingShow();
 
-      refs.get().then(result => {
-        let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
+      let printPage = new Promise((resolve, reject) => {
+        refs.get().then(result => {
+          let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
 
-        let setData = {
-          key: result.id,
-          path: newPath,
-          ...result.data()
-        };
+          let setData = {
+            key: result.id,
+            path: newPath,
+            ...result.data()
+          };
 
-        this.patientData = setData;
+          this.patientData = setData;
 
-        this.loadingHide();
+          this.loadingHide();
 
-        this.isLoadData = true;
+          this.isLoadData = true;
+
+          setTimeout(() => {
+            resolve("complete");
+          }, 1000);
+        });
+      });
+
+      printPage.then(result => {
+        if (result == "complete") {
+          window.print();
+          window.close();
+        }
       });
     },
     loadPatientAll() {
@@ -106,62 +120,76 @@ export default {
 
       this.loadingShow();
 
-      refs.then(doc => {
-        if (doc.size) {
-          let temp = [];
-          let setCount = 9;
+      let printPage = new Promise((resolve, reject) => {
+        refs.then(doc => {
+          if (doc.size) {
+            let temp = [];
+            let setCount = 9;
 
-          setTimeout(() => {
-            doc.forEach(result => {
-              let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
+            setTimeout(() => {
+              doc.forEach(result => {
+                let newPath =
+                  "https://www.vitalsign-2bc48.web.app/" + result.id;
 
-              let setData = {
-                key: result.id,
-                path: newPath,
-                ...result.data()
-              };
-              temp.push(setData);
-            });
+                let setData = {
+                  key: result.id,
+                  path: newPath,
+                  ...result.data()
+                };
+                temp.push(setData);
+              });
 
-            let count = Math.ceil(temp.length / setCount);
-            let start = 0;
-            let end = setCount;
-            let setNewArr = [];
+              let count = Math.ceil(temp.length / setCount);
+              let start = 0;
+              let end = setCount;
+              let setNewArr = [];
 
-            for (let i = 0; i < count; i++) {
-              let newSlice = temp.slice(start, end);
+              for (let i = 0; i < count; i++) {
+                let newSlice = temp.slice(start, end);
 
-              setNewArr.push(newSlice);
+                setNewArr.push(newSlice);
 
-              start += setCount;
-              end += setCount;
+                start += setCount;
+                end += setCount;
 
-              if (setNewArr[i].length != 9) {
-                for (let ii = 0; ii < 9; ii++) {
-                  let setData = {
-                    name: "",
-                    surname: "",
-                    path: "",
-                    HN: ""
-                  };
+                if (setNewArr[i].length != 9) {
+                  for (let ii = 0; ii < 9; ii++) {
+                    let setData = {
+                      name: "",
+                      surname: "",
+                      path: "",
+                      HN: ""
+                    };
 
-                  setNewArr[i].push(setData);
+                    setNewArr[i].push(setData);
 
-                  if (setNewArr[i].length == 9) {
-                    break;
+                    if (setNewArr[i].length == 9) {
+                      break;
+                    }
                   }
                 }
               }
-            }
 
-            this.patientDataList = setNewArr;
+              this.patientDataList = setNewArr;
 
-            this.isLoadData = true;
+              this.isLoadData = true;
 
+              this.loadingHide();
+
+              setTimeout(() => {
+                resolve("complete");
+              }, 1000);
+            }, 1200);
+          } else {
             this.loadingHide();
-          }, 1200);
-        } else {
-          this.loadingHide();
+          }
+        });
+      });
+
+      printPage.then(result => {
+        if (result == "complete") {
+          window.print();
+          window.close();
         }
       });
     }
