@@ -1,5 +1,5 @@
 <template>
-  <q-page v-show="!isLoading">
+  <q-page>
     <!-- APP BAR -->
     <q-header class="row color-white">
       <q-toolbar
@@ -96,7 +96,15 @@
       <!-- COLUMN ขวา -->
 
       <div class="col relative-position desktop-only" align="center">
-        <q-scroll-area style="height: 100vh; " v-show="isClickedOnPatient">
+        <div
+          class="font-h3 color-light-gray"
+          v-if="!isClickedOnPatient"
+          style="position:relative;top:18%;"
+        >
+          <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
+        </div>
+
+        <q-scroll-area style="height: 100vh; " v-else>
           <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
             <div class>
               <span class="font-h3">{{ currentPatientData.name }} {{ currentPatientData.surname }}</span>
@@ -122,24 +130,54 @@
                 <q-separator />
 
                 <div class="row" style="padding:20px 30px;">
-                  <div class="col-8">
+                  <div class="col-8" v-show="items.temperature">
                     <div class="q-py-xs" align="left">
                       <span>อุณหภูมิ</span>
                     </div>
                   </div>
-                  <div class="col" align="right">
+                  <div class="col" align="right" v-show="items.temperature">
                     <div class="q-py-xs" align="right">
                       <span>{{ items.temperature }} &#176;C</span>
                     </div>
                   </div>
+                  <div class="col-8" v-show="items.bloodPressure">
+                    <div class="q-py-xs" align="left">
+                      <span>ความดันโลหิต</span>
+                    </div>
+                  </div>
+                  <div class="col" align="right" v-show="items.bloodPressure">
+                    <div class="q-py-xs" align="right">
+                      <span>{{ items.bloodPressure }}</span>
+                    </div>
+                  </div>
+                  <div class="col-8" v-show="items.oxygen">
+                    <div class="q-py-xs" align="left">
+                      <span>ออกซิเจนในเลือด</span>
+                    </div>
+                  </div>
+                  <div class="col" align="right" v-show="items.oxygen">
+                    <div class="q-py-xs" align="right">
+                      <span>{{ items.oxygen }}%</span>
+                    </div>
+                  </div>
+                  <div class="col-8" v-show="items.heartRate">
+                    <div class="q-py-xs" align="left">
+                      <span>การเต้นของหัวใจ</span>
+                    </div>
+                  </div>
+                  <div class="col" align="right" v-show="items.heartRate">
+                    <div class="q-py-xs" align="right">
+                      <span>{{ items.heartRate }}/min</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="q-mb-xs" align="center">
+                <div class="q-mb-xs" align="center" v-show="items.symptomsCheck">
                   <span>อาการตอนนี้</span>
                 </div>
-                <q-separator />
+                <q-separator v-show="items.symptomsCheck" />
 
-                <div class="row q-my-md q-px-lg">
+                <div class="row q-my-md q-px-lg" v-show="items.symptomsCheck">
                   <div class="col-1" style="width:15px;">
                     <div class="q-py-xs" v-for="(sym,index2) in items.symptomsCheck" :key="index2">
                       <q-icon name="fiber_manual_record" size="7px"></q-icon>
@@ -249,6 +287,7 @@
             </div>
             <div>
               <q-input
+                readonly
                 hide-bottom-space
                 outlined
                 v-model="patientObj.dateOfBirth"
@@ -288,6 +327,7 @@
                 ref="admit"
                 hide-bottom-space
                 :rules="[val => val.length == 10]"
+                readonly
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -438,7 +478,44 @@ export default {
     };
   },
   methods: {
+    deletePatient() {
+      // ฟังก์ชันการลบข้อมูลผู้ป่วย
+      this.$q
+        .dialog({
+          title: "ลบผู้ป่วย",
+          message: "ต้องการลบผู้ป่วยใช่หรือไม่",
+          ok: {
+            color: "orange-5"
+          },
+          cancel: { textColor: "black", flat: true }
+        })
+        .onOk(() => {
+          db.collection("patientData")
+            .doc(this.currentPatientData.key)
+            .delete()
+            .then(() => {
+              db.collection("patientLog")
+                .where("patientKey", "==", this.currentPatientData.key)
+                .get()
+                .then(doc => {
+                  let counter = 0;
+                  doc.forEach(element => {
+                    db.collection("patientLog")
+                      .doc(element.id)
+                      .delete()
+                      .then(() => {
+                        counter++;
+                        if (counter == doc.size) {
+                          this.loadingHide();
+                        }
+                      });
+                  });
+                });
+            });
+        });
+    },
     changeNotify() {
+      console.log("CHANGED");
       let currentPatientDataSnapshot = this.patientData.filter(
         x => x.key == this.currentPatientData.key
       )[0];
@@ -466,6 +543,8 @@ export default {
         });
 
       this.currentPatientData.isShowNotify = showNotify;
+
+      // console.log(this.currentPatientData);
     },
     transferPatientDataToChoosedRoom() {
       db.collection("patientData")
@@ -617,12 +696,12 @@ export default {
           HN: "",
           name: "",
           surname: "",
-          sex: "",
+          sex: "male",
           dateOfAdmit: "",
           dateOfBirth: "",
           diagnosis: "",
           hospitalKey: "",
-          patientRoomKey: ""
+          patientRoomKey: this.roomKey
         };
         this.isDialogAddNewPatient = false;
       });
@@ -688,6 +767,10 @@ export default {
           });
           dataTemp = dataTemp.sort((a, b) => b.inputRound - a.inputRound);
           this.patientLog = dataTemp;
+          // this.currentPatientLog = dataTemp.filter(
+          //   x => x.patientKey == this.currentPatientData.key
+          // );
+
           this.isLoading = false;
           this.loadingHide();
         });
