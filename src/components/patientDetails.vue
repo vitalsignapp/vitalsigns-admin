@@ -110,7 +110,7 @@
     </div>
 
     <!-- TODO : Container Dialog Model -->
-    <q-dialog v-model="isDetails" v-if="isDetails">
+    <q-dialog v-model="isDetails" v-if="isDetails" persistent>
       <q-card class="my-card font-body" style="max-width:320px;width:100%;">
         <div class="q-pa-sm" align="center">
           <span>ข้อมูลผู้ป่วย</span>
@@ -145,16 +145,15 @@
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เพศ</span>
-              <span v-if="patient.sex == 'male'">{{ " ชาย"}}</span>
-              <span v-else>{{ " หญิง"}}</span>
+              <span>{{ patient.sex == 'male' ? " ชาย" : ' หญิง'}}</span>
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">ห้อง</span>
-              {{ " " + "ห้องพิเศษ 1" }}
+              {{ " " + room.filter(x => { return x.key == patient.patientRoomKey } )[0].name }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เข้ารักษา</span>
-              {{ " " + "23/01/2563" }}
+              {{ " " + patient.dateOfAdmit }}
             </div>
           </div>
 
@@ -193,7 +192,9 @@ export default {
       isLoadData: false,
       isDetails: false,
 
-      syncDiagnosis: null
+      syncDiagnosis: null,
+      syncRoom: null,
+      syncPatient: null
     };
   },
   methods: {
@@ -206,7 +207,7 @@ export default {
 
       this.loadingShow();
 
-      refs.get().then(result => {
+      this.syncPatient = refs.onSnapshot(result => {
         if (result.exists) {
           this.patient = result.data();
 
@@ -267,39 +268,35 @@ export default {
           });
 
         let temp = [];
-        if (doc.size) {
-          doc.forEach(result => {
-            let dateAdmit = result.data().inputDate;
+        doc.forEach(result => {
+          let dateAdmit = result.data().inputDate;
 
-            let newDate =
-              dateAdmit.substr(0, 2) +
-              " " +
-              this.showMonthName(dateAdmit.substr(3, 2)) +
-              " " +
-              dateAdmit.substr(6) +
-              " รอบ " +
-              result.data().inputRound +
-              ":00 น.";
+          let newDate =
+            dateAdmit.substr(0, 2) +
+            " " +
+            this.showMonthName(dateAdmit.substr(3, 2)) +
+            " " +
+            dateAdmit.substr(6) +
+            " รอบ " +
+            result.data().inputRound +
+            ":00 น.";
 
-            let setData = {
-              key: result.id,
-              dateAndRound: newDate,
-              ...result.data()
-            };
+          let setData = {
+            key: result.id,
+            dateAndRound: newDate,
+            ...result.data()
+          };
 
-            temp.push(setData);
-          });
+          temp.push(setData);
+        });
 
-          temp.sort((a, b) => {
-            return b.microtime - a.microtime;
-          });
+        temp.sort((a, b) => {
+          return b.microtime - a.microtime;
+        });
 
-          this.diagnosisList = temp;
+        this.diagnosisList = temp;
 
-          this.loadingHide();
-        } else {
-          this.loadingHide();
-        }
+        this.loadingHide();
       });
     }
   },
@@ -312,7 +309,6 @@ export default {
 
       let currentDate =
         Number(this.currentDate.date.substr(6)) +
-        Number(543) +
         "-" +
         this.currentDate.date.substr(3, 2) +
         "-" +
@@ -323,8 +319,8 @@ export default {
       let month = Number(dob.substr(4, 2)) - 1;
       let day = Number(dob.substr(6, 2));
       let today = new Date(currentDate);
-
       let age = today.getFullYear() - year;
+
       if (
         today.getMonth() < month ||
         (today.getMonth() == month && today.getDate() < day)
@@ -340,6 +336,8 @@ export default {
   },
   beforeDestroy() {
     this.syncDiagnosis();
+    this.syncRoom();
+    this.syncPatient();
   }
 };
 </script>

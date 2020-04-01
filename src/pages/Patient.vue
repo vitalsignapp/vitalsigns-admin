@@ -439,21 +439,47 @@ export default {
       this.isAddMode = false;
     },
     deletePatient() {
-      this.loadingShow();
+      // ฟังก์ชันการลบข้อมูลผู้ป่วย
+      this.$q
+        .dialog({
+          title: "ลบผู้ป่วย",
+          message: "ต้องการลบผู้ป่วยใช่หรือไม่",
+          ok: {
+            color: "orange-5"
+          },
+          cancel: { textColor: "black", flat: true }
+        })
+        .onOk(() => {
+          this.loadingShow();
 
-      setTimeout(() => {
-        db.collection("patientData")
-          .doc(this.patientKey)
-          .delete()
-          .then(() => {
-            this.isShowDetails = false;
-            setTimeout(() => {
-              this.loadingHide();
-            }, 1500);
-          });
-      }, 1000);
+          setTimeout(() => {
+            db.collection("patientData")
+              .doc(this.patientKey)
+              .delete()
+              .then(() => {
+                db.collection("patientLog")
+                  .where("patientKey", "==", this.patientKey)
+                  .get()
+                  .then(doc => {
+                    let counter = 0;
+                    doc.forEach(element => {
+                      db.collection("patientLog")
+                        .doc(element.id)
+                        .delete()
+                        .then(() => {
+                          counter++;
+                          if (counter == doc.size) {
+                            this.loadingHide();
+                          }
+                        });
+                    });
+
+                    this.isShowDetails = false;
+                  });
+              });
+          }, 500);
+        });
     },
-
     async loadRoom() {
       this.dateTime = await this.getDate();
 

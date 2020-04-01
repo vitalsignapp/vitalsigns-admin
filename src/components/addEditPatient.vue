@@ -96,7 +96,7 @@
                 mask="##/##/####"
                 label="เลือกวันที่"
                 ref="birth"
-                :rules="[val => val.length == 10]"
+                :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -128,7 +128,7 @@
                 label="เลือกวันที่"
                 ref="admit"
                 hide-bottom-space
-                :rules="[val => val.length == 10]"
+                :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -214,6 +214,9 @@ export default {
         patientRoomKey: ""
       },
 
+      // NOTE Current Date
+      dateTime: "",
+
       patientKey: this.sendData.patientKey,
       room: [],
 
@@ -291,9 +294,9 @@ export default {
 
       this.loadingShow();
 
-      setTimeout(() => {
-        this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
+      this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
 
+      setTimeout(() => {
         if (this.isAddMode) {
           refs.add(this.patientData).then(() => {
             this.patientData = {
@@ -314,6 +317,8 @@ export default {
               isDialogAddNewPatient: false
             });
 
+            this.isDialogAddNewPatient = false;
+
             this.loadingHide();
           });
         } else {
@@ -327,11 +332,18 @@ export default {
               isDialogAddNewPatient: false
             });
             this.loadingHide();
+
+            this.isDialogAddNewPatient = false;
           });
         }
-      }, 1500);
+      }, 500);
     },
-    loadRoom() {
+    async loadRoom() {
+      this.dateTime = await this.getDate();
+
+      this.patientData.dateOfAdmit = this.dateTime.date;
+      this.patientData.dateOfBirth = this.dateTime.date;
+
       let refs = db
         .collection("patientRoom")
         .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
