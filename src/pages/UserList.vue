@@ -202,7 +202,7 @@ export default {
       this.isShowAddRoomDialog = true;
     },
     loadUserData() {
-      db.collection("UserData")
+      db.collection("userData")
         .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
         .onSnapshot(doc => {
           let dataTemp = [];
@@ -238,7 +238,7 @@ export default {
                 prefix: this.user.prefix,
                 password: this.user.password
               };
-              db.collection("UserData")
+              db.collection("userData")
                 .add(userData)
                 .then(() => {
                   this.loadingHide();
