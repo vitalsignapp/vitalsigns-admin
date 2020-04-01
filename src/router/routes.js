@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/Login.vue")
   },
@@ -11,8 +10,7 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [
-      {
+    children: [{
         path: "/patient",
         component: () => import("pages/Patient.vue"),
         name: "patient"
@@ -38,7 +36,7 @@ const routes = [
         name: "about"
       },
       {
-        path: "/patientDetails/:key/:routeName",
+        path: "/patientDetails/:key/:routeName/:roomKey?",
         component: () => import("pages/PatientDetails.vue"),
         name: "patientDetails"
       },

@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page v-show="!isLoading">
     <!-- APP BAR -->
     <q-header class="row color-white">
       <q-toolbar
@@ -20,6 +20,12 @@
                 <q-item clickable>
                   <q-item-section>พิมพ์ QR Code ทั้งห้อง</q-item-section>
                 </q-item>
+                <q-item clickable @click="isEditRoom = true">
+                  <q-item-section>แก้ไขข้อมูลห้องพัก</q-item-section>
+                </q-item>
+                <q-item clickable @click="checkDeleteRoom()">
+                  <q-item-section class="color-error">ลบห้องพัก</q-item-section>
+                </q-item>
               </q-list>
             </q-menu>
           </q-btn>
@@ -27,12 +33,28 @@
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <q-toolbar-title>รายละเอียดผู้ป่วย</q-toolbar-title>
-        <q-btn icon="farq fa-bell" flat></q-btn>
+
+        <q-btn
+          icon="notifications"
+          v-show="!currentPatientData.isShowNotify"
+          @click="changeNotify()"
+          flat
+        ></q-btn>
+        <q-btn
+          icon="notifications_off"
+          v-show="currentPatientData.isShowNotify"
+          @click="changeNotify()"
+          flat
+        ></q-btn>
+        <q-btn icon="print" flat @click="printIndividualQR()"></q-btn>
         <q-btn flat icon="more_vert" class="no-border-radius">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
               <q-item clickable>
-                <q-item-section>พิมพ์ QR Code ทั้งห้อง</q-item-section>
+                <q-item-section>แก้ไขข้อมูลผู้ป่วย</q-item-section>
+              </q-item>
+              <q-item clickable>
+                <q-item-section class="color-error" @click="deletePatient()">ลบผู้ป่วย</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -74,7 +96,7 @@
       <!-- COLUMN ขวา -->
 
       <div class="col relative-position desktop-only" align="center">
-        <q-scroll-area style="height: 100vh; ">
+        <q-scroll-area style="height: 100vh; " v-show="isClickedOnPatient">
           <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
             <div class>
               <span class="font-h3">{{ currentPatientData.name }} {{ currentPatientData.surname }}</span>
@@ -151,7 +173,9 @@
 
         <div class="dialog-container">
           <div>
-            <div class="font-h3" align="center">เพิ่มผู้ป่วยใหม่</div>
+            <div class="font-h3" align="center">
+              <span>เพิ่มผู้ป่วยใหม่</span>
+            </div>
           </div>
           <div class="q-pa-xs q-mt-md">
             <div>
@@ -159,10 +183,10 @@
             </div>
             <q-input
               outlined
-              label="NH"
+              label="HN"
               hide-bottom-space
-              ref="nh"
-              v-model="patientObj.NH"
+              ref="hn"
+              v-model="patientObj.HN"
               :rules="[val => !!val]"
             ></q-input>
           </div>
@@ -235,10 +259,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="qDateProxy1"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
+                        mask="DD/MM/YYYY"
                         v-model="patientObj.dateOfBirth"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.qDateProxy1.hide()"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -264,6 +293,7 @@
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date
+                        mask="DD/MM/YYYY"
                         v-model="patientObj.dateOfAdmit"
                         @input="() => $refs.qDateProxy.hide()"
                       />
@@ -302,7 +332,6 @@
                 label="ระบุอาการและโรคที่เป็น"
                 ref="diagnosis"
                 v-model="patientObj.diagnosis"
-                :rules="[val => !!val]"
               ></q-input>
             </div>
           </div>
@@ -319,6 +348,56 @@
         </div>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="isEditRoom" maximized>
+      <q-card class="q-pa-md bg-surface">
+        <div align="right">
+          <q-btn dense round flat class="color-black" v-close-popup>
+            <q-icon name="close" size="45px"></q-icon>
+          </q-btn>
+        </div>
+        <q-card-section style="max-width:360px;margin:auto">
+          <div class="font-h3 q-pt-md" align="center">แก้ไขห้องพักผู้ป่วย</div>
+          <div class="q-pt-md font-h4">ชื่อห้องพักผู้ป่วย</div>
+          <div class="q-pt-sm">
+            <q-input label="ชื่อห้องพักผู้ป่วย" v-model="roomName" outlined class="bg-white"></q-input>
+          </div>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn class="button-action" label="บันทึก" @click="editRoomName()"></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="deletePatientConfirmation" maximized>
+      <q-card class="q-pa-md bg-surface">
+        <div align="right">
+          <q-btn dense round flat class="color-black" v-close-popup>
+            <q-icon name="close" size="45px"></q-icon>
+          </q-btn>
+        </div>
+        <q-card-section style="max-width:360px;margin:auto">
+          <div class="font-h3 q-pt-md" align="center">ลบห้องผู้ป่วย</div>
+          <div class="q-pt-md font-h4">ย้ายผู้ป่วยในห้องปัจจุบันไปยังห้องใด</div>
+          <div class="q-pt-sm">
+            <q-toolbar class="q-pa-xs" v-for="(items,index) in patientRoomCheckbox" :key="index">
+              <div class="fit border-light-gray rounded-borders row">
+                <div class="col-12">
+                  <q-radio :val="items.key" v-model="roomChoosed" keep-color color="teal">
+                    <span>{{ items.name }}</span>
+                  </q-radio>
+                </div>
+              </div>
+            </q-toolbar>
+          </div>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn class="button-action" label="บันทึก" @click="transferPatientDataToChoosedRoom()"></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog></q-dialog>
   </q-page>
 </template>
 
@@ -327,10 +406,12 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      deletePatientConfirmation: false,
+      isEditRoom: false,
       items: [{}, {}, {}, {}, {}, {}, {}],
       patientRoom: [],
       isDialogAddNewPatient: false,
-      isLoading: false,
+      isLoading: true,
       patientData: [],
       roomKey: this.$route.params.roomKey,
       roomData: "",
@@ -349,13 +430,140 @@ export default {
       currentPatientData: "",
       patientLog: "",
       currentPatientLog: "",
-      platForm: this.$q.platform.is
+      platForm: this.$q.platform.is,
+      isClickedOnPatient: false,
+      roomName: "",
+      patientRoomCheckbox: "",
+      roomChoosed: ""
     };
   },
   methods: {
+    changeNotify() {
+      let currentPatientDataSnapshot = this.patientData.filter(
+        x => x.key == this.currentPatientData.key
+      )[0];
+      let showNotify = false;
+
+      if (currentPatientDataSnapshot.isShowNotify == undefined) {
+        showNotify = false;
+      } else {
+        showNotify = !currentPatientDataSnapshot.isShowNotify;
+      }
+
+      let titleText =
+        showNotify == false ? "เปิดการแจ้งเตือน" : "ยกเลิกการแจ้งเตือน";
+      let contentText =
+        showNotify == false
+          ? "ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ ไม่กรอกข้อมูลตามเวลา "
+          : "ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา ";
+
+      this.popUpDialog(titleText, contentText);
+
+      db.collection("patientData")
+        .doc(this.currentPatientData.key)
+        .update({
+          isShowNotify: showNotify
+        });
+
+      this.currentPatientData.isShowNotify = showNotify;
+    },
+    transferPatientDataToChoosedRoom() {
+      db.collection("patientData")
+        .where("patientRoomKey", "==", this.roomKey)
+        .get()
+        .then(doc => {
+          let counter = 0;
+          doc.forEach(element => {
+            db.collection("patientLog")
+              .where("patientKey", "==", element.id)
+              .get()
+              .then(doc => {
+                doc.forEach(pelement => {
+                  db.collection("patientLog")
+                    .doc(pelement.id)
+                    .update({
+                      patientRoomKey: this.roomChoosed
+                    });
+                });
+              });
+
+            db.collection("patientData")
+              .doc(element.id)
+              .update({
+                patientRoomKey: this.roomChoosed
+              })
+              .then(() => {
+                counter++;
+                if (counter == doc.size) {
+                  this.loadingHide();
+                  this.deletePatientConfirmation = false;
+                  // this.$router.push("/roomdetails/" + this.roomChoosed);
+                }
+              });
+          });
+        });
+    },
+    checkDeleteRoom() {
+      console.log("CHECK DELETE ROOm");
+      this.loadingShow();
+      // ต้องเช็คว่าภายในห้องนี้มีผู้ป่วยอยู่แล้วหรือไม่
+      db.collection("patientData")
+        .where("patientRoomKey", "==", this.roomKey)
+        .get()
+        .then(doc => {
+          console.log(doc.size);
+          this.loadingHide();
+          if (doc.size) {
+            // กรณี มีผู้ป่วยอยู่ในห้องนี้ ต้องแจ้งเตือนให้ย้ายผู้ป่วยก่อน
+            this.deletePatientConfirmation = true;
+          } else {
+            // confirmation และลบได้เลย
+          }
+        });
+    },
+    editRoomName() {
+      this.loadingShow();
+      if (this.roomData.name == this.roomName) {
+        this.isEditRoom = false;
+        this.loadingHide();
+        return;
+      }
+      db.collection("patientRoom")
+        .where("name", "==", this.roomName)
+        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .get()
+        .then(doc => {
+          if (doc.size) {
+            // กรณีชื่อซ้ำ
+            this.popUpDialog("ผิดพลาด", "พบชื่อห้องซ้ำ");
+            this.loadingHide();
+          } else {
+            db.collection("patientRoom")
+              .doc(this.roomKey)
+              .update({
+                name: this.roomName
+              })
+              .then(() => {
+                db.collection("patientRoom")
+                  .doc(this.roomKey)
+                  .get()
+                  .then(doc => {
+                    this.vnotify("บันทึกข้อมูลเรียบร้อย");
+                    this.roomData = doc.data();
+                    this.patientObj.patientRoomKey = doc.id;
+                    this.roomName = doc.data().name;
+                    this.isEditRoom = false;
+                    this.loadingHide();
+                  });
+              });
+          }
+        });
+    },
     showPatientData(key) {
       // console.log(this.patientData.filter(x => x.key == key));
+
       if (this.platForm.desktop) {
+        this.isClickedOnPatient = true;
         this.loadingShow();
         this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
         this.currentPatientLog = this.patientLog.filter(
@@ -364,28 +572,28 @@ export default {
         this.loadingHide();
       } else {
         // MOBILE ROUTE TO OTHER PAGE
-        this.$router.push("/patientDetails");
+        this.$router.push(
+          "/patientDetails/" + key + "/" + this.$route.name + "/" + this.roomKey
+        );
       }
     },
     saveData() {
       let refs = db.collection("patientData");
 
-      this.$refs.nh.validate();
+      this.$refs.hn.validate();
       this.$refs.name.validate();
       this.$refs.surname.validate();
       this.$refs.birth.validate();
       this.$refs.admit.validate();
-      this.$refs.diagnosis.validate();
 
       if (
-        this.$refs.nh.hasError ||
+        this.$refs.hn.hasError ||
         this.$refs.name.hasError ||
         this.$refs.surname.hasError ||
         this.$refs.birth.hasError ||
-        this.$refs.admit.hasError ||
-        this.$refs.diagnosis.hasError
+        this.$refs.admit.hasError
       ) {
-        alert("กรุณากรอกข้อมูลให้ไม่ครบ");
+        alert("กรุณากรอกข้อมูลให้ครบ");
         return;
       }
 
@@ -425,10 +633,19 @@ export default {
         .get()
         .then(doc => {
           let dataTemp = [];
+          let dataCheckBox = [];
           doc.forEach(element => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
+            dataCheckBox.push({
+              ...element.data(),
+              ...{ key: element.id, status: false }
+            });
           });
           this.patientRoom = dataTemp;
+          dataCheckBox.sort((a, b) => {
+            return a.addTime - b.addTime;
+          });
+          this.patientRoomCheckbox = dataCheckBox;
           this.loadPatientDataInThisRoom();
         });
     },
@@ -440,6 +657,9 @@ export default {
         .then(doc => {
           this.roomData = doc.data();
           this.patientObj.patientRoomKey = doc.id;
+          this.roomName = doc.data().name;
+          this.roomChoosed = doc.id;
+
           this.loadPatientRoom();
         });
     },
@@ -468,6 +688,7 @@ export default {
           });
           dataTemp = dataTemp.sort((a, b) => b.inputRound - a.inputRound);
           this.patientLog = dataTemp;
+          this.isLoading = false;
           this.loadingHide();
         });
     }

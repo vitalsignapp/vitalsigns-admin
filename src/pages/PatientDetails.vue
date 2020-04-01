@@ -113,7 +113,13 @@ export default {
   },
   methods: {
     goBack() {
-      this.$router.push("/" + this.$route.params.routeName);
+      if (this.$route.params.roomKey) {
+        this.$router.push(
+          "/" + this.$route.params.routeName + "/" + this.$route.params.roomKey
+        );
+      } else {
+        this.$router.push("/" + this.$route.params.routeName);
+      }
     },
     closePopup(val) {
       this.isDialogAddNewPatient = val.isDialogAddNewPatient;
