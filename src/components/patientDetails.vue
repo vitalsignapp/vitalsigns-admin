@@ -5,15 +5,20 @@
       <div class="q-mt-lg">
         <span class="font-h3">{{ patient.name }}</span>
         <br />
-        <div class="font-body q-mt-sm">
-          <span class="color-light-gray">รหัส</span>
-          {{ " " + patient.HN + " " + "&nbsp;" }}
-          <span class="color-light-gray">วันเกิด</span>
-          {{ " " + patient.dateOfBirth + "&nbsp;" }}
-          <span
-            class="color-primary-500 cursor-pointer"
-            @click="isDetails = true"
-          >เพิ่มเติม</span>
+        <!-- text-overflow -->
+        <div class="font-body row q-mt-sm">
+          <div class="col-4 text-overflow" style="width:130px;">
+            <span class="color-light-gray">รหัส</span>
+            {{ " " + patient.HN + " " + "&nbsp;" }}
+          </div>
+          <div class="col">
+            <span class="color-light-gray">วันเกิด</span>
+            {{ " " + patient.dateOfBirth + "&nbsp;" }}
+            <span
+              class="color-primary-500 cursor-pointer"
+              @click="isDetails = true"
+            >เพิ่มเติม</span>
+          </div>
         </div>
       </div>
 
@@ -118,18 +123,22 @@
             <span class="font-h3">{{ patient.name }}</span>
           </div>
           <div class="row q-mt-sm">
-            <div class="col-6 q-my-xs">
+            <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
               {{ " " + patient.HN + " " + "&nbsp;" }}
             </div>
-            <div class="col-6 q-my-xs" align="right">
+            <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
               {{ " " + patient.dateOfBirth }}
             </div>
-            <div class="col-2 q-my-xs" style="width:75px;">
+          </div>
+          <div class="row q-mt-sm">
+            <div class="col-2 self-start q-my-xs" style="width:75px;">
               <span class="color-light-gray">Diagnosis</span>
             </div>
             <div class="col q-my-xs">{{ patient.diagnosis != '' ? patient.diagnosis : '-' }}</div>
+          </div>
+          <div class="row q-mt-sm">
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">อายุ</span>
               {{ " " + getAge }}
@@ -149,7 +158,7 @@
             </div>
           </div>
 
-          <div align="right" class="q-mt-md">
+          <div align="right" class="q-mt-md q-pr-sm">
             <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
           </div>
         </div>

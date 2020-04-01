@@ -464,7 +464,7 @@ export default {
         dateOfBirth: "",
         dateOfAdmit: "",
         patientRoomKey: "",
-        dianosis: ""
+        diagnosis: ""
       },
       isListenPatientData: "",
       currentPatientData: "",

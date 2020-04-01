@@ -135,11 +135,31 @@
           class="relative-position cursor-pointer"
           v-ripple
           v-for="(item, index) in searchPatient"
+          :class="item.key == patientSelected.key ? 'bg-placeholder' : null"
           :key="index"
           @click="selectPatient(item.key)"
         >
           <div class="row q-py-sm font-body full-width">
-            <div class="col-1" style="width:30px;" align="center"></div>
+            <div class="col-1" style="width:30px;" align="center">
+              <div v-if="item.isShowNotify">
+                <div v-if="!item.lastRecord">
+                  <q-icon
+                    v-if="!item.isRead"
+                    name="fiber_manual_record"
+                    size="10px"
+                    class="color-primary-500"
+                  ></q-icon>
+                </div>
+                <div v-if="item.lastRecord">
+                  <q-icon
+                    v-if="item.lastRecord.date != currentDate"
+                    name="fiber_manual_record"
+                    size="10px"
+                    class="color-error"
+                  ></q-icon>
+                </div>
+              </div>
+            </div>
             <div class="col text-overflow" align="left">
               <span class="no-padding">{{ item.name + " " + item.surname }}</span>
               <br />
@@ -148,7 +168,7 @@
             <div
               class="col-4 q-pr-sm"
               :class="!item.lastRecord ? 'self-center' : null"
-              style="max-width:125px;width:100%;font-size:14px;"
+              style="max-width:135px;width:100%;font-size:14px;"
               align="right"
             >
               <div v-if="!item.lastRecord">
@@ -158,10 +178,18 @@
                 <div v-if="item.lastRecord.date == currentDate">
                   <span>{{"รอบ " + item.lastRecord.round + ":00 น."}}</span>
                 </div>
-                <div v-if="item.lastRecord.date != currentDate" class="color-error">
+                <div
+                  v-if="item.lastRecord.date != currentDate"
+                  :class="item.isShowNotify ? 'color-error' : 'color-light-gray'"
+                >
                   <span>{{item.lastRecord.dateShow}}</span>
                   <br />
-                  <q-icon name="fas fa-bell"></q-icon>
+                  <q-icon
+                    v-if="!item.isShowNotify"
+                    name="fas fa-bell-slash"
+                    class="q-pr-sm"
+                    size="16px"
+                  ></q-icon>
                   <span>ไม่ได้ส่งข้อมูลล่าสุด</span>
                 </div>
               </div>
