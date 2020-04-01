@@ -74,7 +74,7 @@
               <q-img src="../statics/pic/Fax.png" width="30px"></q-img>
               <q-menu square :offset="[55, 16]">
                 <q-list style="min-width: 160px">
-                  <q-btn class="fit row no-border-radius" flat>
+                  <q-btn class="fit row no-border-radius" flat @click="printBtn()">
                     <div class="col" align="left">พิมพ์ QR Code</div>
                   </q-btn>
                   <q-btn class="fit row no-border-radius" flat>
@@ -285,6 +285,9 @@ export default {
     };
   },
   methods: {
+    printBtn() {
+      this.$router.push("/QRCode/" + this.patientKey);
+    },
     closePopup(val) {
       this.isDialogAddNewPatient = val.isDialogAddNewPatient;
     },

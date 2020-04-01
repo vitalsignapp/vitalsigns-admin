@@ -48,7 +48,7 @@ const routes = [{
     ]
   },
   {
-    path: "/QRCode",
+    path: "/QRCode/:key",
     component: () => import("pages/PrintQRCode.vue")
   }
 ];

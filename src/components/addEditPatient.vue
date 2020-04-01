@@ -321,7 +321,7 @@ export default {
           delete copyPatientDate.key;
 
           refs.update(copyPatientDate).then(() => {
-            this.vnotify("แก้ไขข้อมูลผู้ป่วยแล้ว");
+            this.vnotify("บันทึกข้อมูลเรียบร้อย");
 
             this.$emit("sendBack", {
               isDialogAddNewPatient: false

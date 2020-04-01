@@ -21,12 +21,12 @@
         <div class="q-mt-md q-mb-lg" v-for="(item, index) in diagnosisList" :key="index">
           <q-card class="my-card font-body">
             <div class="q-pa-sm" align="center">
-              <span>12 มีนาคม 2562 รอบ 2:00 น.</span>
+              <span>{{item.dateAndRound}}</span>
             </div>
 
             <q-separator />
 
-            <div class="row" style="padding:20px 30px;">
+            <div class="row" style="padding:15px 30px;">
               <div class="col-8">
                 <div class="q-py-xs" v-if="item.temperature">
                   <span>อุณหภูมิ</span>
@@ -57,11 +57,11 @@
               </div>
             </div>
 
-            <div class="q-mb-xs" align="center">
-              <span>อาการตอนี้</span>
+            <div class="q-mb-xs" align="center" v-if="item.symptomsCheck != null">
+              <span>อาการตอนนี้</span>
             </div>
-            <q-separator />
-            <div class="q-mt-md q-px-lg q-pb-sm">
+            <q-separator v-if="item.symptomsCheck != null" />
+            <div class="q-px-lg" :class="{'q-mt-md q-pb-sm':item.symptomsCheck != null}">
               <div
                 class="row"
                 v-for="(diag, index2) in item.symptomsCheck"
@@ -231,8 +231,21 @@ export default {
         let temp = [];
         if (doc.size) {
           doc.forEach(result => {
+            let dateAdmit = result.data().inputDate;
+
+            let newDate =
+              dateAdmit.substr(0, 2) +
+              " " +
+              this.showMonthName(dateAdmit.substr(3, 2)) +
+              " " +
+              dateAdmit.substr(6) +
+              " รอบ " +
+              result.data().inputRound +
+              ":00 น.";
+
             let setData = {
               key: result.id,
+              dateAndRound: newDate,
               ...result.data()
             };
 
