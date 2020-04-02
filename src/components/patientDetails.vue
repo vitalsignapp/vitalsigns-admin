@@ -70,6 +70,7 @@
               <span>อาการตอนนี้</span>
             </div>
             <q-separator v-if="item.symptomsCheck != null || item.otherSymptoms" />
+
             <div
               class="q-px-lg"
               :class="{'q-mt-md q-pb-sm':item.symptomsCheck != null || item.otherSymptoms}"

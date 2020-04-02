@@ -80,6 +80,7 @@
         </div>
       </q-toolbar>
     </q-header>
+
     <!-- END APP BAR -->
     <div class="row" v-if="!isLoading">
       <div
@@ -114,118 +115,118 @@
 
       <!-- COLUMN ขวา -->
 
-      <div
-        class="col container-list relative-position"
-        v-if="$q.platform.is.desktop"
-        align="center"
-      >
-        <div
-          class="font-h3 color-light-gray"
-          v-if="!isClickedOnPatient"
-          style="position:relative;top:18%;"
-        >
-          <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
+      <div class="col container-list relative-position" v-if="$q.platform.is.desktop">
+        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isClickedOnPatient">
+          <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
+          เพื่อดูรายละเอียด
         </div>
 
-        <q-scroll-area style="height: 100vh; " v-else>
-          <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;">
-            <div class="q-mt-lg">
-              <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
-              <br />
-              <!-- text-overflow -->
-              <div class="font-body row q-mt-sm">
-                <div class="col-4 text-overflow" style="width:130px;">
-                  <span class="color-light-gray">รหัส</span>
-                  {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
-                </div>
-                <div class="col">
-                  <span class="color-light-gray">วันเกิด</span>
-                  {{ " " + currentPatientData.dateOfBirth + "&nbsp;" }}
-                  <span
-                    class="color-primary-500 cursor-pointer"
-                    @click="isDetails = true"
-                  >เพิ่มเติม</span>
-                </div>
+        <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;" v-else>
+          <div class="q-mt-lg">
+            <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
+            <br />
+            <!-- text-overflow -->
+            <div class="font-body row q-mt-sm">
+              <div class="col-4 text-overflow" style="width:130px;">
+                <span class="color-light-gray">รหัส</span>
+                {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
+              </div>
+              <div class="col">
+                <span class="color-light-gray">วันเกิด</span>
+                {{ " " + currentPatientData.dateOfBirth + "&nbsp;" }}
+                <span
+                  class="color-primary-500 cursor-pointer"
+                  @click="isDetails = true"
+                >เพิ่มเติม</span>
               </div>
             </div>
+          </div>
 
-            <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
-              <q-card class="my-card font-body">
-                <div class="q-pa-sm" align="center">
-                  <span>{{ items.inputDate }} รอบ {{ items.inputRound }}:00 น.</span>
-                </div>
+          <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
+            <q-card class="my-card font-body">
+              <div class="q-pa-sm" align="center">
+                <span>{{ items.inputDate }} รอบ {{ items.inputRound }}:00 น.</span>
+              </div>
 
-                <q-separator />
+              <q-separator />
 
-                <div class="row" style="padding:20px 30px;">
-                  <div class="col-8" v-show="items.temperature">
-                    <div class="q-py-xs" align="left">
-                      <span>อุณหภูมิ</span>
-                    </div>
+              <div class="row" style="padding:15px 30px;">
+                <div class="col-8">
+                  <div class="q-py-xs" v-if="items.temperature">
+                    <span>อุณหภูมิ</span>
                   </div>
-                  <div class="col" align="right" v-show="items.temperature">
-                    <div class="q-py-xs" align="right">
-                      <span>{{ items.temperature }} &#176;C</span>
-                    </div>
+                  <div class="q-py-xs" v-if="items.bloodPressure != 'null/null'">
+                    <span>ความดันโลหิต</span>
                   </div>
-                  <div class="col-8" v-show="items.bloodPressure">
-                    <div class="q-py-xs" align="left">
-                      <span>ความดันโลหิต</span>
-                    </div>
+                  <div class="q-py-xs" v-if="items.oxygen">
+                    <span>ออกซิเจนในเลือด</span>
                   </div>
-                  <div class="col" align="right" v-show="items.bloodPressure">
-                    <div class="q-py-xs" align="right">
-                      <span>{{ items.bloodPressure }}</span>
-                    </div>
-                  </div>
-                  <div class="col-8" v-show="items.oxygen">
-                    <div class="q-py-xs" align="left">
-                      <span>ออกซิเจนในเลือด</span>
-                    </div>
-                  </div>
-                  <div class="col" align="right" v-show="items.oxygen">
-                    <div class="q-py-xs" align="right">
-                      <span>{{ items.oxygen }}%</span>
-                    </div>
-                  </div>
-                  <div class="col-8" v-show="items.heartRate">
-                    <div class="q-py-xs" align="left">
-                      <span>การเต้นของหัวใจ</span>
-                    </div>
-                  </div>
-                  <div class="col" align="right" v-show="items.heartRate">
-                    <div class="q-py-xs" align="right">
-                      <span>{{ items.heartRate }}/min</span>
-                    </div>
+                  <div class="q-py-xs" v-if="items.heartRate">
+                    <span>การเต้นของหัวใจ</span>
                   </div>
                 </div>
-
-                <div class="q-mb-xs" align="center" v-show="items.symptomsCheck">
-                  <span>อาการตอนนี้</span>
+                <div class="col" align="right">
+                  <div class="q-py-xs" v-if="items.temperature">
+                    <span>{{ items.temperature }} &#176;C</span>
+                  </div>
+                  <div class="q-py-xs" v-if="items.bloodPressure != 'null/null'">
+                    <span>{{ items.bloodPressure }}</span>
+                  </div>
+                  <div class="q-py-xs" v-if="items.oxygen">
+                    <span>{{ items.oxygen }}%</span>
+                  </div>
+                  <div class="q-py-xs" v-if="items.heartRate">
+                    <span>{{ items.heartRate }}/min</span>
+                  </div>
                 </div>
-                <q-separator v-show="items.symptomsCheck" />
+              </div>
 
-                <div class="row q-my-md q-px-lg" v-show="items.symptomsCheck">
+              <div
+                class="q-mb-xs"
+                align="center"
+                v-if="items.symptomsCheck != null || items.otherSymptoms"
+              >
+                <span>อาการตอนนี้</span>
+              </div>
+              <q-separator v-if="items.symptomsCheck != null || items.otherSymptoms" />
+
+              <div
+                class="q-px-lg"
+                :class="{'q-mt-md q-pb-sm':items.symptomsCheck != null || items.otherSymptoms}"
+              >
+                <div
+                  class="row"
+                  v-for="(diag, index2) in items.symptomsCheck"
+                  :key="index2"
+                  v-show="diag.status"
+                >
                   <div class="col-1" style="width:15px;">
-                    <div class="q-py-xs" v-for="(sym,index2) in items.symptomsCheck" :key="index2">
+                    <div class="q-py-xs">
                       <q-icon name="fiber_manual_record" size="7px"></q-icon>
                     </div>
                   </div>
                   <div class="col">
-                    <div
-                      class="q-py-xs"
-                      v-for="(sym2,index3) in items.symptomsCheck"
-                      :key="index3"
-                      align="left"
-                    >
-                      <span>{{ sym2.sym }}</span>
+                    <div class="q-py-xs">
+                      <span>{{ diag.sym }}</span>
                     </div>
                   </div>
                 </div>
-              </q-card>
-            </div>
+                <div class="row" v-if="items.otherSymptoms">
+                  <div class="col-1" style="width:15px;">
+                    <div class="q-py-xs">
+                      <q-icon name="fiber_manual_record" size="7px"></q-icon>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="q-py-xs">
+                      <span>{{"อื่นๆ: " + items.otherSymptoms }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </q-card>
           </div>
-        </q-scroll-area>
+        </div>
       </div>
     </div>
 
