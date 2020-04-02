@@ -152,12 +152,6 @@ export default {
   },
   beforeCreate() {
     let _this = this;
-    auth.onAuthStateChanged(function(user) {
-      if (user) {
-        // User is signed in.
-        _this.$router.push("/patient");
-      }
-    });
   }
 };
 </script>

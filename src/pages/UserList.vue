@@ -11,10 +11,39 @@
           <!-- <q-btn dense flat icon="chevron_left" to="/room"></q-btn> -->
           <span class="q-pl-md">บุคลากร</span>
         </q-toolbar-title>
-        <div class="q-pa-sm">
-          <!-- TODO ปุ่มเพิ่มผู้ป่วยมีเฉพาะใน Super Admin -->
-          <q-btn @click="showAddUserDialog()" flat dense icon="add" label="เพิ่มบุคลากร" />
-          <q-btn icon="search" flat></q-btn>
+        <div class="q-pa-sm" v-if="!isSearch">
+          <q-btn
+            v-show="isAdmin"
+            @click="showAddUserDialog()"
+            flat
+            dense
+            icon="add"
+            label="เพิ่มบุคลากร"
+          />
+          <q-btn icon="search" @click="isSearch = true" flat></q-btn>
+        </div>
+        <div class="col q-px-sm" v-if="isSearch">
+          <q-input
+            class="font-body"
+            bg-color="white"
+            rounded
+            outlined
+            dense
+            v-model="search"
+            label="ค้นหา"
+            @keyup="filterData()"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+
+            <template v-slot:after>
+              <span
+                class="font-body q-px-sm color-white cursor-pointer"
+                @click="isSearch = false,displayUserData = userData"
+              >ยกเลิก</span>
+            </template>
+          </q-input>
         </div>
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
@@ -24,7 +53,7 @@
 
     <div class="row">
       <div
-        class="container-list-data"
+        class="container-list-data bg-white"
         :class="$q.platform.is.desktop ? 'col-4' : 'col-12'"
         :style="
           $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
@@ -32,7 +61,7 @@
       >
         <div>
           <div
-            v-for="(items,index) in userData"
+            v-for="(items,index) in displayUserData"
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
@@ -66,9 +95,9 @@
               align="left"
               class="font-h3"
             >{{ currentUserData.prefix }} {{ currentUserData.name }} {{ currentUserData.surname }}</div>
-            <div class="font-body q-py-sm q-pt-md" align="left">
+            <div class="font-body q-py-sm q-pt-md" align="left" v-if="currentUserData.userId">
               <span class="color-light-gray">รหัสบุคลากร</span>
-              <span>&nbsp;{{ currentUserData.userAccount }}</span>
+              <span>&nbsp;{{ currentUserData.userId }}</span>
             </div>
             <div class="font-body q-py-sm" align="left">
               <span class="color-light-gray">email</span>
@@ -174,17 +203,28 @@ export default {
       isShowAddRoomDialog: false,
       userData: "",
       currentUserData: "",
-      platform: this.$q.platform.is
+      platform: this.$q.platform.is,
+      isAdmin: false,
+      isSearch: false,
+      search: "",
+      displayUserData: ""
     };
   },
   methods: {
+    filterData() {
+      if (this.search == "") {
+        this.displayUserData = this.userData;
+      }
+      let filter = this.userData.filter(x => {
+        return x.name.includes(this.search) || x.surname.includes(this.search);
+      });
+      this.displayUserData = filter;
+    },
     showUserData(index) {
       if (this.platform.desktop) {
-        console.log("DESKTOP");
         this.isClickedUserData = true;
         this.currentUserData = this.userData[index];
       } else {
-        console.log("MOBILE");
         this.$router.push("/userdata/" + this.userData[index].key);
       }
     },
@@ -204,54 +244,102 @@ export default {
             return a.name > b.name ? 1 : -1;
           });
           this.userData = dataTemp;
+          this.displayUserData = dataTemp;
         });
     },
-    addUser(email, password) {
-      this.loadingShow();
-      let _this = this;
-      auth
-        .createUserWithEmailAndPassword(_this.user.email, _this.user.password)
-        .then(() => {
-          let user = auth.currentUser;
 
-          user
-            .updateProfile({
-              displayName: this.user.name + " " + this.user.password
-            })
-            .then(() => {
-              let userData = {
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
+    loadCurrentUser() {
+      let userKey = this.$q.localStorage.getItem("userData").key;
+
+      let refs = db
+        .collection("userData")
+        .doc(userKey)
+        .get();
+
+      refs.then(result => {
+        this.isAdmin = result.data().isAdmin;
+
+        this.loadingHide();
+      });
+    },
+
+    async addUser() {
+      let date = await this.getDate();
+      db.collection("userData")
+        .where("email", "==", this.user.email)
+        .get()
+        .then(doc => {
+          if (doc.size) {
+            // กรณีตรวจพบ User ซ้ำ
+            this.loadingHide();
+            this.vnotify("Email นี้ถูกใช้งานแล้ว");
+          } else {
+            db.collection("userData")
+              .add({
+                dateCreated: "",
+                email: this.user.email,
+                hospitalKey: this.$q.localStorage.getItem("userData")
+                  .hospitalKey,
+                isAdmin: false,
+                microtimeCreated: date.microtime,
                 name: this.user.name,
+                password: this.user.password,
                 surname: this.user.surname,
-                userAccount: this.user.userNo,
-                prefix: this.user.prefix,
-                password: this.user.password
-              };
-              db.collection("userData")
-                .add(userData)
-                .then(() => {
-                  this.loadingHide();
-                  this.$q.notify({
-                    message: "สร้างบุคลากรเรียบร้อย",
-                    classes: "notifyBg"
-                  });
-                  this.isShowAddRoomDialog = false;
-                });
-            });
-        })
-        .catch(function(error) {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          alert(errorMessage);
-          if (errorCode == "auth/invalid-email") {
-            // รูปแบบ Email ผิดพลาด
+                userId: this.user.userNo
+              })
+              .then(() => {
+                this.vnotify("สำเร็จ");
+                this.loadingHide();
+                this.isShowAddRoomDialog = false;
+              });
           }
         });
+      // this.loadingShow();
+      // let _this = this;
+      // auth
+      //   .createUserWithEmailAndPassword(_this.user.email, _this.user.password)
+      //   .then(() => {
+      //     let user = auth.currentUser;
+
+      //     user
+      //       .updateProfile({
+      //         displayName: this.user.name + " " + this.user.password
+      //       })
+      //       .then(() => {
+      //         let userData = {
+      //           uid: user.uid,
+      //           email: user.email,
+      //           displayName: user.displayName,
+      //           name: this.user.name,
+      //           surname: this.user.surname,
+      //           userAccount: this.user.userNo,
+      //           prefix: this.user.prefix,
+      //           password: this.user.password
+      //         };
+      //         db.collection("userData")
+      //           .add(userData)
+      //           .then(() => {
+      //             this.loadingHide();
+      //             this.$q.notify({
+      //               message: "สร้างบุคลากรเรียบร้อย",
+      //               classes: "notifyBg"
+      //             });
+      //             this.isShowAddRoomDialog = false;
+      //           });
+      //       });
+      //   })
+      //   .catch(function(error) {
+      //     var errorCode = error.code;
+      //     var errorMessage = error.message;
+      //     alert(errorMessage);
+      //     if (errorCode == "auth/invalid-email") {
+      //       // รูปแบบ Email ผิดพลาด
+      //     }
+      //   });
     }
   },
   mounted() {
+    this.loadCurrentUser();
     this.loadUserData();
   }
 };
