@@ -83,7 +83,7 @@
     <!-- END APP BAR -->
     <div class="row" v-if="!isLoading">
       <div
-        class="container-list-data"
+        class="container-list-data bg-white"
         :class="$q.platform.is.desktop ? 'col-4' : 'col-12'"
         :style="
           $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
@@ -114,7 +114,11 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col relative-position desktop-only" align="center">
+      <div
+        class="col container-list relative-position"
+        v-if="$q.platform.is.desktop"
+        align="center"
+      >
         <div
           class="font-h3 color-light-gray"
           v-if="!isClickedOnPatient"
