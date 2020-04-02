@@ -1,4 +1,5 @@
-const routes = [{
+const routes = [
+  {
     path: "/",
     component: () => import("pages/Login.vue")
   },
@@ -10,7 +11,8 @@ const routes = [{
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{
+    children: [
+      {
         path: "/patient",
         component: () => import("pages/Patient.vue"),
         name: "patient"
@@ -49,7 +51,13 @@ const routes = [{
   },
   {
     path: "/QRCode/:key",
-    component: () => import("pages/PrintQRCode.vue")
+    component: () => import("pages/PrintQRCode.vue"),
+    name: "printOnlyOne"
+  },
+  {
+    path: "/QRCode/:key/all",
+    component: () => import("pages/PrintQRCode.vue"),
+    name: "printAll"
   }
 ];
 

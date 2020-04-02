@@ -1,6 +1,6 @@
 <template>
   <div style="background-color:#E5E5E5;">
-    <div class="pageA4 shadow-2" v-if="$route.params.key != 'null' && isLoadData">
+    <div class="pageA4 shadow-2" v-if="$route.name == 'printOnlyOne' && isLoadData">
       <div class="row">
         <div
           class="col-6"
@@ -32,7 +32,7 @@
 
     <div
       class="pageA4 shadow-2"
-      v-show="$route.params.key == 'null' && isLoadData"
+      v-show="$route.name == 'printAll' && isLoadData"
       v-for="(list,index) in patientDataList"
       :key="index"
     >
@@ -88,23 +88,28 @@ export default {
 
       let printPage = new Promise((resolve, reject) => {
         refs.get().then(result => {
-          let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
+          if (result.exists) {
+            let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
 
-          let setData = {
-            key: result.id,
-            path: newPath,
-            ...result.data()
-          };
+            let setData = {
+              key: result.id,
+              path: newPath,
+              ...result.data()
+            };
 
-          this.patientData = setData;
+            this.patientData = setData;
 
-          this.loadingHide();
+            this.loadingHide();
 
-          this.isLoadData = true;
+            this.isLoadData = true;
 
-          setTimeout(() => {
-            resolve("complete");
-          }, 1000);
+            setTimeout(() => {
+              resolve("complete");
+            }, 1000);
+          } else {
+            reject("close");
+            this.loadingHide();
+          }
         });
       });
 
@@ -114,9 +119,17 @@ export default {
           window.close();
         }
       });
+
+      printPage.catch(error => {
+        alert("ไม่มีข้อมูล");
+        window.close();
+      });
     },
     loadPatientAll() {
-      let refs = db.collection("patientData").get();
+      let refs = db
+        .collection("patientData")
+        .where("patientRoomKey", "==", this.$route.params.key)
+        .get();
 
       this.loadingShow();
 
@@ -181,6 +194,7 @@ export default {
               }, 1000);
             }, 1200);
           } else {
+            reject("close");
             this.loadingHide();
           }
         });
@@ -192,10 +206,15 @@ export default {
           window.close();
         }
       });
+
+      printPage.catch(error => {
+        alert("ไม่มีข้อมูล");
+        window.close();
+      });
     }
   },
   mounted() {
-    if (this.$route.params.key != "null") {
+    if (this.$route.name === "printOnlyOne") {
       this.loadPatient();
     } else {
       this.loadPatientAll();

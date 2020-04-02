@@ -116,7 +116,7 @@ export default {
       db.collection("patientRoom")
         .add({
           name: this.roomName,
-          hospitalKey: "d9lzg1cDW3csxvCzlq0i",
+          hospitalKey: this.$q.localStorage.getItem("hospitalKey"),
           addTime: date.microtime,
           date: date
         })
@@ -132,7 +132,7 @@ export default {
     loadPatientData() {
       this.loadingShow();
       db.collection("patientData")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
           let dataTemp = [];
@@ -146,7 +146,7 @@ export default {
     loadPatientRoom() {
       this.isListenPatientRoom = db
         .collection("patientRoom")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .onSnapshot(doc => {
           let dataTemp = [];
           doc.forEach(element => {

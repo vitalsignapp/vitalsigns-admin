@@ -38,7 +38,8 @@ export const auth = firebase.auth();
 Vue.mixin({
   data() {
     return {
-      month: []
+      month: [],
+      userData: this.$q.localStorage.getItem("userData")
     };
   },
   methods: {

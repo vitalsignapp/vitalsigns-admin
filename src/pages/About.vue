@@ -6,8 +6,8 @@
           class="bg-primary-500 text-white q-pa-md rounded-borders"
           style="width:90%;margin:auto"
         >
-          <div>ธานินทร์ สังข์โพธิ์</div>
-          <div>email@hotmail.com</div>
+          <div>{{userData.name + " " + userData.surname}}</div>
+          <div>{{userData.email}}</div>
         </div>
       </div>
 
@@ -154,8 +154,7 @@ export default {
   data() {
     return {
       isChangeLanguage: this.$i18n.locale,
-      userData: "",
-      isAdmin: true,
+      isAdmin: false,
       isShowConfigVitalSigns: false,
       vitalSignsArr: [
         {
@@ -201,7 +200,7 @@ export default {
       this.loadingShow();
 
       db.collection("hospital")
-        .doc("d9lzg1cDW3csxvCzlq0i")
+        .doc(this.$q.localStorage.getItem("hospitalKey"))
         .update({
           vitalSignsConfig: this.vitalSignsArr
         })
@@ -209,7 +208,20 @@ export default {
           this.loadingHide();
         });
     },
-    loadUserData() {},
+    loadUserData() {
+      let userKey = this.$q.localStorage.getItem("userData").key;
+
+      let refs = db
+        .collection("userData")
+        .doc(userKey)
+        .get();
+
+      refs.then(result => {
+        this.isAdmin = result.data().isAdmin;
+
+        this.loadingHide();
+      });
+    },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
       this.isChangeLanguage = lang;
@@ -217,14 +229,15 @@ export default {
     loadCurrentConfig() {
       this.loadingShow();
       db.collection("hospital")
-        .doc("d9lzg1cDW3csxvCzlq0i")
+        .doc(this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
           if (doc.data().vitalSignsConfig) {
             console.log(doc.data().vitalSignsConfig);
             this.vitalSignsArr = doc.data().vitalSignsConfig;
           }
-          this.loadingHide();
+
+          this.loadUserData();
         });
     }
   },

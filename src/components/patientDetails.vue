@@ -3,7 +3,7 @@
     <!-- NOTE โชว์ข้อมูลในกรณีที่กดเลือกข้อมูลผู้ป่วยแล้ว -->
     <div class="q-px-xs" style="max-width:330px;width:95%;margin:auto;" v-if="isLoadData">
       <div class="q-mt-lg">
-        <span class="font-h3">{{ patient.name }}</span>
+        <span class="font-h3">{{ patient.name + " " + patient.surname }}</span>
         <br />
         <!-- text-overflow -->
         <div class="font-body row q-mt-sm">
@@ -120,7 +120,7 @@
 
         <div class="q-my-md q-px-sm">
           <div>
-            <span class="font-h3">{{ patient.name }}</span>
+            <span class="font-h3">{{ patient.name + " " + patient.surname }}</span>
           </div>
           <div class="row q-mt-sm">
             <div class="col-4 q-my-xs text-overflow" style="width:165px;">
@@ -224,7 +224,11 @@ export default {
     loadRoom() {
       let refs = db
         .collection("patientRoom")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
+        .where(
+          "hospitalKey",
+          "==",
+          this.$q.localStorage.getItem("hospitalKey")
+        );
 
       this.loadingShow();
 

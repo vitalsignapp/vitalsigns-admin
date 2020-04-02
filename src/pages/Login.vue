@@ -71,6 +71,7 @@
 
 <script>
 import { auth } from "../router";
+import { db } from "../router";
 export default {
   name: "PageIndex",
   data() {
@@ -93,25 +94,56 @@ export default {
     signIn() {
       let _this = this;
       this.loadingShow();
-      auth
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          auth.onAuthStateChanged(user => {
-            this.loadingHide();
-            if (user) {
-              console.log(user);
-              // this.$router.push("/patient");
-            }
-          });
-        })
-        .catch(error => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (error) {
-            _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
-            _this.loadingHide();
-          }
-        });
+
+      let refs = db
+        .collection("userData")
+        .where("email", "==", this.email)
+        .where("password", "==", this.password)
+        .get();
+
+      refs.then(doc => {
+        if (doc.size) {
+          let setData = {
+            key: doc.docs[0].id,
+            ...doc.docs[0].data()
+          };
+
+          delete setData.password;
+          delete setData.isAdmin;
+
+          this.$q.localStorage.set("userData", setData);
+
+          this.$q.localStorage.set(
+            "hospitalKey",
+            doc.docs[0].data().hospitalKey
+          );
+
+          this.$router.push("/patient");
+        } else {
+          _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
+          _this.loadingHide();
+        }
+      });
+
+      // auth
+      //   .signInWithEmailAndPassword(this.email, this.password)
+      //   .then(() => {
+      //     auth.onAuthStateChanged(user => {
+      //       this.loadingHide();
+      //       if (user) {
+      //         console.log(user);
+      //         // this.$router.push("/patient");
+      //       }
+      //     });
+      //   })
+      //   .catch(error => {
+      //     var errorCode = error.code;
+      //     var errorMessage = error.message;
+      //     if (error) {
+      //       _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
+      //       _this.loadingHide();
+      //     }
+      //   });
     },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
