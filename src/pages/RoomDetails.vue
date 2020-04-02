@@ -13,7 +13,7 @@
           <span class="q-pl-md">{{ roomData.name }}</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn @click="isDialogAddNewPatient = true" flat dense icon="add" label="เพิ่มผู้ป่วย" />
+          <q-btn @click="addPatient()" flat dense icon="add" label="เพิ่มผู้ป่วย" />
           <q-btn dense round flat icon="more_vert" class="no-border-radius">
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">
@@ -743,6 +743,36 @@ export default {
         });
     },
     closeAddEditPatient() {
+      if (!this.isAddMode) {
+        this.patientObj = {
+          HN: "",
+          name: "",
+          surname: "",
+          sex: "male",
+          dateOfAdmit: "",
+          dateOfBirth: "",
+          diagnosis: "",
+          hospitalKey: "",
+          patientRoomKey: this.roomKey
+        };
+      }
+
+      this.isDialogAddNewPatient = false;
+    },
+    editPatient() {
+      this.isDialogAddNewPatient = true;
+      this.isAddMode = false;
+
+      let copy = { ...this.currentPatientData };
+
+      this.patientObj = copy;
+
+      delete this.patientObj.key;
+    },
+    addPatient() {
+      this.isDialogAddNewPatient = true;
+      this.isAddMode = true;
+
       this.patientObj = {
         HN: "",
         name: "",
@@ -755,17 +785,6 @@ export default {
         patientRoomKey: this.roomKey
       };
     },
-    editPatient() {
-      this.isDialogAddNewPatient = true;
-      this.isAddMode = false;
-
-      let copy = { ...this.currentPatientData };
-
-      this.patientObj = copy;
-
-      delete this.patientObj.key;
-    },
-
     showPatientData(key) {
       // console.log(this.patientData.filter(x => x.key == key));
 
