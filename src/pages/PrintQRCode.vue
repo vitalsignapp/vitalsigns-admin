@@ -89,7 +89,7 @@ export default {
       let printPage = new Promise((resolve, reject) => {
         refs.get().then(result => {
           if (result.exists) {
-            let newPath = "https://www.vitalsign-2bc48.web.app/" + result.id;
+            let newPath = "https://vitalsign-2bc48.web.app/" + result.id;
 
             let setData = {
               key: result.id,
@@ -141,8 +141,7 @@ export default {
 
             setTimeout(() => {
               doc.forEach(result => {
-                let newPath =
-                  "https://www.vitalsign-2bc48.web.app/" + result.id;
+                let newPath = "https://vitalsign-2bc48.web.app/" + result.id;
 
                 let setData = {
                   key: result.id,
