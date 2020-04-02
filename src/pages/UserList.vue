@@ -19,15 +19,6 @@
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <q-toolbar-title>รายละเอียดบุคลากร</q-toolbar-title>
-        <q-btn flat icon="more_vert" class="no-border-radius">
-          <q-menu auto-close>
-            <q-list style="min-width: 100px">
-              <q-item clickable>
-                <q-item-section>พิมพ์ QR Code ทั้งห้อง</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -64,7 +55,7 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col relative-position desktop-only" align="center">
+      <div class="col relative-position desktop-only">
         <div
           class="q-px-xs q-pt-md"
           style="max-width:330px;width:90%;margin:auto;"
