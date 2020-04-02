@@ -294,7 +294,9 @@ export default {
 
       this.loadingShow();
 
-      this.patientData.hospitalKey = "d9lzg1cDW3csxvCzlq0i";
+      this.patientData.hospitalKey = this.$q.localStorage.getItem(
+        "hospitalKey"
+      );
 
       setTimeout(() => {
         if (this.isAddMode) {
@@ -346,7 +348,11 @@ export default {
 
       let refs = db
         .collection("patientRoom")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
+        .where(
+          "hospitalKey",
+          "==",
+          this.$q.localStorage.getItem("hospitalKey")
+        );
 
       this.loadingShow();
 

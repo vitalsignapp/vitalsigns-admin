@@ -494,64 +494,62 @@ export default {
 
       let refs = db
         .collection("patientRoom")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
+        .where(
+          "hospitalKey",
+          "==",
+          this.$q.localStorage.getItem("hospitalKey")
+        );
 
       this.loadingShow();
 
       this.syncRoom = refs.onSnapshot(doc => {
         let temp = [];
-        if (doc.size) {
-          doc.forEach(result => {
-            let setData = {
-              key: result.id,
-              ...result.data()
-            };
+        doc.forEach(result => {
+          let setData = {
+            key: result.id,
+            ...result.data()
+          };
 
-            temp.push(setData);
-          });
+          temp.push(setData);
+        });
 
-          temp.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
-          });
+        temp.sort((a, b) => {
+          return a.name > b.name ? 1 : -1;
+        });
 
-          this.patientRoom = temp;
+        this.patientRoom = temp;
 
-          this.loadPatient();
+        this.loadPatient();
 
-          // return "ส่งข้อมูลเรียบร้อย";
-        } else {
-          this.loadingHide();
-          // return "ไม่มีข้อมูลห้องผู้ป่วย";
-        }
+        // return "ส่งข้อมูลเรียบร้อย";
       });
     },
     loadPatient() {
       let refs = db
         .collection("patientData")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i");
+        .where(
+          "hospitalKey",
+          "==",
+          this.$q.localStorage.getItem("hospitalKey")
+        );
 
       this.syncPatient = refs.onSnapshot(doc => {
         let temp = [];
-        if (doc.size) {
-          doc.forEach(result => {
-            let setData = {
-              key: result.id,
-              lastRecord: null,
-              ...result.data()
-            };
+        doc.forEach(result => {
+          let setData = {
+            key: result.id,
+            lastRecord: null,
+            ...result.data()
+          };
 
-            temp.push(setData);
-          });
+          temp.push(setData);
+        });
 
-          this.patientList = temp;
+        this.patientList = temp;
 
-          this.loadingHide();
+        this.loadingHide();
 
-          // return "ส่งข้อมูลเรียบร้อย";
-        } else {
-          this.loadingHide();
-          // return "ไม่มีข้อมูลคนไข้";
-        }
+        // return "ส่งข้อมูลเรียบร้อย";
       });
     },
     loadPatientLog() {
@@ -622,15 +620,26 @@ export default {
     deep: true,
     patientList() {
       this.loadPatientLog();
+      if (this.patientList.length == 0) {
+        this.isShowDetails = false;
+      }
     }
   },
   mounted() {
     this.loadRoom();
   },
   beforeDestroy() {
-    this.syncRoom();
-    this.syncPatient();
-    this.syncCheckLog();
+    if (typeof this.syncRoom == "function") {
+      this.syncRoom();
+    }
+
+    if (typeof this.syncPatient == "function") {
+      this.syncPatient();
+    }
+
+    if (typeof this.syncCheckLog == "function") {
+      this.syncCheckLog();
+    }
   }
 };
 </script>

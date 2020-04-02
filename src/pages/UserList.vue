@@ -203,7 +203,7 @@ export default {
     },
     loadUserData() {
       db.collection("userData")
-        .where("hospitalKey", "==", "d9lzg1cDW3csxvCzlq0i")
+        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .onSnapshot(doc => {
           let dataTemp = [];
           doc.forEach(element => {
