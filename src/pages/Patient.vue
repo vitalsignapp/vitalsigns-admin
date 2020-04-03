@@ -576,7 +576,8 @@ export default {
             key: result.data().patientKey,
             round: result.data().inputRound,
             dateShow: newMonth,
-            date: newDate
+            date: newDate,
+            microtime: result.data().microtime
           };
 
           temp.push(setData);
