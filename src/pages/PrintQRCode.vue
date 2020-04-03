@@ -89,7 +89,7 @@ export default {
       let printPage = new Promise((resolve, reject) => {
         refs.get().then(result => {
           if (result.exists) {
-            let newPath = "https://vitalsign-2bc48.web.app/" + result.id;
+            let newPath = "https://demo.vitalsignapp.com/" + result.id;
 
             let setData = {
               key: result.id,
@@ -116,7 +116,7 @@ export default {
       printPage.then(result => {
         if (result == "complete") {
           window.print();
-          window.close();
+          // window.close();
         }
       });
 
@@ -141,7 +141,7 @@ export default {
 
             setTimeout(() => {
               doc.forEach(result => {
-                let newPath = "https://vitalsign-2bc48.web.app/" + result.id;
+                let newPath = "https://demo.vitalsignapp.com/" + result.id;
 
                 let setData = {
                   key: result.id,
@@ -202,7 +202,7 @@ export default {
       printPage.then(result => {
         if (result == "complete") {
           window.print();
-          window.close();
+          // window.close();
         }
       });
 
@@ -274,7 +274,7 @@ export default {
   }
 
   @page {
-    margin: 0cm;
+    margin: 0.1cm;
   }
 }
 </style>
