@@ -34,8 +34,8 @@
       </div>
     </q-toolbar>
 
-    <div align="center" class="font-h3 q-pt-lg">โรงพยาบาลศิริราช</div>
-    <div style="max-width:330px;margin:auto;width:90%" class="q-pt-md">
+    <!-- <div align="center" class="font-h3 q-pt-lg">โรงพยาบาลศิริราช</div> -->
+    <div style="max-width:330px;margin:auto;width:90%" class="q-pt-xl">
       <div>
         <q-input
           outlined

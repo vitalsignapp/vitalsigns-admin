@@ -28,7 +28,7 @@ var firebaseConfig = {
   storageBucket: "vitalsign-2bc48.appspot.com",
   messagingSenderId: "67633726727",
   appId: "1:67633726727:web:b535d92a91ec80695bb1a2",
-  measurementId: "G-MEX9V112SR"
+  measurementId: "G-MEX9V112SR",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -39,7 +39,10 @@ Vue.mixin({
   data() {
     return {
       month: [],
-      userData: this.$q.localStorage.getItem("userData")
+      userData: this.$q.localStorage.getItem("userData"),
+      version: "0.0.001",
+
+      syncVersion: null,
     };
   },
   methods: {
@@ -50,7 +53,7 @@ Vue.mixin({
     },
     loadingShow() {
       this.$q.loading.show({
-        delay: 400
+        delay: 400,
       });
     },
     loadingHide() {
@@ -100,14 +103,14 @@ Vue.mixin({
         title: title,
         message: message,
         ok: {
-          color: "orange-5"
-        }
+          color: "orange-5",
+        },
       });
     },
     vnotify(message) {
       this.$q.notify({
         message: message,
-        classes: "notifyBg"
+        classes: "notifyBg",
       });
     },
     showMonthName(index) {
@@ -169,15 +172,30 @@ Vue.mixin({
       }
 
       return month;
-    }
-  }
+    },
+    loadVersion() {
+      let refs = db.collection("version").doc("vitalsign-admin");
+
+      this.syncVersion = refs.onSnapshot((result) => {
+        if (this.version != result.data().version) {
+          window.location.reload(true);
+        }
+      });
+    },
+  },
+  mounted() {
+    this.loadVersion();
+  },
+  beforeDestroy() {
+    this.syncVersion();
+  },
 });
 
-export default function(/* { store, ssrContext } */) {
+export default function (/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
-      y: 0
+      y: 0,
     }),
     routes,
 
@@ -185,7 +203,7 @@ export default function(/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
+    base: process.env.VUE_ROUTER_BASE,
   });
 
   return Router;
