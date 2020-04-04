@@ -120,7 +120,7 @@ export default {
 
           this.$router.push("/patient");
         } else {
-          _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
+          _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
           _this.loadingHide();
         }
       });

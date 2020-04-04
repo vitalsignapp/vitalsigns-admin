@@ -172,7 +172,7 @@
               align="right"
             >
               <div v-if="!item.lastRecord">
-                <span class="color-error">{{"ยังไม่มีข้อมูล"}}</span>
+                <span class="color-light-gray">{{"ยังไม่มีข้อมูล"}}</span>
               </div>
               <div v-if="item.lastRecord">
                 <div v-if="item.lastRecord.date == currentDate">
@@ -272,7 +272,7 @@
                 align="right"
               >
                 <div v-if="!patient.lastRecord">
-                  <span class="color-error">{{"ยังไม่มีข้อมูล"}}</span>
+                  <span class="color-light-gray">{{"ยังไม่มีข้อมูล"}}</span>
                 </div>
                 <div v-if="patient.lastRecord">
                   <div v-if="patient.lastRecord.date == currentDate">

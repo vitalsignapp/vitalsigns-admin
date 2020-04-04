@@ -76,7 +76,7 @@
           class="font-body q-mb-sm"
         >VitalSign เป็นระบบส่งผลการตรวจร่างการ เบื้องต้นด้วยตนเอง เพื่อลดความเสี่ยงให้ บุคลากรทางการแพทย์และเพิ่มความสามารถในการรองรับผู้ป่วยให้กับโรงพยาบาล</div>
 
-        <div class="q-mb-sm font-h4">Contributor</div>
+        <!-- <div class="q-mb-sm font-h4">Contributor</div>
 
         <div class="font-body q-mb-sm">@art @arm @neung</div>
         <div class="font-body q-mb-sm">
@@ -100,15 +100,23 @@
           <div class="q-pr-sm">
             <q-img style="width:40px" src="../statics/pic/sign-figma.png"></q-img>
           </div>
-        </div>
+        </div>-->
 
-        <div
-          v-ripple
-          class="font-body color-primary-500 relative-position cursor-pointer q-mt-md row items-center"
+        <a href="https://vitalsignapp.com/" target="__blank" style="text-decoration:none">
+          <span class="color-primary-500 font-body">
+            <span>อ่านเพิ่มเติม</span>
+          </span>
+        </a>
+
+        <a
+          href="https://forms.gle/Sk3gq9EdGeM2R5j59"
+          target="__blank"
+          style="text-decoration:none"
+          class="font-body color-primary-500 q-mt-md row items-center"
         >
           <q-icon name="vpn_key" size="24px"></q-icon>
           <span class="q-pl-sm">ส่งข้อความถึงทีมพัฒนา</span>
-        </div>
+        </a>
       </div>
     </div>
     <q-dialog v-model="isShowConfigVitalSigns" maximized>
