@@ -702,9 +702,16 @@ export default {
               .then(() => {
                 counter++;
                 if (counter == doc.size) {
-                  this.loadingHide();
                   this.deletePatientConfirmation = false;
                   // this.$router.push("/roomdetails/" + this.roomChoosed);
+
+                  db.collection("patientRoom")
+                    .doc(this.roomKey)
+                    .delete()
+                    .then(() => {
+                      this.loadingHide();
+                      this.$router.push("/room/");
+                    });
                 }
               });
           });

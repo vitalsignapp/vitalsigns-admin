@@ -142,7 +142,7 @@
           <div class="row q-py-sm font-body full-width">
             <div class="col-1" style="width:30px;" align="center">
               <div v-if="item.isShowNotify">
-                <div v-if="item.lastRecord != ''">
+                <div v-if="item.lastRecord && items.lastRecord.date == currentDate">
                   <q-icon
                     v-if="!item.isRead"
                     name="fiber_manual_record"
@@ -150,13 +150,8 @@
                     class="color-primary-500"
                   ></q-icon>
                 </div>
-                <div v-if="item.lastRecord">
-                  <q-icon
-                    v-if="item.lastRecord.date != currentDate"
-                    name="fiber_manual_record"
-                    size="10px"
-                    class="color-error"
-                  ></q-icon>
+                <div v-if="item.lastRecord && items.lastRecord.date != currentDate">
+                  <q-icon name="fiber_manual_record" size="10px" class="color-error"></q-icon>
                 </div>
               </div>
             </div>
@@ -242,7 +237,7 @@
             <div class="row q-py-sm font-body full-width">
               <div class="col-1" style="width:30px;" align="center">
                 <div v-if="patient.isShowNotify">
-                  <div v-if="patient.lastRecord != ''">
+                  <div v-if="patient.lastRecord && patient.lastRecord.date == currentDate">
                     <q-icon
                       v-if="!patient.isRead"
                       name="fiber_manual_record"
@@ -250,13 +245,8 @@
                       class="color-primary-500"
                     ></q-icon>
                   </div>
-                  <div v-if="patient.lastRecord">
-                    <q-icon
-                      v-if="patient.lastRecord.date != currentDate"
-                      name="fiber_manual_record"
-                      size="10px"
-                      class="color-error"
-                    ></q-icon>
+                  <div v-if="patient.lastRecord && patient.lastRecord.date != currentDate">
+                    <q-icon name="fiber_manual_record" size="10px" class="color-error"></q-icon>
                   </div>
                 </div>
               </div>
