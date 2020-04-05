@@ -67,7 +67,7 @@
               align="center"
               v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
             >
-              <span>อาการตอนนี้ {{item.symptomsCheck.filter(x => x.status ).length}}</span>
+              <span>อาการตอนนี้</span>
             </div>
             <q-separator
               v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
