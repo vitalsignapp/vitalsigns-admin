@@ -31,10 +31,14 @@
           <q-item class="color-white q-py-sm" clickable @click="goToWard()" v-ripple>
             <q-item-section>
               <div align="center">
-                <q-icon size="33px" name="hotel" :color="$route.name == 'room' ? 'white' : 'grey'" />
+                <q-icon
+                  size="33px"
+                  name="hotel"
+                  :color="$route.name == 'room' || $route.name == 'roomdetails' ? 'white' : 'grey'"
+                />
                 <div
                   class="q-pb-sm"
-                  :class="$route.name == 'room' ? 'text-white' : 'text-grey'"
+                  :class="$route.name == 'room' || $route.name == 'roomdetails' ? 'text-white' : 'text-grey'"
                 >ห้องพัก</div>
               </div>
             </q-item-section>
@@ -98,8 +102,14 @@
         <div class="col" align="center">
           <div v-ripple class="relative-position no-border-radius fit q-py-xs" @click="goToWard()">
             <div align="center">
-              <q-icon size="33px" name="hotel" :color="$route.name == 'room' ? 'white' : 'grey'" />
-              <div :class="$route.name == 'room' ? 'text-white' : 'text-grey'">ห้องพัก</div>
+              <q-icon
+                size="33px"
+                name="hotel"
+                :color="$route.name == 'room' || $route.name == 'roomdetails' ? 'color-white' : 'grey'"
+              />
+              <div
+                :class="$route.name == 'room' || $route.name == 'roomdetails' ? 'color-white' : 'text-grey'"
+              >ห้องพัก</div>
             </div>
           </div>
         </div>

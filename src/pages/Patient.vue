@@ -142,7 +142,7 @@
           <div class="row q-py-sm font-body full-width">
             <div class="col-1" style="width:30px;" align="center">
               <div v-if="item.isShowNotify">
-                <div v-if="!item.lastRecord">
+                <div v-if="item.lastRecord != ''">
                   <q-icon
                     v-if="!item.isRead"
                     name="fiber_manual_record"
@@ -242,7 +242,7 @@
             <div class="row q-py-sm font-body full-width">
               <div class="col-1" style="width:30px;" align="center">
                 <div v-if="patient.isShowNotify">
-                  <div v-if="!patient.lastRecord">
+                  <div v-if="patient.lastRecord != ''">
                     <q-icon
                       v-if="!patient.isRead"
                       name="fiber_manual_record"
@@ -545,6 +545,10 @@ export default {
           temp.push(setData);
         });
 
+        temp.sort((a, b) => {
+          return a.name > b.name ? 1 : -1;
+        });
+
         this.patientList = temp;
 
         this.loadingHide();
@@ -610,7 +614,11 @@ export default {
       let getSearch = "";
       if (this.search != "") {
         getSearch = this.patientList.filter(x => {
-          return x.HN.includes(this.search) || x.name.includes(this.search);
+          return (
+            x.HN.toLowerCase().includes(this.search) ||
+            x.name.toLowerCase().includes(this.search) ||
+            x.surname.toLowerCase().includes(this.search)
+          );
         });
       }
 

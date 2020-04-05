@@ -66,6 +66,10 @@
         <q-btn @click="signIn()" class="button-action" dense label="เข้าสู่ระบบ"></q-btn>
       </div>
     </div>
+
+    <div class="absolute-bottom-right q-pa-sm">
+      <span class="font-body">{{"V" + version}}</span>
+    </div>
   </div>
 </template>
 

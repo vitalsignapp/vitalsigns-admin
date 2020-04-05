@@ -17,10 +17,10 @@
             @click="showAddUserDialog()"
             flat
             dense
-            icon="add"
-            label="เพิ่มบุคลากร"
+            class="q-mx-sm"
+            label="+ เพิ่มบุคลากร"
           />
-          <q-btn icon="search" @click="isSearch = true" flat></q-btn>
+          <q-btn flat round dense icon="search" @click="isSearch = true" />
         </div>
         <div class="col q-px-sm" v-if="isSearch">
           <q-input
@@ -40,7 +40,7 @@
             <template v-slot:after>
               <span
                 class="font-body q-px-sm color-white cursor-pointer"
-                @click="isSearch = false,displayUserData = userData"
+                @click="isSearch = false,displayUserData = userDataList"
               >ยกเลิก</span>
             </template>
           </q-input>
@@ -48,6 +48,21 @@
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <q-toolbar-title>รายละเอียดบุคลากร</q-toolbar-title>
+        <div v-if="isClickedUserData">
+          <q-btn dense round flat class="q-ml-sm" size="14px">
+            <q-img src="../statics/pic/Option.png" width="30px"></q-img>
+            <q-menu square :offset="[5, 16]">
+              <q-list style="min-width: 150px">
+                <q-btn class="fit row no-border-radius" flat @click="editPatient()">
+                  <div class="col" align="left">แก้ไข้ข้อมูลบุคลากร</div>
+                </q-btn>
+                <q-btn class="fit row no-border-radius" flat @click="deletePatient()">
+                  <div class="col text-red" align="left">ลบบุคลากร</div>
+                </q-btn>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -65,7 +80,7 @@
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
-            @click="showUserData(index)"
+            @click="showUserData(items.key)"
           >
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
@@ -201,7 +216,7 @@ export default {
       isClickedUserData: false,
       user: {},
       isShowAddRoomDialog: false,
-      userData: "",
+      userDataList: "",
       currentUserData: "",
       platform: this.$q.platform.is,
       isAdmin: false,
@@ -213,19 +228,19 @@ export default {
   methods: {
     filterData() {
       if (this.search == "") {
-        this.displayUserData = this.userData;
+        this.displayUserData = this.userDataList;
       }
-      let filter = this.userData.filter(x => {
+      let filter = this.userDataList.filter(x => {
         return x.name.includes(this.search) || x.surname.includes(this.search);
       });
       this.displayUserData = filter;
     },
-    showUserData(index) {
+    showUserData(key) {
       if (this.platform.desktop) {
         this.isClickedUserData = true;
-        this.currentUserData = this.userData[index];
+        this.currentUserData = this.userDataList.filter(x => x.key == key)[0];
       } else {
-        this.$router.push("/userdata/" + this.userData[index].key);
+        this.$router.push("/userdata/" + this.userDataList[index].key);
       }
     },
     showAddUserDialog() {
@@ -243,7 +258,7 @@ export default {
           dataTemp.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
           });
-          this.userData = dataTemp;
+          this.userDataList = dataTemp;
           this.displayUserData = dataTemp;
         });
     },
