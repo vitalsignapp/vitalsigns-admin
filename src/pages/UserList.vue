@@ -257,7 +257,7 @@ export default {
 
       this.user = selectUser;
     },
-    delete() {},
+    deleteUser() {},
     filterData() {
       if (this.search == "") {
         this.displayUserData = this.userDataList;
@@ -276,7 +276,18 @@ export default {
       }
     },
     showAddUserDialog() {
-      this.user = {};
+      this.user = {
+        dateCreated: "",
+        email: "",
+        hospitalKey: "",
+        isAdmin: false,
+        microtimeCreated: "",
+        name: "",
+        password: "",
+        surname: "",
+        userId: "",
+        prefix: ""
+      };
       this.isShowAddRoomDialog = true;
     },
     loadUserData() {
@@ -287,9 +298,11 @@ export default {
           doc.forEach(element => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
           });
+
           dataTemp.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
           });
+
           this.userDataList = dataTemp;
           this.displayUserData = dataTemp;
         });
@@ -342,24 +355,14 @@ export default {
               this.loadingHide();
               this.vnotify("Email นี้ถูกใช้งานแล้ว");
             } else {
-              let setData = {
-                dateCreated: "",
-                email: this.user.email,
-                hospitalKey: this.$q.localStorage.getItem("userData")
-                  .hospitalKey,
-                isAdmin: false,
-                microtimeCreated: date.microtime,
-                name: this.user.name,
-                password: this.user.password,
-                surname: this.user.surname,
-                userId: this.user.userId,
-                prefix: this.user.prefix
-              };
+              this.user.hospitalKey = this.$q.localStorage.getItem(
+                "userData"
+              ).hospitalKey;
 
-              console.log(setData);
+              this.user.microtimeCreated = date.microtime;
 
               db.collection("userData")
-                .add(setData)
+                .add(this.user)
                 .then(() => {
                   this.vnotify("สร้างบุคลากรเรียบร้อย");
                   this.loadingHide();
