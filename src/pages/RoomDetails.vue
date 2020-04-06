@@ -79,6 +79,27 @@
           </q-btn>
         </div>
       </q-toolbar>
+
+      <!-- DELETE Patient Room -->
+      <q-dialog v-model="isDeleteRoom" persistent>
+        <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
+          <q-card-section class="q-pt-md">
+            <div class="font-h3">
+              <span>ยืนยันการลบข้อมูล</span>
+            </div>
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            <span class="font-body">
+              <span>คุณต้องการลบข้อมูลห้องพักหรือไม่</span>
+            </span>
+          </q-card-section>
+
+          <div class="q-px-md q-pb-md q-pt-xs" align="right">
+            <q-btn flat class="button-action small" dense label="ตกลง" v-close-popup />
+            <q-btn flat class="button-action small" dense label="ตกลง" v-close-popup />
+          </div>
+        </q-card>
+      </q-dialog>
     </q-header>
 
     <!-- END APP BAR -->
@@ -115,7 +136,7 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col container-list relative-position" v-if="$q.platform.is.desktop">
+      <div class="col container-list-data relative-position" v-if="$q.platform.is.desktop">
         <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isClickedOnPatient">
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
@@ -142,7 +163,7 @@
             </div>
           </div>
 
-          <div class="q-mt-md" v-for="(items,index) in currentPatientLog" :key="index">
+          <div class="q-mt-md q-mb-lg" v-for="(items,index) in currentPatientLog" :key="index">
             <q-card class="my-card font-body">
               <div class="q-pa-sm" align="center">
                 <span>{{ items.inputDate }} รอบ {{ items.inputRound }}:00 น.</span>
@@ -564,7 +585,8 @@ export default {
       roomChoosed: "",
       isDetails: false,
 
-      isAddMode: true
+      isAddMode: true,
+      isDeleteRoom: false
     };
   },
   methods: {
@@ -657,6 +679,7 @@ export default {
         .get()
         .then(doc => {
           let counter = 0;
+
           doc.forEach(element => {
             db.collection("patientLog")
               .where("patientKey", "==", element.id)
@@ -679,9 +702,16 @@ export default {
               .then(() => {
                 counter++;
                 if (counter == doc.size) {
-                  this.loadingHide();
                   this.deletePatientConfirmation = false;
                   // this.$router.push("/roomdetails/" + this.roomChoosed);
+
+                  db.collection("patientRoom")
+                    .doc(this.roomKey)
+                    .delete()
+                    .then(() => {
+                      this.loadingHide();
+                      this.$router.push("/room/");
+                    });
                 }
               });
           });
@@ -702,6 +732,32 @@ export default {
             this.deletePatientConfirmation = true;
           } else {
             // confirmation และลบได้เลย
+            this.$q
+              .dialog({
+                title: "ยืนยันการลบข้อมูล",
+                message: "คุณต้องการลบข้อมูลห้องพักหรือไม่",
+                ok: {
+                  color: "orange-5",
+                  label: "ตกลง",
+                  textColor: "black"
+                },
+                cancel: {
+                  label: "ยกเลิก",
+                  flat: true,
+                  textColor: "black"
+                }
+              })
+              .onOk(validate => {
+                this.loadingShow();
+
+                db.collection("patientRoom")
+                  .doc(this.roomKey)
+                  .delete()
+                  .then(() => {
+                    this.loadingHide();
+                    this.$router.push("/room/");
+                  });
+              });
           }
         });
     },

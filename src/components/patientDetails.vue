@@ -65,15 +65,17 @@
             <div
               class="q-mb-xs"
               align="center"
-              v-if="item.symptomsCheck != null || item.otherSymptoms"
+              v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
             >
               <span>อาการตอนนี้</span>
             </div>
-            <q-separator v-if="item.symptomsCheck != null || item.otherSymptoms" />
+            <q-separator
+              v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
+            />
 
             <div
               class="q-px-lg"
-              :class="{'q-mt-md q-pb-sm':item.symptomsCheck != null || item.otherSymptoms}"
+              :class="{'q-mt-md q-pb-sm':item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms}"
             >
               <div
                 class="row"
@@ -348,4 +350,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.my-card {
+  padding: 2px;
+  border-radius: 10px;
+}
 </style>

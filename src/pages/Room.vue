@@ -11,7 +11,13 @@
           <span class="q-pl-md">ห้องพักผู้ป่วย</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn @click="isShowAddRoomDialog = true" flat dense icon="add" label="เพิ่มห้องพัก" />
+          <q-btn
+            @click="isShowAddRoomDialog = true"
+            flat
+            dense
+            class="q-mx-sm"
+            label="+ เพิ่มห้องพัก"
+          />
         </div>
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
@@ -54,10 +60,15 @@
         </div>
       </div>
 
-      <div class="col relative-position desktop-only" align="center">
-        <div class="font-h3 color-light-gray" style="position:relative;top:18%;">
-          <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
+      <div class="col relative-position desktop-only">
+        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray">
+          <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกห้องพัก
+          เพื่อดูรายชื่อผู้ป่วยในห้อง
         </div>
+
+        <!-- <div class="font-h3 color-light-gray" style="position:relative;top:18%;">
+          <q-icon name="arrow_back"></q-icon>เลือกห้องพัก เพื่อดูรายชื่อผู้ป่วยในห้อง
+        </div>-->
       </div>
     </div>
 

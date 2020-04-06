@@ -211,7 +211,9 @@ export default {
         dateOfBirth: "",
         diagnosis: "",
         hospitalKey: "",
-        patientRoomKey: ""
+        patientRoomKey: "",
+        isRead: true,
+        isShowNotify: true
       },
 
       // NOTE Current Date
@@ -244,7 +246,9 @@ export default {
         dateOfBirth: "",
         diagnosis: "",
         hospitalKey: "",
-        patientRoomKey: this.room[0].key
+        patientRoomKey: this.room[0].key,
+        isRead: true,
+        isShowNotify: true
       };
     },
     async saveData() {
@@ -310,7 +314,9 @@ export default {
               dateOfBirth: "",
               diagnosis: "",
               hospitalKey: "",
-              patientRoomKey: this.room[0].key
+              patientRoomKey: this.room[0].key,
+              isRead: true,
+              isShowNotify: true
             };
 
             this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");

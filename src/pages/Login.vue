@@ -34,7 +34,7 @@
       </div>
     </q-toolbar>
 
-    <!-- <div align="center" class="font-h3 q-pt-lg">โรงพยาบาลศิริราช</div> -->
+    <div align="center" class="font-h3 q-pt-lg">{{ currentHospitalName }}</div>
     <div style="max-width:330px;margin:auto;width:90%" class="q-pt-xl">
       <div>
         <q-input
@@ -66,6 +66,10 @@
         <q-btn @click="signIn()" class="button-action" dense label="เข้าสู่ระบบ"></q-btn>
       </div>
     </div>
+
+    <div class="absolute-bottom-right q-pa-sm">
+      <span class="font-body">{{"V" + version}}</span>
+    </div>
   </div>
 </template>
 
@@ -76,6 +80,7 @@ export default {
   name: "PageIndex",
   data() {
     return {
+      currentHospitalName: "",
       isPwd: true,
       email: "",
       password: "",
@@ -124,34 +129,30 @@ export default {
           _this.loadingHide();
         }
       });
-
-      // auth
-      //   .signInWithEmailAndPassword(this.email, this.password)
-      //   .then(() => {
-      //     auth.onAuthStateChanged(user => {
-      //       this.loadingHide();
-      //       if (user) {
-      //         console.log(user);
-      //         // this.$router.push("/patient");
-      //       }
-      //     });
-      //   })
-      //   .catch(error => {
-      //     var errorCode = error.code;
-      //     var errorMessage = error.message;
-      //     if (error) {
-      //       _this.popUpDialog("ผิดพลาด", "ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ");
-      //       _this.loadingHide();
-      //     }
-      //   });
     },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
-      console.log(this.$i18n.locale);
+    },
+    loadHospitalNameFromPrefix() {
+      let domainName = window.location.hostname;
+      let preFix = domainName.split(".")[0];
+      db.collection("hospital")
+        .where("domainPrefix", "==", preFix)
+        .get()
+        .then(doc => {
+          if (doc.size) {
+            this.currentHospitalName = doc.docs[0].data().name;
+          } else {
+            this.currentHospitalName = "Vitalsign Admin";
+          }
+        });
     }
   },
   beforeCreate() {
     let _this = this;
+  },
+  mounted() {
+    this.loadHospitalNameFromPrefix();
   }
 };
 </script>

@@ -17,10 +17,10 @@
             @click="showAddUserDialog()"
             flat
             dense
-            icon="add"
-            label="เพิ่มบุคลากร"
+            class="q-mx-sm"
+            label="+ เพิ่มบุคลากร"
           />
-          <q-btn icon="search" @click="isSearch = true" flat></q-btn>
+          <q-btn flat round dense icon="search" @click="isSearch = true" />
         </div>
         <div class="col q-px-sm" v-if="isSearch">
           <q-input
@@ -40,7 +40,7 @@
             <template v-slot:after>
               <span
                 class="font-body q-px-sm color-white cursor-pointer"
-                @click="isSearch = false,displayUserData = userData"
+                @click="isSearch = false,displayUserData = userDataList"
               >ยกเลิก</span>
             </template>
           </q-input>
@@ -48,6 +48,21 @@
       </q-toolbar>
       <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <q-toolbar-title>รายละเอียดบุคลากร</q-toolbar-title>
+        <div v-if="isClickedUserData && isAdmin">
+          <q-btn dense round flat class="q-ml-sm" size="14px">
+            <q-img src="../statics/pic/Option.png" width="30px"></q-img>
+            <q-menu square :offset="[5, 16]">
+              <q-list style="min-width: 150px">
+                <q-btn class="fit row no-border-radius" flat @click="editUser()">
+                  <div class="col" align="left">แก้ไข้ข้อมูลบุคลากร</div>
+                </q-btn>
+                <q-btn class="fit row no-border-radius" flat @click="deleteUser()">
+                  <div class="col text-red" align="left">ลบบุคลากร</div>
+                </q-btn>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -65,7 +80,7 @@
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
-            @click="showUserData(index)"
+            @click="showUserData(items.key)"
           >
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
@@ -76,6 +91,9 @@
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
               </div>
+              <div class="col-12">
+                <span class="color-light-gray">{{items.userId}}</span>
+              </div>
             </div>
             <q-separator />
           </div>
@@ -84,7 +102,7 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col relative-position desktop-only">
+      <div class="col container-list-data relative-position" v-if="$q.platform.is.desktop">
         <div
           class="q-px-xs q-pt-md"
           style="max-width:330px;width:90%;margin:auto;"
@@ -124,62 +142,70 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none row" style="max-width:360px;margin:auto">
-          <div class="col-12 q-px-sm" align="left">
-            <span class="positionLabel">รหัสบุคลากร</span>
+          <div class="col-12 q-px-sm q-mt-md" align="left">
+            <span class>รหัสบุคลากร</span>
             <q-input
-              v-model="user.userNo"
-              style="max-width:330px;min-height:80px"
+              v-model="user.userId"
+              style="max-width:330px;width:100%;"
               outlined
               label="รหัสบุคลากร"
+              :rules="[val => !!val]"
+              ref="userId"
+              hide-bottom-space
             ></q-input>
           </div>
-          <div class="col-12 q-px-sm" align="left">
-            <span class="positionLabel">คำนำหน้า</span>
-
-            <q-input
-              v-model="user.prefix"
-              style="max-width:147px;min-height:80px"
-              outlined
-              label="คำนำหน้า"
-            ></q-input>
+          <div class="col-12 q-px-sm q-mt-md" align="left">
+            <span class>คำนำหน้า</span>
+            <q-input v-model="user.prefix" style="max-width:147px;" outlined label="คำนำหน้า"></q-input>
           </div>
-          <div class="col-6 q-px-sm" align="left">
-            <span class="positionLabel">ชื่อและนามสกุล</span>
-
+          <div class="col-6 q-px-sm q-mt-md" align="left">
+            <span class>ชื่อและนามสกุล</span>
             <q-input
               v-model="user.name"
-              style="max-width:330px;min-height:80px"
+              style="max-width:330px;width:100%;"
               outlined
               label="ชื่อจริง"
+              :rules="[val => !!val]"
+              ref="name"
+              hide-bottom-space
             ></q-input>
           </div>
-          <div class="col-6 q-px-sm">
+          <div class="col-6 q-px-sm q-mt-md">
             &nbsp;
             <q-input
               v-model="user.surname"
-              style="max-width:330px;min-height:80px"
+              style="max-width:330px;width:100%;"
               outlined
               label="นามสกุล"
+              :rules="[val => !!val]"
+              ref="surname"
+              hide-bottom-space
             ></q-input>
           </div>
-          <div class="col-12 q-px-sm" align="left">
-            <span class="positionLabel">Email</span>
+          <div class="col-12 q-px-sm q-mt-md" align="left">
+            <span class>Email</span>
 
             <q-input
               v-model="user.email"
-              style="max-width:330px;min-height:80px"
+              style="max-width:330px;width:100%;"
               outlined
               label="email"
+              :rules="[val => !!val]"
+              ref="email"
+              hide-bottom-space
             ></q-input>
           </div>
-          <div class="col-12 q-px-sm" align="left">
-            <span class="positionLabel">ตั้งพาสเวิร์ด</span>
+          <div class="col-12 q-px-sm q-mt-md" align="left">
+            <span class>ตั้งพาสเวิร์ด</span>
 
             <q-input
               v-model="user.password"
-              style="max-width:330px;min-height:80px"
+              style="max-width:330px;width:100%;"
               outlined
               label="password"
+              :rules="[val => !!val]"
+              ref="password"
+              hide-bottom-space
             ></q-input>
           </div>
         </q-card-section>
@@ -199,37 +225,69 @@ export default {
   data() {
     return {
       isClickedUserData: false,
-      user: {},
+      user: {
+        dateCreated: "",
+        email: "",
+        hospitalKey: "",
+        isAdmin: false,
+        microtimeCreated: "",
+        name: "",
+        password: "",
+        surname: "",
+        userId: "",
+        prefix: ""
+      },
       isShowAddRoomDialog: false,
-      userData: "",
+      userDataList: "",
       currentUserData: "",
       platform: this.$q.platform.is,
       isAdmin: false,
       isSearch: false,
       search: "",
-      displayUserData: ""
+      displayUserData: "",
+
+      isAddMode: true
     };
   },
   methods: {
+    editUser() {
+      this.isAddMode = false;
+      this.isShowAddRoomDialog = true;
+      let selectUser = this.currentUserData;
+
+      this.user = selectUser;
+    },
+    deleteUser() {},
     filterData() {
       if (this.search == "") {
-        this.displayUserData = this.userData;
+        this.displayUserData = this.userDataList;
       }
-      let filter = this.userData.filter(x => {
+      let filter = this.userDataList.filter(x => {
         return x.name.includes(this.search) || x.surname.includes(this.search);
       });
       this.displayUserData = filter;
     },
-    showUserData(index) {
+    showUserData(key) {
       if (this.platform.desktop) {
         this.isClickedUserData = true;
-        this.currentUserData = this.userData[index];
+        this.currentUserData = this.userDataList.filter(x => x.key == key)[0];
       } else {
-        this.$router.push("/userdata/" + this.userData[index].key);
+        this.$router.push("/userdata/" + this.userDataList[index].key);
       }
     },
     showAddUserDialog() {
-      this.user = {};
+      this.user = {
+        dateCreated: "",
+        email: "",
+        hospitalKey: "",
+        isAdmin: false,
+        microtimeCreated: "",
+        name: "",
+        password: "",
+        surname: "",
+        userId: "",
+        prefix: ""
+      };
       this.isShowAddRoomDialog = true;
     },
     loadUserData() {
@@ -240,10 +298,12 @@ export default {
           doc.forEach(element => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
           });
+
           dataTemp.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
           });
-          this.userData = dataTemp;
+
+          this.userDataList = dataTemp;
           this.displayUserData = dataTemp;
         });
     },
@@ -265,35 +325,71 @@ export default {
 
     async addUser() {
       let date = await this.getDate();
-      db.collection("userData")
-        .where("email", "==", this.user.email)
-        .get()
-        .then(doc => {
-          if (doc.size) {
-            // กรณีตรวจพบ User ซ้ำ
+
+      this.$refs.userId.validate();
+      this.$refs.name.validate();
+      this.$refs.surname.validate();
+      this.$refs.email.validate();
+      this.$refs.password.validate();
+
+      if (
+        this.$refs.userId.hasError ||
+        this.$refs.name.hasError ||
+        this.$refs.surname.hasError ||
+        this.$refs.email.hasError ||
+        this.$refs.password.hasError
+      ) {
+        return;
+      }
+
+      this.loadingShow();
+
+      // Add Mode
+      if (this.isAddMode) {
+        db.collection("userData")
+          .where("email", "==", this.user.email)
+          .get()
+          .then(doc => {
+            if (doc.size) {
+              // กรณีตรวจพบ User ซ้ำ
+              this.loadingHide();
+              this.vnotify("Email นี้ถูกใช้งานแล้ว");
+            } else {
+              this.user.hospitalKey = this.$q.localStorage.getItem(
+                "userData"
+              ).hospitalKey;
+
+              this.user.microtimeCreated = date.microtime;
+
+              db.collection("userData")
+                .add(this.user)
+                .then(() => {
+                  this.vnotify("สร้างบุคลากรเรียบร้อย");
+                  this.loadingHide();
+                  this.isShowAddRoomDialog = false;
+                });
+            }
+          });
+      }
+      // Edit Mode
+      else {
+        let setData = { ...this.user };
+
+        let userKey = setData.key;
+
+        delete setData.key;
+
+        db.collection("userData")
+          .doc(userKey)
+          .update(setData)
+          .then(() => {
+            this.vnotify("บันทึกข้อมูลแล้ว");
             this.loadingHide();
-            this.vnotify("Email นี้ถูกใช้งานแล้ว");
-          } else {
-            db.collection("userData")
-              .add({
-                dateCreated: "",
-                email: this.user.email,
-                hospitalKey: this.$q.localStorage.getItem("userData")
-                  .hospitalKey,
-                isAdmin: false,
-                microtimeCreated: date.microtime,
-                name: this.user.name,
-                password: this.user.password,
-                surname: this.user.surname,
-                userId: this.user.userNo
-              })
-              .then(() => {
-                this.vnotify("สำเร็จ");
-                this.loadingHide();
-                this.isShowAddRoomDialog = false;
-              });
-          }
-        });
+            this.isShowAddRoomDialog = false;
+            this.isAddMode = true;
+          });
+      }
+
       // this.loadingShow();
       // let _this = this;
       // auth
@@ -312,7 +408,7 @@ export default {
       //           displayName: user.displayName,
       //           name: this.user.name,
       //           surname: this.user.surname,
-      //           userAccount: this.user.userNo,
+      //           userAccount: this.user.userId,
       //           prefix: this.user.prefix,
       //           password: this.user.password
       //         };
