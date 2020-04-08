@@ -41,7 +41,7 @@
             <template v-slot:after>
               <span
                 class="font-body q-px-sm color-white cursor-pointer"
-                @click="isSearch = false"
+                @click="isSearch = false,search = ''"
               >ยกเลิก</span>
             </template>
           </q-input>
@@ -128,80 +128,11 @@
     <div class="row">
       <div
         class="col-4 container-list bg-white"
-        v-if="isSearch"
-        :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
-      >
-        <div
-          class="relative-position cursor-pointer"
-          v-ripple
-          v-for="(item, index) in searchPatient"
-          :class="item.key == patientSelected.key ? 'bg-placeholder' : null"
-          :key="index"
-          @click="selectPatient(item.key)"
-        >
-          <div class="row q-py-sm font-body full-width">
-            <div class="col-1" style="width:30px;" align="center">
-              <div v-if="item.isShowNotify">
-                <div v-if="item.lastRecord && item.lastRecord.date == currentDate">
-                  <q-icon
-                    v-if="!item.isRead"
-                    name="fiber_manual_record"
-                    size="10px"
-                    class="color-primary-500"
-                  ></q-icon>
-                </div>
-                <div v-if="item.lastRecord && item.lastRecord.date != currentDate">
-                  <q-icon name="fiber_manual_record" size="10px" class="color-error"></q-icon>
-                </div>
-              </div>
-            </div>
-            <div class="col text-overflow" align="left">
-              <span class="no-padding">{{ item.name + " " + item.surname }}</span>
-            </div>
-            <div
-              class="col-4 q-pr-sm"
-              :class="!item.lastRecord ? 'self-center' : null"
-              style="max-width:135px;width:100%;font-size:14px;"
-              align="right"
-            >
-              <div v-if="!item.lastRecord">
-                <span class="color-light-gray">{{"ยังไม่มีข้อมูล"}}</span>
-              </div>
-              <div v-if="item.lastRecord">
-                <div v-if="item.lastRecord.date == currentDate">
-                  <span>{{"รอบ " + item.lastRecord.round + ":00 น."}}</span>
-                </div>
-                <div
-                  v-if="item.lastRecord.date != currentDate"
-                  :class="item.isShowNotify ? 'color-error' : 'color-light-gray'"
-                >
-                  <span>{{item.lastRecord.dateShow}}</span>
-                  <br />
-                  <q-icon
-                    v-if="!item.isShowNotify"
-                    name="fas fa-bell-slash"
-                    class="q-pr-sm"
-                    size="16px"
-                  ></q-icon>
-                  <span>ไม่ได้ส่งข้อมูลล่าสุด</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-1 self-center" style="width:30px;">
-              <q-icon name="chevron_right" size="24px"></q-icon>
-            </div>
-          </div>
-          <q-separator />
-        </div>
-      </div>
-      <div
-        class="col-4 container-list bg-white"
-        v-else
         :class="$q.platform.is.desktop ? 'desktop-only' : 'mobile-only'"
       >
         <!-- TODO : List Data Component -->
         <div v-for="(item, index) in patientRoom" :key="index">
-          <div class="q-px-md" style="padding-top:22px;padding-bottom:8px">
+          <div class="q-px-md" style="padding-top:22px;padding-bottom:8px" v-if="!isSearch">
             <span
               class="font-body color-primary-600 text-bold"
               style="font-size:14px;font-weight:bold;"
@@ -220,14 +151,14 @@
             v-if="
               patientList.filter(x => {
                 return x.patientRoomKey == item.key;
-              }).length == 0
+              }).length == 0 && !isSearch
             "
           />
           <div
             class="relative-position cursor-pointer"
-            :class="patient.key == patientSelected.key ? 'bg-placeholder' : null"
+            :class="[patient.key == patientSelected.key ? 'bg-placeholder' : null,isDisabled ? 'no-pointer-events' : null]"
             v-ripple
-            v-for="(patient, index2) in patientList"
+            v-for="(patient, index2) in searchPatient"
             :key="index2"
             v-show="patient.patientRoomKey == item.key"
             @click="selectPatient(patient.key)"
@@ -250,6 +181,8 @@
               </div>
               <div class="col text-overflow" align="left">
                 <span class="no-padding">{{ patient.name + " " + patient.surname }}</span>
+                <br />
+                <span class="color-light-gray">{{patient.HN}}</span>
               </div>
               <div
                 class="col-4 q-pr-sm"
@@ -292,7 +225,10 @@
       <!-- TODO : Container Show Data -->
       <div class="col container-list" v-if="$q.platform.is.desktop">
         <!-- NOTE ยังไม่มีการโชว์ข้อมูลผู้ป่วย -->
-        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isShowDetails">
+        <div
+          class="font-h3 color q-ma-xl q-pa-xl color-light-gray"
+          v-if="!isShowDetails && isFirstLoad"
+        >
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
         </div>
@@ -348,12 +284,12 @@ export default {
       isSearch: false,
       isAddMode: true,
       isDisabled: false,
+      isFirstLoad: true,
 
       // NOTE  sync
       syncRoom: "",
       syncPatient: "",
-      syncCheckLog: "",
-      syncVersion: ""
+      syncCheckLog: ""
     };
   },
   methods: {
@@ -387,35 +323,44 @@ export default {
         });
 
       this.patientSelected.isShowNotify = showNotify;
-
-      // console.log(this.currentPatientData);
     },
+
     closePopup(val) {
       this.isDialogAddNewPatient = val.isDialogAddNewPatient;
     },
     selectPatient(key) {
       this.patientKey = key;
+      this.isDisabled = true;
 
-      let currentPatient = this.patientList.filter(
-        x => x.key == this.patientKey
-      )[0];
+      this.isFirstLoad = false;
 
-      this.patientSelected = currentPatient;
+      this.isShowDetails = false;
 
       let refs = db.collection("patientData").doc(key);
 
-      if (this.$q.platform.is.desktop) {
-        this.isShowDetails = false;
+      refs
+        .update({
+          isRead: true
+        })
+        .then(() => {
+          if (this.$q.platform.is.desktop) {
+            this.isShowDetails = true;
 
-        setTimeout(() => {
-          this.isShowDetails = true;
-          refs.update({
-            isRead: true
-          });
-        }, 500);
-      } else {
-        this.$router.push("/patientDetails/" + key + "/" + this.$route.name);
-      }
+            let currentPatient = this.patientList.filter(
+              x => x.key == this.patientKey
+            )[0];
+
+            this.patientSelected = currentPatient;
+          } else {
+            this.$router.push(
+              "/patientDetails/" + key + "/" + this.$route.name
+            );
+          }
+
+          setTimeout(() => {
+            this.isDisabled = false;
+          }, 300);
+        });
     },
     addPatient() {
       this.isDialogAddNewPatient = true;
@@ -594,15 +539,6 @@ export default {
           }
         });
       });
-    },
-    loadVersion() {
-      let refs = db.collection("version").doc("vitalsign-admin");
-
-      this.syncVersion = refs.onSnapshot(result => {
-        if (this.version != result.data().version) {
-          window.location.reload(true);
-        }
-      });
     }
   },
   computed: {
@@ -616,6 +552,8 @@ export default {
             x.surname.toLowerCase().includes(this.search)
           );
         });
+      } else {
+        getSearch = this.patientList;
       }
 
       return getSearch;
@@ -632,7 +570,10 @@ export default {
   },
   mounted() {
     this.loadRoom();
-    this.loadVersion();
+
+    // let newDate = new Date(1991, 10, 1);
+
+    console.log(newDate);
   },
   beforeDestroy() {
     if (typeof this.syncRoom == "function") {
@@ -645,10 +586,6 @@ export default {
 
     if (typeof this.syncCheckLog == "function") {
       this.syncCheckLog();
-    }
-
-    if (typeof this.syncVersion == "function") {
-      this.syncVersion();
     }
   }
 };

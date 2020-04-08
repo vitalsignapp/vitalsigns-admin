@@ -264,6 +264,7 @@ export default {
         .onOk(() => {
           auth.signOut().then(() => {
             this.$router.push("/");
+            this.$q.localStorage.clear();
           });
         });
     },

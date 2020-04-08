@@ -7,11 +7,11 @@
         <br />
         <!-- text-overflow -->
         <div class="font-body row q-mt-sm">
-          <!-- <div class="col-4 text-overflow" style="width:130px;">
+          <div class="col-4 text-overflow" style="width:130px;">
             <span class="color-light-gray">รหัส</span>
             {{ " " + patient.HN + " " + "&nbsp;" }}
-          </div>-->
-          <div class="col">
+          </div>
+          <div class="col" align="right">
             <span class="color-light-gray">วันเกิด</span>
             {{ " " + patient.dateOfBirth + "&nbsp;" }}
             <span
@@ -126,11 +126,11 @@
             <span class="font-h3">{{ patient.name + " " + patient.surname }}</span>
           </div>
           <div class="row q-mt-sm">
-            <!-- <div class="col-4 q-my-xs text-overflow" style="width:165px;">
+            <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
               {{ " " + patient.HN + " " + "&nbsp;" }}
-            </div>-->
-            <div class="col q-my-xs">
+            </div>
+            <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
               {{ " " + patient.dateOfBirth }}
             </div>

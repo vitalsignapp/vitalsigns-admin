@@ -24,12 +24,14 @@
             </div>
             <q-input
               outlined
-              label="ใส่รหัสผู้ป่วยเป็นตัวเลข"
+              placeholder="ใส่รหัสผู้ป่วยเป็นตัวเลข"
               hide-bottom-space
               ref="hn"
               v-model="patientData.HN"
               :rules="[val => !!val]"
               :readonly="!isAddMode"
+              input-style="font-size:16px;"
+              mask="##########"
             ></q-input>
           </div>
           <div class="q-pa-xs q-mt-sm row">
@@ -41,8 +43,9 @@
                 outlined
                 class="q-mr-xs"
                 hide-bottom-space
-                label="ชื่อจริง"
+                placeholder="ชื่อจริง"
                 ref="name"
+                input-style="font-size:16px;"
                 v-model="patientData.name"
                 :rules="[val => !!val]"
               ></q-input>
@@ -52,9 +55,10 @@
                 outlined
                 hide-bottom-space
                 class="q-ml-xs"
-                label="นามสกุล"
+                placeholder="นามสกุล"
                 ref="surname"
                 v-model="patientData.surname"
+                input-style="font-size:16px;"
                 :rules="[val => !!val]"
               ></q-input>
             </div>
@@ -96,7 +100,8 @@
                 outlined
                 v-model="patientData.dateOfBirth"
                 mask="##/##/####"
-                label="เลือกวันที่"
+                placeholder="เลือกวันที่"
+                input-style="font-size:16px;"
                 ref="birth"
                 :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
               >
@@ -127,8 +132,9 @@
                 outlined
                 v-model="patientData.dateOfAdmit"
                 mask="##/##/####"
-                label="เลือกวันที่"
+                placeholder="เลือกวันที่"
                 ref="admit"
+                input-style="font-size:16px;"
                 hide-bottom-space
                 :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
               >
@@ -176,7 +182,8 @@
                 hide-bottom-space
                 class
                 type="textarea"
-                label="ระบุอาการและโรคที่เป็น"
+                placeholder="ระบุอาการและโรคที่เป็น"
+                input-style="font-size:16px;"
                 v-model="patientData.diagnosis"
               ></q-input>
             </div>
@@ -212,7 +219,7 @@ export default {
         dateOfAdmit: "",
         dateOfBirth: "",
         diagnosis: "",
-        hospitalKey: "",
+        hospitalKey: this.$q.localStorage.getItem("hospitalKey"),
         patientRoomKey: "",
         isRead: true,
         isShowNotify: true
@@ -238,6 +245,8 @@ export default {
         isDialogAddNewPatient: false
       });
 
+      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+
       this.isAddMode = true;
       this.patientData = {
         NH: "",
@@ -247,7 +256,7 @@ export default {
         dateOfAdmit: "",
         dateOfBirth: "",
         diagnosis: "",
-        hospitalKey: "",
+        hospitalKey: hospitalKey,
         patientRoomKey: this.room[0].key,
         isRead: true,
         isShowNotify: true
@@ -257,6 +266,8 @@ export default {
       let refs = this.isAddMode
         ? db.collection("patientData")
         : db.collection("patientData").doc(this.patientKey);
+
+      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
       this.$refs.hn.validate();
       this.$refs.name.validate();
@@ -290,23 +301,21 @@ export default {
       let checkHN = await db
         .collection("patientData")
         .where("HN", "==", this.patientData.HN)
+        .where("hospitalKey", "==", hospitalKey)
         .get();
 
       if (checkHN.size && this.isAddMode) {
-        alert("มีข้อมูล HN นี้แล้ว");
+        alert("มีข้อมูลผู้ป่วยนี้แล้ว");
+
         this.isDisabled = false;
         return;
       }
 
       this.loadingShow();
 
-      this.patientData.hospitalKey = this.$q.localStorage.getItem(
-        "hospitalKey"
-      );
-
-      setTimeout(() => {
-        if (this.isAddMode) {
-          refs.add(this.patientData).then(() => {
+      if (this.isAddMode) {
+        refs.add(this.patientData).then(() => {
+          setTimeout(() => {
             this.patientData = {
               HN: "",
               name: "",
@@ -315,11 +324,13 @@ export default {
               dateOfAdmit: "",
               dateOfBirth: "",
               diagnosis: "",
-              hospitalKey: "",
+              hospitalKey: hospitalKey,
               patientRoomKey: this.room[0].key,
               isRead: true,
               isShowNotify: true
             };
+
+            this.loadingHide();
 
             this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");
 
@@ -328,25 +339,26 @@ export default {
             });
 
             this.isDialogAddNewPatient = false;
+          }, 500);
+        });
+      } else {
+        let copyPatientDate = { ...this.patientData };
+        delete copyPatientDate.key;
 
+        refs.update(copyPatientDate).then(() => {
+          setTimeout(() => {
             this.loadingHide();
-          });
-        } else {
-          let copyPatientDate = { ...this.patientData };
-          delete copyPatientDate.key;
 
-          refs.update(copyPatientDate).then(() => {
             this.vnotify("บันทึกข้อมูลเรียบร้อย");
 
             this.$emit("sendBack", {
               isDialogAddNewPatient: false
             });
-            this.loadingHide();
 
             this.isDialogAddNewPatient = false;
-          });
-        }
-      }, 500);
+          }, 500);
+        });
+      }
     },
     async loadRoom() {
       this.dateTime = await this.getDate();

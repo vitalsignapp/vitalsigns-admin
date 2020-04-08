@@ -40,7 +40,7 @@ Vue.mixin({
     return {
       month: [],
       userData: this.$q.localStorage.getItem("userData"),
-      version: "1.02.002",
+      version: "1.02.005",
 
       syncVersion: null
     };
@@ -110,7 +110,8 @@ Vue.mixin({
     vnotify(message) {
       this.$q.notify({
         message: message,
-        classes: "notifyBg"
+        classes: "notifyBg",
+        timeout: 800
       });
     },
     showMonthName(index) {
@@ -176,7 +177,7 @@ Vue.mixin({
   }
 });
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

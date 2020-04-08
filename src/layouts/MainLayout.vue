@@ -149,23 +149,51 @@
 </template>
 
 <script>
+import { db } from "../router/index.js";
 export default {
   name: "MainLayout",
   data() {
-    return {};
+    return {
+      syncVersion: ""
+    };
   },
   methods: {
     goToUser() {
-      this.$router.push("/userlist");
+      if (this.$route.name != "userlist") {
+        this.$router.push("/userlist");
+      }
     },
     goToWard() {
-      this.$router.push("/room");
+      if (this.$route.name != "room") {
+        this.$router.push("/room");
+      }
     },
     goToPatient() {
-      this.$router.push("/patient");
+      if (this.$route.name != "patient") {
+        this.$router.push("/patient");
+      }
     },
     goToAbout() {
-      this.$router.push("/about");
+      if (this.$route.name != "about") {
+        this.$router.push("/about");
+      }
+    },
+    loadVersion() {
+      let refs = db.collection("version").doc("vitalsign-admin");
+
+      this.syncVersion = refs.onSnapshot(result => {
+        if (this.version != result.data().version) {
+          window.location.reload(true);
+        }
+      });
+    }
+  },
+  mounted() {
+    this.loadVersion();
+  },
+  beforeDestroy() {
+    if (typeof this.syncVersion == "function") {
+      this.syncVersion();
     }
   }
 };

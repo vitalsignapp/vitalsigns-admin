@@ -1,5 +1,9 @@
 /* app global css */
 
+html {
+  scroll-behavior: smooth;
+}
+
 @font-face {
   font-family: Sarabun-Bold;
   src: url("../statics/font/Sarabun-Bold.ttf");
