@@ -40,7 +40,7 @@ Vue.mixin({
     return {
       month: [],
       userData: this.$q.localStorage.getItem("userData"),
-      version: "1.02",
+      version: "1.02.002",
 
       syncVersion: null,
     };
@@ -191,7 +191,7 @@ Vue.mixin({
   },
 });
 
-export default function (/* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

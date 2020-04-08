@@ -138,12 +138,7 @@ export default {
     },
     loadHospitalNameFromPrefix() {
       let domainName = window.location.hostname;
-<<<<<<< HEAD
-
-      let preFix = domainName.split(".")[0];
-=======
       let preFix = domainName.split(".")[1];
->>>>>>> master
       db.collection("hospital")
         .where("domainPrefix", "==", preFix)
         .get()
