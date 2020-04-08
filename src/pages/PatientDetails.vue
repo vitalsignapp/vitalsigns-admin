@@ -28,9 +28,9 @@
                   <q-btn class="fit row no-border-radius" flat @click="printBtn()">
                     <div class="col" align="left">พิมพ์ QR Code</div>
                   </q-btn>
-                  <q-btn class="fit row no-border-radius" flat>
+                  <!-- <q-btn class="fit row no-border-radius" flat>
                     <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
-                  </q-btn>
+                  </q-btn>-->
                 </q-list>
               </q-menu>
             </q-btn>

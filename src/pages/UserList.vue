@@ -237,6 +237,7 @@ export default {
         userId: "",
         prefix: ""
       },
+      userKey: "",
       isShowAddRoomDialog: false,
       userDataList: "",
       currentUserData: "",
@@ -257,7 +258,34 @@ export default {
 
       this.user = selectUser;
     },
-    deleteUser() {},
+    deleteUser() {
+      this.$q
+        .dialog({
+          title: "ลบข้อมูล",
+          message: "ยืนยันการลบข้อมูล",
+          ok: {
+            color: "orange-5",
+            textColor: "black",
+            label: "ตกลง"
+          },
+          cancel: {
+            label: "ยกเลิก",
+            flat: true,
+            textColor: "black"
+          }
+        })
+        .onOk(() => {
+          this.loadingShow();
+
+          let refs = db
+            .collection("userData")
+            .doc(this.userKey)
+            .delete()
+            .then(() => {
+              this.loadingHide();
+            });
+        });
+    },
     filterData() {
       if (this.search == "") {
         this.displayUserData = this.userDataList;
@@ -268,6 +296,8 @@ export default {
       this.displayUserData = filter;
     },
     showUserData(key) {
+      this.userKey = key;
+
       if (this.platform.desktop) {
         this.isClickedUserData = true;
         this.currentUserData = this.userDataList.filter(x => x.key == key)[0];

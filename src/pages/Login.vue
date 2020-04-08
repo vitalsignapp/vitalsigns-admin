@@ -100,10 +100,13 @@ export default {
       let _this = this;
       this.loadingShow();
 
+      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+
       let refs = db
         .collection("userData")
         .where("email", "==", this.email)
         .where("password", "==", this.password)
+        .where("hospitalKey", "==", hospitalKey)
         .get();
 
       refs.then(doc => {
@@ -135,15 +138,22 @@ export default {
     },
     loadHospitalNameFromPrefix() {
       let domainName = window.location.hostname;
+<<<<<<< HEAD
+
       let preFix = domainName.split(".")[0];
+=======
+      let preFix = domainName.split(".")[1];
+>>>>>>> master
       db.collection("hospital")
         .where("domainPrefix", "==", preFix)
         .get()
         .then(doc => {
           if (doc.size) {
+            this.$q.localStorage.set("hospitalKey", doc.docs[0].id);
+
             this.currentHospitalName = doc.docs[0].data().name;
           } else {
-            this.currentHospitalName = "Vitalsign Admin";
+            this.currentHospitalName = "Demo Hospital";
           }
         });
     }

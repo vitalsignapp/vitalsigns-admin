@@ -75,9 +75,9 @@
                   <q-btn class="fit row no-border-radius" flat @click="printBtn()">
                     <div class="col" align="left">พิมพ์ QR Code</div>
                   </q-btn>
-                  <q-btn class="fit row no-border-radius" flat>
+                  <!-- <q-btn class="fit row no-border-radius" flat>
                     <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
-                  </q-btn>
+                  </q-btn>-->
                 </q-list>
               </q-menu>
             </q-btn>
@@ -142,7 +142,7 @@
           <div class="row q-py-sm font-body full-width">
             <div class="col-1" style="width:30px;" align="center">
               <div v-if="item.isShowNotify">
-                <div v-if="item.lastRecord && items.lastRecord.date == currentDate">
+                <div v-if="item.lastRecord && item.lastRecord.date == currentDate">
                   <q-icon
                     v-if="!item.isRead"
                     name="fiber_manual_record"
@@ -150,7 +150,7 @@
                     class="color-primary-500"
                   ></q-icon>
                 </div>
-                <div v-if="item.lastRecord && items.lastRecord.date != currentDate">
+                <div v-if="item.lastRecord && item.lastRecord.date != currentDate">
                   <q-icon name="fiber_manual_record" size="10px" class="color-error"></q-icon>
                 </div>
               </div>
