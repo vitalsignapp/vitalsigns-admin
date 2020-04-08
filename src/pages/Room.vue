@@ -81,10 +81,12 @@
     >
       <q-card class="bg-white">
         <q-card-section align="right">
-          <q-btn v-close-popup icon="fas fa-times" flat></q-btn>
+          <q-btn dense round flat class="relative-position z-top color-black" v-close-popup>
+            <q-icon name="close" size="45px"></q-icon>
+          </q-btn>
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <div class="text-h6" align="center">เพิ่มห้องพักผู้ป่วย</div>
+          <div class="font-h3" align="center">เพิ่มห้องพักผู้ป่วย</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none" align="center">
