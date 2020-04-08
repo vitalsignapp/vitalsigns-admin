@@ -182,7 +182,7 @@
               <div class="col text-overflow" align="left">
                 <span class="no-padding">{{ patient.name + " " + patient.surname }}</span>
                 <br />
-                <span class="color-light-gray">{{patient.HN}}</span>
+                <span class="color-light-gray">{{patient.username}}</span>
               </div>
               <div
                 class="col-4 q-pr-sm"
@@ -547,7 +547,7 @@ export default {
       if (this.search != "") {
         getSearch = this.patientList.filter(x => {
           return (
-            x.HN.toLowerCase().includes(this.search) ||
+            x.username.toLowerCase().includes(this.search) ||
             x.name.toLowerCase().includes(this.search) ||
             x.surname.toLowerCase().includes(this.search)
           );

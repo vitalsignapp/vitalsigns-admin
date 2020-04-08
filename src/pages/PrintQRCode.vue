@@ -20,7 +20,7 @@
           </div>
           <div class="font-h3 q-mt-lg" style="font-size:24px;">
             <div align="center">
-              <span class>{{"รหัส: " + patientData.HN}}</span>
+              <span class>{{"รหัส: " + patientData.username}}</span>
             </div>
             <div class="q-mt-md q-px-md" align="center">
               <span class="font-h1">{{patientData.name + " " + patientData.surname}}</span>
@@ -56,7 +56,7 @@
             </div>
           </div>
           <div align="center" class="font-body q-mt-lg">
-            <span class>{{"รหัส: " + item.HN}}</span>
+            <span class>{{"รหัส: " + item.username}}</span>
             <br />
             <div class="q-mt-sm q-px-sm">
               <span class="font-h4" style="font-size:21px;">{{item.name + " " + item.surname}}</span>
@@ -170,7 +170,7 @@ export default {
                       name: "",
                       surname: "",
                       path: "",
-                      HN: ""
+                      username: ""
                     };
 
                     setNewArr[i].push(setData);

@@ -9,7 +9,7 @@
         <div class="font-body row q-mt-sm">
           <div class="col-4 text-overflow" style="width:130px;">
             <span class="color-light-gray">รหัส</span>
-            {{ " " + patient.HN + " " + "&nbsp;" }}
+            {{ " " + patient.username + " " + "&nbsp;" }}
           </div>
           <div class="col" align="right">
             <span class="color-light-gray">วันเกิด</span>
@@ -128,7 +128,7 @@
           <div class="row q-mt-sm">
             <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
-              {{ " " + patient.HN + " " + "&nbsp;" }}
+              {{ " " + patient.username + " " + "&nbsp;" }}
             </div>
             <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
@@ -176,7 +176,7 @@ export default {
   data() {
     return {
       patient: {
-        HN: "",
+        username: "",
         name: "",
         surname: "",
         sex: "",

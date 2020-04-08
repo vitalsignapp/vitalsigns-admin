@@ -26,8 +26,8 @@
               outlined
               placeholder="ใส่รหัสผู้ป่วยเป็นตัวเลข"
               hide-bottom-space
-              ref="hn"
-              v-model="patientData.HN"
+              ref="username"
+              v-model="patientData.username"
               :rules="[val => !!val]"
               :readonly="!isAddMode"
               input-style="font-size:16px;"
@@ -212,7 +212,7 @@ export default {
     return {
       // NOTE  Patient Data Save to DB
       patientData: {
-        HN: "",
+        username: "",
         name: "",
         surname: "",
         sex: "male",
@@ -269,14 +269,14 @@ export default {
 
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
-      this.$refs.hn.validate();
+      this.$refs.username.validate();
       this.$refs.name.validate();
       this.$refs.surname.validate();
       this.$refs.birth.validate();
       this.$refs.admit.validate();
 
       if (
-        this.$refs.hn.hasError ||
+        this.$refs.username.hasError ||
         this.$refs.name.hasError ||
         this.$refs.surname.hasError ||
         this.$refs.birth.hasError ||
@@ -298,13 +298,13 @@ export default {
 
       this.isDisabled = true;
 
-      let checkHN = await db
+      let checkUsername = await db
         .collection("patientData")
-        .where("HN", "==", this.patientData.HN)
+        .where("username", "==", this.patientData.username)
         .where("hospitalKey", "==", hospitalKey)
         .get();
 
-      if (checkHN.size && this.isAddMode) {
+      if (checkUsername.size && this.isAddMode) {
         alert("มีข้อมูลผู้ป่วยนี้แล้ว");
 
         this.isDisabled = false;
@@ -317,7 +317,7 @@ export default {
         refs.add(this.patientData).then(() => {
           setTimeout(() => {
             this.patientData = {
-              HN: "",
+              username: "",
               name: "",
               surname: "",
               sex: "male",

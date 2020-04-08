@@ -123,7 +123,7 @@
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
                 <br />
-                <span class="color-light-gray">{{ items.HN }}</span>
+                <span class="color-light-gray">{{ items.username }}</span>
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -150,7 +150,7 @@
             <div class="font-body row q-mt-sm">
               <div class="col-4 text-overflow" style="width:130px;">
                 <span class="color-light-gray">รหัส</span>
-                {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
+                {{ " " + currentPatientData.username + " " + "&nbsp;" }}
               </div>
               <div class="col">
                 <span class="color-light-gray">วันเกิด</span>
@@ -271,11 +271,11 @@
             </div>
             <q-input
               outlined
-              label="HN"
+              label="username"
               hide-bottom-space
-              ref="hn"
+              ref="username"
               :readonly="!isAddMode"
-              v-model="patientObj.HN"
+              v-model="patientObj.username"
               :rules="[val => !!val]"
             ></q-input>
           </div>
@@ -504,7 +504,7 @@
           <div class="row q-mt-sm">
             <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
-              {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
+              {{ " " + currentPatientData.username + " " + "&nbsp;" }}
             </div>
             <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
@@ -564,7 +564,7 @@ export default {
       roomData: "",
       isDisabled: false,
       patientObj: {
-        HN: "",
+        username: "",
         name: "",
         surname: "",
         sex: "male",
@@ -802,7 +802,7 @@ export default {
     closeAddEditPatient() {
       if (!this.isAddMode) {
         this.patientObj = {
-          HN: "",
+          username: "",
           name: "",
           surname: "",
           sex: "male",
@@ -831,7 +831,7 @@ export default {
       this.isAddMode = true;
 
       this.patientObj = {
-        HN: "",
+        username: "",
         name: "",
         surname: "",
         sex: "male",
@@ -866,14 +866,14 @@ export default {
     saveData() {
       let refs = db.collection("patientData");
 
-      this.$refs.hn.validate();
+      this.$refs.username.validate();
       this.$refs.name.validate();
       this.$refs.surname.validate();
       this.$refs.birth.validate();
       this.$refs.admit.validate();
 
       if (
-        this.$refs.hn.hasError ||
+        this.$refs.username.hasError ||
         this.$refs.name.hasError ||
         this.$refs.surname.hasError ||
         this.$refs.birth.hasError ||
@@ -901,7 +901,7 @@ export default {
         refs.add(this.patientObj).then(() => {
           this.isDisabled = false;
           this.patientObj = {
-            HN: "",
+            username: "",
             name: "",
             surname: "",
             sex: "male",
