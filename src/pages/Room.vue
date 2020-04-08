@@ -92,9 +92,10 @@
         <q-card-section class="q-pt-none" align="center">
           <q-input
             v-model="roomName"
-            style="max-width:330px;min-height:80px"
+            style="max-width:330px;min-height:80px;"
+            input-style="font-size:23px;font-weight:500;"
             outlined
-            label="ชื่อห้องพักผู้ป่วย"
+            placeholder="ชื่อห้องพักผู้ป่วย"
           ></q-input>
         </q-card-section>
 
@@ -219,5 +220,9 @@ export default {
 .my-card {
   padding: 2px;
   border-radius: 10px;
+}
+
+.test-font {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 </style>

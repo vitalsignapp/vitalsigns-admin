@@ -282,7 +282,10 @@ export default {
             .doc(this.userKey)
             .delete()
             .then(() => {
-              this.loadingHide();
+              setTimeout(() => {
+                this.loadingHide();
+                this.isClickedUserData = false;
+              }, 1000);
             });
         });
     },

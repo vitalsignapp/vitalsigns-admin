@@ -53,8 +53,8 @@
         </div>
 
         <div
-          v-ripple
           class="font-body color-primary-500 relative-position cursor-pointer q-mt-md row items-center"
+          @click="isChangePassword = true"
         >
           <q-icon name="vpn_key" size="24px"></q-icon>
           <span class="q-pl-sm">เปลี่ยน Password</span>
@@ -120,11 +120,13 @@
       </div>
     </div>
     <q-dialog v-model="isShowConfigVitalSigns" maximized>
-      <q-card>
+      <q-card class="q-pa-md bg-surface">
         <div align="right">
-          <q-btn v-close-popup icon="fas fa-times" flat></q-btn>
+          <q-btn dense round flat v-close-popup class="relative-position z-top color-black">
+            <q-icon name="close" size="45px"></q-icon>
+          </q-btn>
         </div>
-        <q-card-section style="max-width:360px;width:95%;margin:auto">
+        <q-card-section class="dialog-container" style="max-width:360px;width:95%;margin:auto">
           <div align="center" class="font-h4 q-pb-md">เลือกข้อมูลที่ต้องการให้คนไข้กรอก</div>
           <div>
             <q-toolbar
@@ -144,11 +146,39 @@
           </div>
         </q-card-section>
         <q-card-actions align="center">
+          <q-btn @click="saveConfig()" label="บันทึก" style="min-width:80px;" class="button-action"></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="isChangePassword" maximized>
+      <q-card class="q-pa-md bg-surface">
+        <div align="right">
+          <q-btn dense round flat v-close-popup class="relative-position z-top color-black">
+            <q-icon name="close" size="45px"></q-icon>
+          </q-btn>
+        </div>
+        <q-card-section style="max-width:360px;width:95%;margin:auto">
+          <div>
+            <div class="font-h3" align="center">ตั้งรหัสผ่านใหม่</div>
+          </div>
+          <div class="q-mt-md">
+            <div class="col-12">
+              <span class="font-body">รหัสผ่านใหม่</span>
+            </div>
+            <q-input outlined type="password" v-model="currentpass" placeholder="new password"></q-input>
+          </div>
+          <div class="q-mt-md">
+            <span class="font-body">ยืนยันรหัสอีกครั้ง</span>
+            <q-input outlined type="password" v-model="confirmpass" placeholder="confirm password"></q-input>
+          </div>
+        </q-card-section>
+        <q-card-actions align="center">
           <q-btn
-            @click="saveConfig()"
-            label="บันทึก"
-            style="min-width:80px;"
-            class="bg-call-action"
+            label="ยืนยันรหัสผ่านใหม่"
+            :disable="isDisabled"
+            @click="resetpass()"
+            class="button-action font-body"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -161,9 +191,12 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
+      currentpass: "",
+      confirmpass: "",
       isChangeLanguage: this.$i18n.locale,
       isAdmin: false,
       isShowConfigVitalSigns: false,
+      isChangePassword: false,
       vitalSignsArr: [
         {
           sym: "อุณหภูมิร่างกาย",
@@ -185,10 +218,40 @@ export default {
           sym: "อาการตอนนี้",
           status: false
         }
-      ]
+      ],
+
+      isDisabled: false
     };
   },
   methods: {
+    resetpass() {
+      if (this.currentpass == "" || this.confirmpass == "") {
+        this.vnotify("กรุณากรอกข้อมูลให้ครบถ้วน");
+        return;
+      }
+
+      if (this.currentpass != this.confirmpass) {
+        this.vnotify("รหัสผ่านไม่ตรงกัน");
+        return;
+      }
+
+      this.loadingShow();
+
+      this.isDisabled = true;
+
+      let refs = db
+        .collection("userData")
+        .doc(this.userData.key)
+        .update({ password: this.confirmpass })
+        .then(() => {
+          setTimeout(() => {
+            this.loadingHide();
+            this.vnotify("เปลื่ยนรหัสผ่านแล้ว");
+            this.isChangePassword = false;
+            this.isDisabled = false;
+          }, 1000);
+        });
+    },
     logout() {
       // TODO : message ต้องเปลี่ยน
       this.$q
@@ -241,7 +304,6 @@ export default {
         .get()
         .then(doc => {
           if (doc.data().vitalSignsConfig) {
-            console.log(doc.data().vitalSignsConfig);
             this.vitalSignsArr = doc.data().vitalSignsConfig;
           }
 

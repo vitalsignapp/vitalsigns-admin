@@ -122,8 +122,8 @@
             <div class="row q-py-sm font-body full-width" style="padding-left:30px">
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
-                <br />
-                <span class="color-light-gray">HN{{ items.HN }}</span>
+                <!-- <br />
+                <span class="color-light-gray">HN{{ items.HN }}</span>-->
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -148,10 +148,10 @@
             <br />
             <!-- text-overflow -->
             <div class="font-body row q-mt-sm">
-              <div class="col-4 text-overflow" style="width:130px;">
+              <!-- <div class="col-4 text-overflow" style="width:130px;">
                 <span class="color-light-gray">รหัส</span>
                 {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
-              </div>
+              </div>-->
               <div class="col">
                 <span class="color-light-gray">วันเกิด</span>
                 {{ " " + currentPatientData.dateOfBirth + "&nbsp;" }}
@@ -166,7 +166,7 @@
           <div class="q-mt-md q-mb-lg" v-for="(items,index) in currentPatientLog" :key="index">
             <q-card class="my-card font-body">
               <div class="q-pa-sm" align="center">
-                <span>{{ items.inputDate }} รอบ {{ items.inputRound }}:00 น.</span>
+                <span>{{ items.dateAndRound }}</span>
               </div>
 
               <q-separator />
@@ -502,11 +502,11 @@
             <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
           </div>
           <div class="row q-mt-sm">
-            <div class="col-4 q-my-xs text-overflow" style="width:165px;">
+            <!-- <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
               {{ " " + currentPatientData.HN + " " + "&nbsp;" }}
-            </div>
-            <div class="col q-my-xs" align="right">
+            </div>-->
+            <div class="col q-my-xs">
               <span class="color-light-gray">วันเกิด</span>
               {{ " " + currentPatientData.dateOfBirth }}
             </div>
@@ -984,8 +984,26 @@ export default {
         .get()
         .then(doc => {
           let dataTemp = [];
-          doc.forEach(element => {
-            dataTemp.push({ key: element.id, ...element.data() });
+          doc.forEach(result => {
+            let dateAdmit = result.data().inputDate;
+
+            let newDate =
+              dateAdmit.substr(0, 2) +
+              " " +
+              this.showMonthName(dateAdmit.substr(3, 2)) +
+              " " +
+              dateAdmit.substr(6) +
+              " รอบ " +
+              result.data().inputRound +
+              ":00 น.";
+
+            let setData = {
+              key: result.id,
+              dateAndRound: newDate,
+              ...result.data()
+            };
+
+            dataTemp.push(setData);
           });
 
           dataTemp.sort((a, b) => b.microtime - a.microtime);

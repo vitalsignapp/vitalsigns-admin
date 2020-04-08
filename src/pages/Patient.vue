@@ -157,8 +157,6 @@
             </div>
             <div class="col text-overflow" align="left">
               <span class="no-padding">{{ item.name + " " + item.surname }}</span>
-              <br />
-              <span class="color-light-gray">{{ "HN" + item.HN }}</span>
             </div>
             <div
               class="col-4 q-pr-sm"
@@ -252,8 +250,6 @@
               </div>
               <div class="col text-overflow" align="left">
                 <span class="no-padding">{{ patient.name + " " + patient.surname }}</span>
-                <br />
-                <span class="color-light-gray">{{ "HN" + patient.HN }}</span>
               </div>
               <div
                 class="col-4 q-pr-sm"
