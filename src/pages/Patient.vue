@@ -356,7 +356,8 @@ export default {
       // NOTE  sync
       syncRoom: "",
       syncPatient: "",
-      syncCheckLog: ""
+      syncCheckLog: "",
+      syncVersion: ""
     };
   },
   methods: {
@@ -597,6 +598,15 @@ export default {
           }
         });
       });
+    },
+    loadVersion() {
+      let refs = db.collection("version").doc("vitalsign-admin");
+
+      this.syncVersion = refs.onSnapshot(result => {
+        if (this.version != result.data().version) {
+          window.location.reload(true);
+        }
+      });
     }
   },
   computed: {
@@ -626,6 +636,7 @@ export default {
   },
   mounted() {
     this.loadRoom();
+    this.loadVersion();
   },
   beforeDestroy() {
     if (typeof this.syncRoom == "function") {
@@ -638,6 +649,10 @@ export default {
 
     if (typeof this.syncCheckLog == "function") {
       this.syncCheckLog();
+    }
+
+    if (typeof this.syncVersion == "function") {
+      this.syncVersion();
     }
   }
 };

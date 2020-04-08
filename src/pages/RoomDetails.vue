@@ -848,10 +848,12 @@ export default {
       if (this.platForm.desktop) {
         this.isClickedOnPatient = true;
         this.loadingShow();
+
         this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
-        this.currentPatientLog = this.patientLog.filter(
-          x => x.patientKey == key
-        );
+
+        this.currentPatientLog = this.patientLog.filter(x => {
+          return x.patientKey == key;
+        });
 
         this.loadingHide();
       } else {
@@ -978,15 +980,18 @@ export default {
     loadPatientLogInThisRoom() {
       db.collection("patientLog")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
-        .where("patientRoomKey", "==", this.roomKey)
+        // .where("patientRoomKey", "==", this.roomKey)
         .get()
         .then(doc => {
           let dataTemp = [];
           doc.forEach(element => {
-            dataTemp.push({ ...element.data(), ...{ key: element.id } });
+            dataTemp.push({ key: element.id, ...element.data() });
           });
-          dataTemp = dataTemp.sort((a, b) => b.inputRound - a.inputRound);
+
+          dataTemp.sort((a, b) => b.microtime - a.microtime);
+
           this.patientLog = dataTemp;
+
           // this.currentPatientLog = dataTemp.filter(
           //   x => x.patientKey == this.currentPatientData.key
           // );

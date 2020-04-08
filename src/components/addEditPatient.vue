@@ -6,6 +6,7 @@
           <q-btn
             dense
             round
+            flat
             class="relative-position z-top color-black"
             @click="closeDialogAddPatient()"
           >
@@ -23,7 +24,7 @@
             </div>
             <q-input
               outlined
-              label="HN"
+              label="ใส่รหัสผู้ป่วยเป็นตัวเลข"
               hide-bottom-space
               ref="hn"
               v-model="patientData.HN"
@@ -65,6 +66,7 @@
             <div class="q-my-sm">
               <q-radio
                 dense
+                class="font-body"
                 v-model="patientData.sex"
                 name="sex"
                 val="male"
