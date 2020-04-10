@@ -1,76 +1,230 @@
 <template>
   <div class="q-pa-md">
-    <div class="row">
-      <input type="text" name="testdate5" id="testdate5" />
+    <div class="q-gutter-md" v-show="false">
+      <h1>GET DATA</h1>
+      <div>
+        <q-btn @click="getHospital()" label="getHospital"></q-btn>
+      </div>
+      <div>
+        <q-btn @click="getPatientData()" label="getPatientData"></q-btn>
+      </div>
+      <div>
+        <q-btn @click="getPatientLog()" label="getPatientLog"></q-btn>
+      </div>
+      <div>
+        <q-btn @click="getPatientRoom()" label="getPatientRoom"></q-btn>
+      </div>
+      <div>
+        <q-btn @click="getUserData()" label="getUserData"></q-btn>
+      </div>
+      <div>
+        <q-btn @click="getVersion()" label="getVersion"></q-btn>
+      </div>
     </div>
+    <div v-show="false">
+      <h1>SET DATA</h1>
+      <div class="q-gutter-md">
+        <div>
+          <q-btn @click="setHospital()" label="setHospital"></q-btn>
+        </div>
+        <div>
+          <q-btn @click="setPatientData()" label="setPatientData"></q-btn>
+        </div>
+        <div>
+          <q-btn @click="setPatientLog()" label="setPatientLog"></q-btn>
+        </div>
+        <div>
+          <q-btn @click="setPatientRoom()" label="setPatientRoom"></q-btn>
+        </div>
+        <div>
+          <q-btn @click="setUserData()" label="setUserData"></q-btn>
+        </div>
+        <div>
+          <q-btn @click="setVersion()" label="setVersion"></q-btn>
+        </div>
+      </div>
+    </div>
+
+    <q-btn @click="setPatientData()" label="setPatientData"></q-btn>
   </div>
 </template>
 
 <script>
-$(function() {
-  $.datetimepicker.setLocale("th");
-
-  console.log("XX");
-
-  console.log($("#testdate5"));
-
-  // กรณีใช้แบบ input
-  $("#testdate5").datetimepicker({
-    timepicker: false,
-    format: "d-m-Y", // กำหนดรูปแบบวันที่ ที่ใช้ เป็น 00-00-0000
-    lang: "th", // ต้องกำหนดเสมอถ้าใช้ภาษาไทย และ เป็นปี พ.ศ.
-    onSelectDate: function(dp, $input) {
-      var yearT = new Date(dp).getFullYear();
-      var yearTH = yearT + 543;
-      var fulldate = $input.val();
-      var fulldateTH = fulldate.replace(yearT, yearTH);
-      $input.val(fulldateTH);
-    }
-  });
-
-  // กรณีใช้กับ input ต้องกำหนดส่วนนี้ด้วยเสมอ เพื่อปรับปีให้เป็น ค.ศ. ก่อนแสดงปฏิทิน
-  $("#testdate5").on("mouseenter mouseleave", function(e) {
-    var dateValue = $(this).val();
-
-    console.clear();
-
-    if (dateValue != "") {
-      var arr_date = dateValue.split("-"); // ถ้าใช้ตัวแบ่งรูปแบบอื่น ให้เปลี่ยนเป็นตามรูปแบบนั้น
-      // ในที่นี้อยู่ในรูปแบบ 00-00-0000 เป็น d-m-Y  แบ่งด่วย - ดังนั้น ตัวแปรที่เป็นปี จะอยู่ใน array
-      //  ตัวที่สอง arr_date[2] โดยเริ่มนับจาก 0
-
-      console.log(arr_date[2]);
-
-      if (e.type == "mouseenter") {
-        var yearT = arr_date[2] - 543;
-      }
-      if (e.type == "mouseleave") {
-        var yearT = parseInt(arr_date[2]) + 543;
-      }
-      dateValue = dateValue.replace(arr_date[2], yearT);
-      $(this).val(dateValue);
-    }
-  });
-
-  console.log("XXX");
-});
-
+import { db } from "../router";
 export default {
   data() {
-    return {
-      items: [{}, {}, {}, {}, {}, {}, {}]
-    };
+    return {};
   },
   methods: {
-    // onLoad(index, done) {
-    //   setTimeout(() => {
-    //     console.log(this.items);
-    //     if (this.items) {
-    //       this.items.push({}, {}, {}, {}, {}, {}, {});
-    //       done();
-    //     }
-    //   }, 2000);
-    // }
+    testConnect() {
+      db.collection("testConnect").add({
+        test: true
+      });
+    },
+    getHospital() {
+      db.collection("hospital")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("hospital", temp);
+        });
+    },
+    getPatientData() {
+      db.collection("patientData")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("patientData", temp);
+        });
+    },
+    getPatientLog() {
+      db.collection("patientLog")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("patientLog", temp);
+        });
+    },
+    getPatientRoom() {
+      db.collection("patientRoom")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("patientRoom", temp);
+        });
+    },
+    getUserData() {
+      db.collection("userData")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("userData", temp);
+        });
+    },
+    getVersion() {
+      db.collection("version")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), ...{ key: element.id } });
+          });
+          this.$q.localStorage.set("version", temp);
+        });
+    },
+    setHospital() {
+      let getData = this.$q.localStorage.getItem("hospital");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("hospital")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setPatientData() {
+      let getData = this.$q.localStorage.getItem("patientData");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("patientData")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setPatientLog() {
+      let getData = this.$q.localStorage.getItem("patientLog");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("patientLog")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setPatientRoom() {
+      let getData = this.$q.localStorage.getItem("patientRoom");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("patientRoom")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setUserData() {
+      let getData = this.$q.localStorage.getItem("userData");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("userData")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setVersion() {
+      let getData = this.$q.localStorage.getItem("version");
+
+      getData.forEach(element => {
+        let eleKey = element.key;
+        delete element.key;
+        db.collection("version")
+          .doc(eleKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    },
+    setPatientData() {
+      let getData = this.$q.localStorage.getItem("patientData");
+      getData.forEach(element => {
+        let eKey = element.key;
+        element.username = element.HN;
+        delete element.HN;
+        db.collection("patientData")
+          .doc(eKey)
+          .set(element)
+          .then(() => {
+            console.log("FINISH");
+          });
+      });
+    }
   }
 };
 </script>

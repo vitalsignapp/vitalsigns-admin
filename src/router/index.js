@@ -20,15 +20,16 @@ Vue.component("qr-code", VueQRCodeComponent);
  * with the Router instance.
  */
 
+
 var firebaseConfig = {
-  apiKey: "AIzaSyDkfuz9optU8t14BZJBgJ9JNYdH4Omdh6A",
-  authDomain: "vitalsign-2bc48.firebaseapp.com",
-  databaseURL: "https://vitalsign-2bc48.firebaseio.com",
-  projectId: "vitalsign-2bc48",
-  storageBucket: "vitalsign-2bc48.appspot.com",
-  messagingSenderId: "67633726727",
-  appId: "1:67633726727:web:b535d92a91ec80695bb1a2",
-  measurementId: "G-MEX9V112SR"
+  apiKey: "AIzaSyDa1vNAW34yTHB4ykdoNv_syjAJO8Ql_9w",
+  authDomain: "vitalsigns-426ee.firebaseapp.com",
+  databaseURL: "https://vitalsigns-426ee.firebaseio.com",
+  projectId: "vitalsigns-426ee",
+  storageBucket: "vitalsigns-426ee.appspot.com",
+  messagingSenderId: "380026340708",
+  appId: "1:380026340708:web:da67279ce36a86a2636671",
+  measurementId: "G-CEJH31GYMM"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -177,7 +178,7 @@ Vue.mixin({
   }
 });
 
-export default function(/* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
