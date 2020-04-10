@@ -4,16 +4,22 @@
 ### Installation
 Make sure have latest yarn package manager installed.
 ```
+npm install
+// or
 yarn
 ```
 
 ### Build
 ```
+npm run build
+// or
 yarn build
 ```
 
 ### Build PWA
 ```
+npm run build:pwa
+// or
 yarn build:pwa
 ```
 
@@ -26,5 +32,7 @@ Use .env.example as an example of how the .env file should look.
 #### Running
 After you have the .env file created, run the following command:
 ```
+npm run dev
+// or
 yarn dev
 ```
