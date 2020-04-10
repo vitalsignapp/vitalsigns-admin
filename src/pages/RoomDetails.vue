@@ -13,8 +13,8 @@
           <span class="q-pl-md">{{ roomData.name }}</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn @click="addPatient()" flat dense icon="add" label="เพิ่มผู้ป่วย" />
-          <q-btn dense round flat icon="more_vert" class="no-border-radius">
+          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" />
+          <q-btn dense round flat icon="more_vert" class="no-border-radius" @click="addPatient()">
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">
                 <q-btn class="fit row no-border-radius" flat @click="printAll()">
@@ -53,19 +53,37 @@
             class="q-mx-sm"
             flat
           ></q-btn>
-          <q-btn dense round flat class="q-mx-sm" icon="print">
-            <q-menu square :offset="[43, 16]">
+          <q-btn dense round flat class="q-mx-sm" @click="printBtn()">
+            <q-img src="../statics/pic/QR Code.png" width="30px"></q-img>
+            <!-- <q-menu square :offset="[5, 16]">
               <q-list style="min-width: 160px">
-                <q-btn class="fit row no-border-radius" flat @click="printBtn()">
-                  <div class="col" align="left">พิมพ์ QR Code</div>
-                </q-btn>
                 <q-btn class="fit row no-border-radius" flat>
                   <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
+                </q-btn>
+                <q-btn class="fit row no-border-radius" flat @click="editPatient()">
+                  <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
+                </q-btn>
+              </q-list>
+            </q-menu>-->
+          </q-btn>
+          <q-btn dense round flat class="q-mx-sm" size="14px">
+            <q-img src="../statics/pic/Option.png" width="30px"></q-img>
+            <q-menu square :offset="[5, 16]">
+              <q-list style="min-width: 160px">
+                <q-btn class="fit row no-border-radius" flat>
+                  <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
+                </q-btn>
+                <q-btn class="fit row no-border-radius" flat @click="editPatient()">
+                  <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
+                </q-btn>
+                <q-btn class="fit row no-border-radius" flat @click="deletePatient()">
+                  <div class="col text-red" align="left">ลบผู้ป่วย</div>
                 </q-btn>
               </q-list>
             </q-menu>
           </q-btn>
-          <q-btn dense round flat icon="more_vert">
+
+          <!-- <q-btn dense round flat icon="more_vert">
             <q-menu square :offset="[5, 16]">
               <q-list style="min-width: 150px">
                 <q-btn class="fit row no-border-radius" flat @click="editPatient()">
@@ -76,7 +94,7 @@
                 </q-btn>
               </q-list>
             </q-menu>
-          </q-btn>
+          </q-btn>-->
         </div>
       </q-toolbar>
 

@@ -114,7 +114,7 @@
           style="text-decoration:none"
           class="font-body color-primary-500 q-mt-md row items-center"
         >
-          <q-icon name="vpn_key" size="24px"></q-icon>
+          <q-icon name="fas fa-envelope" size="24px"></q-icon>
           <span class="q-pl-sm">ส่งข้อความถึงทีมพัฒนา</span>
         </a>
       </div>

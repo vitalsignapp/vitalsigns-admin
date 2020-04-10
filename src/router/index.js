@@ -20,7 +20,6 @@ Vue.component("qr-code", VueQRCodeComponent);
  * with the Router instance.
  */
 
-
 var firebaseConfig = {
   apiKey: "AIzaSyDa1vNAW34yTHB4ykdoNv_syjAJO8Ql_9w",
   authDomain: "vitalsigns-426ee.firebaseapp.com",
@@ -41,7 +40,7 @@ Vue.mixin({
     return {
       month: [],
       userData: this.$q.localStorage.getItem("userData"),
-      version: "1.02.006",
+      version: "1.02.007",
 
       syncVersion: null
     };
@@ -178,7 +177,7 @@ Vue.mixin({
   }
 });
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
