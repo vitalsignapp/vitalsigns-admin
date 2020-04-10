@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Push images') {
           steps {
-           withDockerRegistry(credentialsId: '4ab7b1e1-0d78-4557-91c7-753ab09606f6', url: 'registry.odds.team/vitalsigns/vitalsigns-admin') {
+           withDockerRegistry(credentialsId: '4ab7b1e1-0d78-4557-91c7-753ab09606f6', url: 'https://registry.odds.team/vitalsigns/vitalsigns-admin') {
                 sh "docker push ${REGISTRY}:dev"
                 sh "docker push ${REGISTRY}:dev.v${env.BUILD_NUMBER}_dev_${GIT_COMMIT.take(6)}"
             }
