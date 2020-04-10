@@ -1,15 +1,17 @@
 {
   "projects": {
-    "default": "vitalsign-2bc48"
+    "default": "vitalsigns-426ee"
   },
   "targets": {
-    "vitalsign-2bc48": {
+    "vitalsigns-426ee": {
       "hosting": {
-        "vitalsign-admin": [
-          "vitalsign-admin"
+        "vitalsigns-admin": [
+          "vitalsigns-admin"
         ]
       }
     }
   }
 }
+
+
 
