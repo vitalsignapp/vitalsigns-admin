@@ -6,8 +6,8 @@ pipeline {
     latestImage = ''
   }
   stages {
-    stage('Deploy Develop to ECS') {
-      when { branch 'develop-skip' }
+    stage('Deploy Develop to NIPA') {
+      when { branch 'develop' }
 
       environment {
           REGISTRY = 'registry.odds.team/vitalsigns/vitalsigns-admin'
@@ -35,44 +35,5 @@ pipeline {
         }
       }
     }
-
   }
-  post {
-    success {
-      script {
-        // cleanWs()
-        // notifySuccess()
-      }
-    }
-    failure {
-      script {
-        // cleanWs()
-        // notifyFailed()
-      }
-    }
-  }
-}
-
-def notifySuccess() {
-  def msg = changeLogs()
-  slackSend (botUser: true, channel: 'hanami', color: '#009900', message: "SUCCESSFUL: Job '${env.JOB_NAME} #${env.BUILD_NUMBER}' (${env.BUILD_URL}) \n ```${msg}```")
-}
-
-def notifyFailed() {
-  def msg = changeLogs()
-  slackSend (botUser: true, channel: 'hanami', color: '#ff0000', message: "FAILED: Job '${env.JOB_NAME} #${env.BUILD_NUMBER}' (${env.BUILD_URL})\n ```${msg}```")
-}
-
-@NonCPS
-def changeLogs() {
-  def msg = "Changes:"
-  def changeLogSets = currentBuild.changeSets
-  for (int i = 0; i < changeLogSets.size(); i++) {
-    def entries = changeLogSets[i].items
-    for (int j = 0; j < entries.length; j++) {
-      def entry = entries[j]
-      msg +=  "\n\t- ${entry.msg} [${entry.author}]"
-    }
-  }
-  return msg
 }
