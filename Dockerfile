@@ -2,7 +2,7 @@ FROM node:12 as builder
 
 WORKDIR /vitalsigns-admin
 
-COPY ./package.json ./yarn.lock ./
+COPY ./package.json ./
 
 RUN yarn cache clean && yarn install
 
