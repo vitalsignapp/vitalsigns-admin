@@ -156,7 +156,7 @@ export default {
     // let _this = this;
   },
   mounted() {
-    this.loadHospitalNameFromPrefix();
+    // this.loadHospitalNameFromPrefix();
   },
 };
 </script>
