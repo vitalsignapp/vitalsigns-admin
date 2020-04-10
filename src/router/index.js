@@ -162,6 +162,9 @@ Vue.mixin({
   },
 });
 
+
+
+
 export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
