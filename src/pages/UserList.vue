@@ -393,6 +393,7 @@ export default {
               ).hospitalKey;
 
               this.user.microtimeCreated = date.microtime;
+              this.user.dateCreated = date.date;
 
               db.collection("userData")
                 .add(this.user)
