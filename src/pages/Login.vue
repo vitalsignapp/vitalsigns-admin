@@ -76,6 +76,8 @@
 <script>
 import { auth } from "../router";
 import { db } from "../router";
+import axios from "axios";
+
 export default {
   name: "PageIndex",
   data() {
@@ -98,40 +100,64 @@ export default {
   methods: {
     signIn() {
       let _this = this;
+      console.info(process.env)
+      const apiHost = process.env.API_HOST;
       this.loadingShow();
 
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
-      let refs = db
-        .collection("userData")
-        .where("email", "==", this.email)
-        .where("password", "==", this.password)
-        .where("hospitalKey", "==", hospitalKey)
-        .get();
-
-      refs.then(doc => {
-        if (doc.size) {
-          let setData = {
-            key: doc.docs[0].id,
-            ...doc.docs[0].data()
-          };
-
-          delete setData.password;
-          delete setData.isAdmin;
-
-          this.$q.localStorage.set("userData", setData);
-
-          this.$q.localStorage.set(
-            "hospitalKey",
-            doc.docs[0].data().hospitalKey
-          );
-
-          this.$router.push("/patient");
-        } else {
-          _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
-          _this.loadingHide();
+      axios.post(`${apiHost}/login`, {
+        email: _this.email,
+        password: _this.password,
+        hospitalKey: hospitalKey
+      }).then((res) => {
+        const data = {...res.data};
+        const setData = {
+          key: data.id,
+          ...data
         }
+        _this.$q.localStorage.set("userData", setData);
+        _this.$q.localStorage.set(
+          "hospitalKey",
+          data.hospitalKey
+        );
+        this.$router.push("/patient");
+        _this.loadingHide();
+      }).catch(() => {
+        _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
+        _this.loadingHide();
       });
+
+      // let refs = db
+      //   .collection("userData")
+      //   .where("email", "==", this.email)
+      //   .where("password", "==", this.password)
+      //   .where("hospitalKey", "==", hospitalKey)
+      //   .get();
+
+      // refs.then(doc => {
+      //   if (doc.size) {
+      //     let setData = {
+      //       key: doc.docs[0].id,
+      //       ...doc.docs[0].data()
+      //     };
+
+      //     delete setData.password;
+      //     delete setData.isAdmin;
+
+      //     this.$q.localStorage.set("userData", setData);
+
+      //     this.$q.localStorage.set(
+      //       "hospitalKey",
+      //       doc.docs[0].data().hospitalKey
+      //     );
+
+      //     this.$router.push("/patient");
+      //   } else {
+      //     _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
+      //     _this.loadingHide();
+      //   }
+      // });
     },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
