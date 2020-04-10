@@ -108,7 +108,6 @@ export default {
     signIn() {
       let _this = this;
       this.loadingShow();
-      // let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       login({
         email: _this.email,

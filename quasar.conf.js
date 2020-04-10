@@ -65,7 +65,7 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
-      extendWebpack(cfg) { 
+      extendWebpack(cfg) {
         cfg.resolve.alias = {
           ...cfg.resolve.alias, // This adds the existing alias
 
