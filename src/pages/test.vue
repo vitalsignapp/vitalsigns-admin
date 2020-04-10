@@ -1,24 +1,60 @@
 <template>
   <div class="q-pa-md">
     <div class="row">
-      <div class="col-6"></div>
-      <div class="col-6">
-        <q-infinite-scroll @load="onLoad" :offset="100">
-          <div v-for="(item, index) in items" :key="index" class="caption">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.</p>
-          </div>
-          <template v-slot:loading>
-            <div class="row justify-center q-my-md">
-              <q-spinner-dots color="primary" size="40px" />
-            </div>
-          </template>
-        </q-infinite-scroll>
-      </div>
+      <input type="text" name="testdate5" id="testdate5" />
     </div>
   </div>
 </template>
 
 <script>
+$(function() {
+  $.datetimepicker.setLocale("th");
+
+  console.log("XX");
+
+  console.log($("#testdate5"));
+
+  // กรณีใช้แบบ input
+  $("#testdate5").datetimepicker({
+    timepicker: false,
+    format: "d-m-Y", // กำหนดรูปแบบวันที่ ที่ใช้ เป็น 00-00-0000
+    lang: "th", // ต้องกำหนดเสมอถ้าใช้ภาษาไทย และ เป็นปี พ.ศ.
+    onSelectDate: function(dp, $input) {
+      var yearT = new Date(dp).getFullYear();
+      var yearTH = yearT + 543;
+      var fulldate = $input.val();
+      var fulldateTH = fulldate.replace(yearT, yearTH);
+      $input.val(fulldateTH);
+    }
+  });
+
+  // กรณีใช้กับ input ต้องกำหนดส่วนนี้ด้วยเสมอ เพื่อปรับปีให้เป็น ค.ศ. ก่อนแสดงปฏิทิน
+  $("#testdate5").on("mouseenter mouseleave", function(e) {
+    var dateValue = $(this).val();
+
+    console.clear();
+
+    if (dateValue != "") {
+      var arr_date = dateValue.split("-"); // ถ้าใช้ตัวแบ่งรูปแบบอื่น ให้เปลี่ยนเป็นตามรูปแบบนั้น
+      // ในที่นี้อยู่ในรูปแบบ 00-00-0000 เป็น d-m-Y  แบ่งด่วย - ดังนั้น ตัวแปรที่เป็นปี จะอยู่ใน array
+      //  ตัวที่สอง arr_date[2] โดยเริ่มนับจาก 0
+
+      console.log(arr_date[2]);
+
+      if (e.type == "mouseenter") {
+        var yearT = arr_date[2] - 543;
+      }
+      if (e.type == "mouseleave") {
+        var yearT = parseInt(arr_date[2]) + 543;
+      }
+      dateValue = dateValue.replace(arr_date[2], yearT);
+      $(this).val(dateValue);
+    }
+  });
+
+  console.log("XXX");
+});
+
 export default {
   data() {
     return {
@@ -26,18 +62,17 @@ export default {
     };
   },
   methods: {
-    onLoad(index, done) {
-      setTimeout(() => {
-        console.log(this.items);
-        if (this.items) {
-          this.items.push({}, {}, {}, {}, {}, {}, {});
-          done();
-        }
-      }, 2000);
-    }
+    // onLoad(index, done) {
+    //   setTimeout(() => {
+    //     console.log(this.items);
+    //     if (this.items) {
+    //       this.items.push({}, {}, {}, {}, {}, {}, {});
+    //       done();
+    //     }
+    //   }, 2000);
+    // }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

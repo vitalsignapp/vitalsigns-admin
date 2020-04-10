@@ -2306,10 +2306,10 @@ var DateFormatter;
                       .strtotime(options.disabledMinTime)
                       .getTime() &&
                   options.disabledMaxTime !== false &&
-                  now.getTime() <
-                    _xdsoft_datetime
-                      .strtotime(options.disabledMaxTime)
-                      .getTime())
+                    now.getTime() <
+                      _xdsoft_datetime
+                        .strtotime(options.disabledMaxTime)
+                        .getTime())
               ) {
                 classes.push("xdsoft_disabled");
               }
@@ -2515,7 +2515,7 @@ var DateFormatter;
         if (
           (timerclick > 1 ||
             options.closeOnDateSelect === true ||
-            (options.closeOnDateSelect === false && !options.timepicker)) &&
+              (options.closeOnDateSelect === false && !options.timepicker)) &&
           !options.inline
         ) {
           datetimepicker.trigger("close.xdsoft");
@@ -2902,8 +2902,7 @@ var DateFormatter;
             if (
               (key >= KEY0 && key <= KEY9) ||
               (key >= _KEY0 && key <= _KEY9) ||
-              key === BACKSPACE ||
-              key === DEL
+              key === BACKSPACE || key === DEL
             ) {
               pos = getCaretPos(this);
               digit =

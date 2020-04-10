@@ -1,6 +1,10 @@
 <template>
   <div class>
-    <q-dialog v-model="isDialogAddNewPatient" persistent :maximized="maximizedToggle">
+    <q-dialog
+      v-model="isDialogAddNewPatient"
+      persistent
+      :maximized="maximizedToggle"
+    >
       <q-card class="q-pa-md bg-surface">
         <div align="right">
           <q-btn
@@ -15,6 +19,7 @@
         </div>
 
         <div class="dialog-container q-pt-md">
+          <input type="text" name="testdate5" id="testdate5" />
           <div>
             <div class="font-h3" align="center">เพิ่มผู้ป่วยใหม่</div>
           </div>
@@ -103,7 +108,11 @@
                 placeholder="เลือกวันที่"
                 input-style="font-size:16px;"
                 ref="birth"
-                :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
+                :rules="[
+                  val => val.length == 10,
+                  val => val.substr(0, 2) >= '01' && val.substr(0, 2) <= '31',
+                  val => val.substr(3, 2) <= '12'
+                ]"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -136,7 +145,11 @@
                 ref="admit"
                 input-style="font-size:16px;"
                 hide-bottom-space
-                :rules="[val => val.length == 10,val => val.substr(0,2) >= '01' &&  val.substr(0,2) <= '31' ,val => val.substr(3,2) <= '12']"
+                :rules="[
+                  val => val.length == 10,
+                  val => val.substr(0, 2) >= '01' && val.substr(0, 2) <= '31',
+                  val => val.substr(3, 2) <= '12'
+                ]"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -205,6 +218,54 @@
 </template>
 
 <script>
+$(function() {
+  $.datetimepicker.setLocale("th");
+
+  console.log("XX");
+
+  console.log($("#testdate5"));
+
+  // กรณีใช้แบบ input
+  $("#testdate5").datetimepicker({
+    timepicker: false,
+    format: "d-m-Y", // กำหนดรูปแบบวันที่ ที่ใช้ เป็น 00-00-0000
+    lang: "th", // ต้องกำหนดเสมอถ้าใช้ภาษาไทย และ เป็นปี พ.ศ.
+    onSelectDate: function(dp, $input) {
+      var yearT = new Date(dp).getFullYear();
+      var yearTH = yearT + 543;
+      var fulldate = $input.val();
+      var fulldateTH = fulldate.replace(yearT, yearTH);
+      $input.val(fulldateTH);
+    }
+  });
+
+  // กรณีใช้กับ input ต้องกำหนดส่วนนี้ด้วยเสมอ เพื่อปรับปีให้เป็น ค.ศ. ก่อนแสดงปฏิทิน
+  $("#testdate5").on("mouseenter mouseleave", function(e) {
+    var dateValue = $(this).val();
+
+    console.clear();
+
+    if (dateValue != "") {
+      var arr_date = dateValue.split("-"); // ถ้าใช้ตัวแบ่งรูปแบบอื่น ให้เปลี่ยนเป็นตามรูปแบบนั้น
+      // ในที่นี้อยู่ในรูปแบบ 00-00-0000 เป็น d-m-Y  แบ่งด่วย - ดังนั้น ตัวแปรที่เป็นปี จะอยู่ใน array
+      //  ตัวที่สอง arr_date[2] โดยเริ่มนับจาก 0
+
+      console.log(arr_date[2]);
+
+      if (e.type == "mouseenter") {
+        var yearT = arr_date[2] - 543;
+      }
+      if (e.type == "mouseleave") {
+        var yearT = parseInt(arr_date[2]) + 543;
+      }
+      dateValue = dateValue.replace(arr_date[2], yearT);
+      $(this).val(dateValue);
+    }
+  });
+
+  console.log("XXX");
+});
+
 import { db } from "../router/index.js";
 export default {
   props: ["sendData"],
@@ -227,6 +288,9 @@ export default {
 
       // NOTE Current Date
       dateTime: "",
+      getYearTH: "",
+      yearT: "",
+      yearTH: "",
 
       patientKey: this.sendData.patientKey,
       room: [],
@@ -238,6 +302,9 @@ export default {
     };
   },
   methods: {
+    async dateBirth() {
+      let _this = this;
+    },
     closeDialogAddPatient() {
       this.isDialogAddNewPatient = false;
 
@@ -363,6 +430,9 @@ export default {
     async loadRoom() {
       this.dateTime = await this.getDate();
 
+      this.yearT = new Date(this.dateTime.date).getFullYear();
+      this.yearTH = this.yearT + 543;
+
       this.patientData.dateOfAdmit = this.dateTime.date;
       this.patientData.dateOfBirth = this.dateTime.date;
 
@@ -422,9 +492,12 @@ export default {
   },
   mounted() {
     this.loadRoom();
+
+    let element = document.getElementById("startdate");
+
+    // element.addEventListener("click", () => {
+
+    // });
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
