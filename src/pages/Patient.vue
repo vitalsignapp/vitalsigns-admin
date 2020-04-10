@@ -570,10 +570,6 @@ export default {
   },
   mounted() {
     this.loadRoom();
-
-    // let newDate = new Date(1991, 10, 1);
-
-    console.log(newDate);
   },
   beforeDestroy() {
     if (typeof this.syncRoom == "function") {

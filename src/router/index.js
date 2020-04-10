@@ -115,7 +115,7 @@ Vue.mixin({
       });
     },
     showMonthName(index) {
-      console.log(this.$i18n.locale);
+      // console.log(this.$i18n.locale);
       let m = index;
       let month;
       if (this.$i18n.locale != "th-th") {
