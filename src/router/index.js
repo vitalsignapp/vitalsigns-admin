@@ -27,7 +27,6 @@ Vue.mixin({
       month: [],
       userData: this.$q.localStorage.getItem('userData'),
       version: '1.02.008',
-
       syncVersion: null,
     };
   },
