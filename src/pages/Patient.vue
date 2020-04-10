@@ -68,23 +68,26 @@
                 width="30px"
               ></q-img>
             </q-btn>
-            <q-btn dense round flat class="q-mx-sm" size="14px">
-              <q-img src="../statics/pic/Fax.png" width="30px"></q-img>
-              <q-menu square :offset="[55, 16]">
+            <q-btn dense round flat class="q-mx-sm" size="14px" @click="printBtn()">
+              <q-img src="../statics/pic/QR Code.png" width="30px"></q-img>
+              <!-- <q-menu square :offset="[55, 16]">
                 <q-list style="min-width: 160px">
-                  <q-btn class="fit row no-border-radius" flat @click="printBtn()">
+                  <q-btn class="fit row no-border-radius" flat>
                     <div class="col" align="left">พิมพ์ QR Code</div>
                   </q-btn>
-                  <!-- <q-btn class="fit row no-border-radius" flat>
+                  <q-btn class="fit row no-border-radius" flat>
                     <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
-                  </q-btn>-->
+                  </q-btn>
                 </q-list>
-              </q-menu>
+              </q-menu>-->
             </q-btn>
             <q-btn dense round flat class="q-ml-sm" size="14px">
               <q-img src="../statics/pic/Option.png" width="30px"></q-img>
               <q-menu square :offset="[5, 16]">
-                <q-list style="min-width: 150px">
+                <q-list style="min-width: 160px">
+                  <q-btn class="fit row no-border-radius" flat>
+                    <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
+                  </q-btn>
                   <q-btn class="fit row no-border-radius" flat @click="editPatient()">
                     <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
                   </q-btn>
