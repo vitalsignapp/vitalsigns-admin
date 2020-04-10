@@ -106,7 +106,7 @@ export default {
         .collection("userData")
         .where("email", "==", this.email)
         .where("password", "==", this.password)
-        .where("hospitalKey", "==", hospitalKey)
+        // .where("hospitalKey", "==", hospitalKey)
         .get();
 
       refs.then(doc => {
@@ -157,7 +157,7 @@ export default {
     let _this = this;
   },
   mounted() {
-    this.loadHospitalNameFromPrefix();
+    // this.loadHospitalNameFromPrefix();
   }
 };
 </script>
