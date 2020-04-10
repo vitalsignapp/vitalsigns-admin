@@ -109,6 +109,20 @@ export default {
         .where("hospitalKey", "==", hospitalKey)
         .get();
 
+      //https://vitalsign-dev-api.odds.team/api/login
+      // service.login().then(data => {
+      //   let setData = {
+      //       key: doc.docs[0].id,
+      //       ...doc.docs[0].data()
+      //     };
+      //   this.$q.localStorage.set("userData", setData);
+      //   this.$q.localStorage.set(
+      //       "hospitalKey",
+      //       doc.docs[0].data().hospitalKey
+      //     );
+      // });
+      //{"id":"AjGMr39iDFclLYPJrTGb","dateCreated":"02/04/2020","email":"test1@gmail.com","hospitalKey":"7yfcpkXkME2OrvbYNAq1","microtimeCreated":1585839201000,"name":"สมหมาย","surname":"ขายฝัน","userId":"999"}
+
       refs.then(doc => {
         if (doc.size) {
           let setData = {
