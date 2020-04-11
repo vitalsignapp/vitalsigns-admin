@@ -111,7 +111,7 @@ export default {
         email: _this.email,
         password: _this.password,
       }).then((res) => {
-        const data = {...res.data};
+        const data = {...res};
         const setData = {
           key: data.id,
           ...data

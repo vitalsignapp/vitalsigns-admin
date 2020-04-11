@@ -13,7 +13,7 @@ export function login({email, password}) {
     {
       email: email, 
       password: password
-    })
+    }, jsonConfig)
     .then(response => response.data)
     .catch(handleError);
 }
