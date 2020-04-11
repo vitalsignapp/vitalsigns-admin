@@ -109,6 +109,8 @@
 
 <script>
 import { db } from "../router";
+import { listRoom } from "../api";
+
 export default {
   data() {
     return {
@@ -158,29 +160,45 @@ export default {
         });
     },
     loadPatientRoom() {
-      this.isListenPatientRoom = db
-        .collection("patientRoom")
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
-        .onSnapshot(doc => {
-          let dataTemp = [];
-          doc.forEach(element => {
-            let dataKey = {
-              key: element.id
-            };
-            dataTemp.push({ ...element.data(), ...dataKey });
-          });
-          dataTemp = dataTemp.sort((a, b) => a.addTime - b.addTime);
-          this.patientRoom = dataTemp;
-          this.isLoading = false;
-          this.loadingHide();
-        });
+      // this.isListenPatientRoom = db
+      //   .collection("patientRoom")
+      //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+      //   .onSnapshot(doc => {
+      //     let dataTemp = [];
+      //     doc.forEach(element => {
+      //       let dataKey = {
+      //         key: element.id
+      //       };
+      //       dataTemp.push({ ...element.data(), ...dataKey });
+      //     });
+      //     dataTemp = dataTemp.sort((a, b) => a.addTime - b.addTime);
+      //     this.patientRoom = dataTemp;
+      //     this.isLoading = false;
+      //     this.loadingHide();
+      //   });
+
+      const hospitalId = this.$q.localStorage.getItem("hospitalKey");
+      listRoom(hospitalId)
+      .then(data => {
+        data = data.map(d => {
+          return {...d, key: d.id};
+        }).sort((a, b) => a.addTime - b.addTime);
+
+        this.patientRoom = data;
+        this.isLoading = false;
+        this.loadingHide();
+      }).catch(err => {
+        this.isLoading = false;
+        this.loadingHide();
+      });
+
     }
   },
   mounted() {
     this.loadPatientData();
   },
   beforeDestroy() {
-    this.isListenPatientRoom();
+    // this.isListenPatientRoom();
   }
 };
 </script>
