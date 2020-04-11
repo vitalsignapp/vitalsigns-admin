@@ -77,6 +77,7 @@
 import { auth } from "../router";
 import { db } from "../router";
 import axios from "axios";
+import { login } from "../api";
 
 export default {
   name: "PageIndex",
@@ -106,10 +107,9 @@ export default {
 
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
-      axios.post(`${apiHost}/login`, {
+      login({
         email: _this.email,
         password: _this.password,
-        hospitalKey: hospitalKey
       }).then((res) => {
         const data = {...res.data};
         const setData = {
