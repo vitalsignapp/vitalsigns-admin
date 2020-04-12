@@ -127,37 +127,6 @@ export default {
         _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
         _this.loadingHide();
       });
-
-      // let refs = db
-      //   .collection("userData")
-      //   .where("email", "==", this.email)
-      //   .where("password", "==", this.password)
-      //   .where("hospitalKey", "==", hospitalKey)
-      //   .get();
-
-      // refs.then(doc => {
-      //   if (doc.size) {
-      //     let setData = {
-      //       key: doc.docs[0].id,
-      //       ...doc.docs[0].data()
-      //     };
-
-      //     delete setData.password;
-      //     delete setData.isAdmin;
-
-      //     this.$q.localStorage.set("userData", setData);
-
-      //     this.$q.localStorage.set(
-      //       "hospitalKey",
-      //       doc.docs[0].data().hospitalKey
-      //     );
-
-      //     this.$router.push("/patient");
-      //   } else {
-      //     _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
-      //     _this.loadingHide();
-      //   }
-      // });
     },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
