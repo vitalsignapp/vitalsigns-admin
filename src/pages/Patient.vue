@@ -250,6 +250,8 @@
 import { db } from "../router/index.js";
 import patientDetails from "../components/patientDetails.vue";
 import addEditPatient from "../components/addEditPatient.vue";
+import { listRoom, listPatient } from "../api";
+
 export default {
   components: {
     patientDetails,
@@ -389,6 +391,7 @@ export default {
               .doc(this.patientKey)
               .delete()
               .then(() => {
+                console.log(">>>>>>>>>>>>>>> patientData",)
                 db.collection("patientLog")
                   .where("patientKey", "==", this.patientKey)
                   .get()
@@ -424,37 +427,44 @@ export default {
         " " +
         newYear;
 
-      let refs = db
-        .collection("patientRoom")
-        .where(
-          "hospitalKey",
-          "==",
-          this.$q.localStorage.getItem("hospitalKey")
-        );
+      // let refs = db.collection("patientRoom")
+      //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"));
 
       this.loadingShow();
 
-      this.syncRoom = refs.onSnapshot(doc => {
-        let temp = [];
-        doc.forEach(result => {
-          let setData = {
-            key: result.id,
-            ...result.data()
+      // this.syncRoom = refs.onSnapshot(doc => {
+      //   let temp = [];
+      //   doc.forEach(result => {
+      //     let setData = {
+      //       key: result.id,
+      //       ...result.data()
+      //     };
+      //     temp.push(setData);
+      //   });
+      //   temp.sort((a, b) => {
+      //     return a.name > b.name ? 1 : -1;
+      //   });
+
+      //   this.patientRoom = temp;
+      //   this.loadPatient();
+      //   return "ส่งข้อมูลเรียบร้อย";
+      // });
+
+      const hospitalId = this.$q.localStorage.getItem("hospitalKey");
+      const transform = (data = [])=> {
+        return data = data.map(d => {
+          return {
+            ...d, 
+            key: d.id, 
+            hospitalKey: hospitalId,
+            lastRecord: null,
           };
+        }).sort((a, b) => { return a.name > b.name ? 1 : -1; });
+      };
 
-          temp.push(setData);
-        });
-
-        temp.sort((a, b) => {
-          return a.name > b.name ? 1 : -1;
-        });
-
-        this.patientRoom = temp;
-
-        this.loadPatient();
-
-        // return "ส่งข้อมูลเรียบร้อย";
-      });
+      this.patientRoom = await listRoom(hospitalId).then(transform);
+      this.patientList = await listPatient(hospitalId).then(transform);
+      this.loadingHide();
     },
     loadPatient() {
       let refs = db

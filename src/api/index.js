@@ -16,7 +16,7 @@ export function login({email, password}) {
     .then(response => {
       if (response.data) {
         return axios.get(`${host}/auth`).then(res => {
-          Cookies.set('access-token', res.data.token, {expires: '15m'}); //expired 15 minutes
+          Cookies.set('access-token', res.data.token, {expires: '1M'}); //expired 15 minutes
           return response.data;
         });
       } 
@@ -30,9 +30,17 @@ export function listRoom(hospitalId) {
     .catch(handleError);
 }
 
+export function listPatient(hospitalId) {
+  const url = `/patient/hospital/${hospitalId}`;
+  return httpClient.get(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 
 function handleError(err) {
   const { status, data } = err.response;
   const { message } = data;
+  console.error(message);
   return Promise.reject({ status, message })
 }
