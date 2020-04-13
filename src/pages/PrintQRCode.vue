@@ -70,6 +70,7 @@
 
 <script>
 import { db } from "../router/index.js";
+import { getPatientDetailById } from "../api";
 export default {
   data() {
     return {
@@ -82,19 +83,17 @@ export default {
     loadPatient() {
       let patientKey = this.$route.params.key;
 
-      let refs = db.collection("patientData").doc(patientKey);
-
       this.loadingShow();
 
       let printPage = new Promise((resolve, reject) => {
-        refs.get().then(result => {
-          if (result.exists) {
+        getPatientDetailById(patientKey).then(result => {
+          if (result) {
             let newPath = "https://demo.vitalsignapp.com/" + result.id;
 
             let setData = {
               key: result.id,
               path: newPath,
-              ...result.data()
+              ...result
             };
 
             this.patientData = setData;
