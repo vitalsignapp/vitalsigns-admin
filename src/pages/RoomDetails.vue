@@ -567,6 +567,8 @@
 
 <script>
 import { db } from "../router";
+import { listPatientsByRoomKey } from "../api";
+
 export default {
   data() {
     return {
@@ -983,17 +985,10 @@ export default {
         });
     },
     loadPatientDataInThisRoom() {
-      this.isListenPatientData = db
-        .collection("patientData")
-        .where("patientRoomKey", "==", this.roomKey)
-        .onSnapshot(doc => {
-          let dataTemp = [];
-          doc.forEach(element => {
-            dataTemp.push({ ...element.data(), ...{ key: element.id } });
-          });
-          this.patientData = dataTemp;
-          this.loadPatientLogInThisRoom();
-        });
+      listPatientsByRoomKey(this.roomKey).then((docs) => {
+        this.patientData = docs.map((doc) => ({ ...doc, key: doc.id}));
+        this.loadPatientLogInThisRoom();
+      });
     },
     loadPatientLogInThisRoom() {
       db.collection("patientLog")
@@ -1072,7 +1067,7 @@ export default {
     this.loadRoomData();
   },
   beforeDestroy() {
-    this.isListenPatientData();
+    // this.isListenPatientData();
   }
 };
 </script>

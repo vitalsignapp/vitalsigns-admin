@@ -19,7 +19,7 @@ export function login({email, password}) {
           Cookies.set('access-token', res.data.token, {expires: '1M'}); //expired 15 minutes
           return response.data;
         });
-      } 
+      }
     }).catch(handleError);
 }
 
@@ -32,6 +32,13 @@ export function listRoom(hospitalId) {
 
 export function listPatient(hospitalId) {
   const url = `/patient/hospital/${hospitalId}`;
+  return httpClient.get(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
+export function listPatientsByRoomKey(patientRoomKey) {
+  const url = `/ward/${patientRoomKey}/patients`;
   return httpClient.get(url)
     .then(response => response.data)
     .catch(handleError);
