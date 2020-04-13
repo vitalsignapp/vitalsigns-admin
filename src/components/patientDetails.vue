@@ -171,6 +171,7 @@
 
 <script>
 import { db } from "../router/index.js";
+import { getPatientDetailById } from '../api';
 export default {
   props: ["dataKey", "dataRoute"],
   data() {
@@ -203,26 +204,16 @@ export default {
   methods: {
     async loadPaitent() {
       this.currentDate = await this.getDate();
-
-      this.patient = "";
-
-      let refs = db.collection("patientData").doc(this.dataKey);
-
-      this.loadingShow();
-
-      this.syncPatient = refs.onSnapshot(result => {
-        if (result.exists) {
-          this.patient = result.data();
-
-          this.$emit("patientData", this.patient);
-
-          this.loadRoom();
-
-          this.isLoadData = true;
-        } else {
-          this.loadingHide();
-        }
-      });
+      this.patient = null;
+      const result = await getPatientDetailById(this.dataKey);
+      if (result) {
+        this.patient = result;
+        this.$emit("patientData", this.patient);
+        this.loadRoom();
+        this.isLoadData = true;
+      } else {
+        this.loadingHide();
+      }
     },
     loadRoom() {
       let refs = db
@@ -344,7 +335,7 @@ export default {
   beforeDestroy() {
     this.syncDiagnosis();
     this.syncRoom();
-    this.syncPatient();
+    // this.syncPatient();
   }
 };
 </script>

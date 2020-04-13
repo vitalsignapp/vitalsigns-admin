@@ -44,6 +44,12 @@ export function listPatientsByRoomKey(patientRoomKey) {
     .catch(handleError);
 }
 
+export function getPatientDetailById(patientID) {
+  const url = `/patient/${patientID}`;
+  return httpClient.get(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
 
 function handleError(err) {
   const { status, data } = err.response;
