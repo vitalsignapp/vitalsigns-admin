@@ -214,6 +214,7 @@
 
 <script>
 import { db } from "../router/index.js";
+import { getPatientDetailById } from "../api";
 export default {
   props: ["sendData"],
   data() {
@@ -426,13 +427,10 @@ export default {
       });
     },
     loadPatient() {
-      let refs = db.collection("patientData").doc(this.patientKey);
-
-      refs.get().then(result => {
-        if (result.exists) {
-          this.patientData = result.data();
+      getPatientDetailById(this.patientKey).then((result) => {
+        if (result) {
+          this.patientData = result;
         }
-
         this.loadingHide();
       });
     }
