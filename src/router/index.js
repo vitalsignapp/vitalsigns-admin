@@ -21,13 +21,6 @@ Vue.component('qr-code', VueQRCodeComponent);
  * with the Router instance.
  */
 
-
-
-
-
-
-
-
 Vue.mixin({
   data() {
     return {
