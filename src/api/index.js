@@ -4,13 +4,13 @@ import { $axios } from '@/boot/axios';
 
 const host = config.API_HOST;
 
-export function login({email, password}) {
-  const url = `${host}/login`;
+export function login({ email, password }) {
+  const url = `/login`;
   return $axios.post(url, { email: email, password: password })
     .then(response => {
       if (response.data) {
-        return $axios.get(`${host}/auth`).then(res => {
-          Cookies.set('access-token', res.data.token, {expires: '1M'}); //expired 15 minutes
+        return $axios.get(`/auth`).then(res => {
+          Cookies.set('access-token', res.data.token, { expires: '1M' }); //expired 15 minutes
           return response.data;
         });
       }
