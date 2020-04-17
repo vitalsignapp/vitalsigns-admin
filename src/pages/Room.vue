@@ -108,8 +108,8 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
-import { listRoom } from "../api";
+import { db } from "../router";
+import { listRoom, listPatient } from "../api";
 
 export default {
   data() {
@@ -145,19 +145,32 @@ export default {
           this.loadingHide();
         });
     },
-    loadPatientData() {
-      this.loadingShow();
-      $db.collection("patientData")
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
-        .get()
-        .then(doc => {
-          let dataTemp = [];
-          doc.forEach(element => {
-            dataTemp.push({ ...element.data(), ...{ key: element.id } });
-          });
-          this.patientData = dataTemp;
-          this.loadPatientRoom();
-        });
+    async loadPatientData() {
+      // this.loadingShow();
+      // db.collection("patientData")
+      //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+      //   .get()
+      //   .then(doc => {
+      //     let dataTemp = [];
+      //     doc.forEach(element => {
+      //       dataTemp.push({ ...element.data(), ...{ key: element.id } });
+      //     });
+      //     this.patientData = dataTemp;
+      //     this.loadPatientRoom();
+      //   });
+        this.loadingShow();
+        const hospitalId = this.$q.localStorage.getItem("hospitalKey");
+        const transformPatientList =  (data = [])=> {
+          return data = data.map(d => {
+            return {
+              ...d, 
+              key: d.id
+            };
+          }).sort((a, b) => { return a.name > b.name ? 1 : -1; });
+        };
+        this.patientData = await listPatient(hospitalId).then(transformPatientList);
+        this.loadPatientRoom();
+
     },
     loadPatientRoom() {
       // this.isListenPatientRoom = $db

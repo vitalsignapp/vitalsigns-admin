@@ -469,38 +469,40 @@ export default {
       this.patientList = await listPatient(hospitalId).then(transform);
       this.loadingHide();
     },
-    loadPatient() {
-      let refs = $db
-        .collection("patientData")
-        .where(
-          "hospitalKey",
-          "==",
-          this.$q.localStorage.getItem("hospitalKey")
-        );
+    
+    // loadPatient() {
+      
+    //   let refs = db
+    //     .collection("patientData")
+    //     .where(
+    //       "hospitalKey",
+    //       "==",
+    //       this.$q.localStorage.getItem("hospitalKey")
+    //     );
 
-      this.syncPatient = refs.onSnapshot(doc => {
-        let temp = [];
-        doc.forEach(result => {
-          let setData = {
-            key: result.id,
-            lastRecord: null,
-            ...result.data()
-          };
+    //   this.syncPatient = refs.onSnapshot(doc => {
+    //     let temp = [];
+    //     doc.forEach(result => {
+    //       let setData = {
+    //         key: result.id,
+    //         lastRecord: null,
+    //         ...result.data()
+    //       };
 
-          temp.push(setData);
-        });
+    //       temp.push(setData);
+    //     });
 
-        temp.sort((a, b) => {
-          return a.name > b.name ? 1 : -1;
-        });
+    //     temp.sort((a, b) => {
+    //       return a.name > b.name ? 1 : -1;
+    //     });
 
-        this.patientList = temp;
+    //     this.patientList = temp;
 
-        this.loadingHide();
+    //     this.loadingHide();
 
-        // return "ส่งข้อมูลเรียบร้อย";
-      });
-    },
+    //     // return "ส่งข้อมูลเรียบร้อย";
+    //   });
+    // },
     loadPatientLog() {
       let refs = $db.collection("patientLog");
 
