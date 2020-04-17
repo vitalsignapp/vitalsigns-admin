@@ -1,8 +1,5 @@
 import { Cookies } from 'quasar';
-import config from '@/config/environment';
 import { $axios } from '@/boot/axios';
-
-const host = config.API_HOST;
 
 export function login({ email, password }) {
   const url = `/login`;

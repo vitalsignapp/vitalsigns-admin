@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
+import { $db } from "@/api/firebase";
 import { getPatientDetailById } from "../api";
 export default {
   data() {
@@ -125,7 +125,7 @@ export default {
       });
     },
     loadPatientAll() {
-      let refs = db
+      let refs = $db
         .collection("patientData")
         .where("patientRoomKey", "==", this.$route.params.key)
         .get();

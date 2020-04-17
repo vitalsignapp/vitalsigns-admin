@@ -219,8 +219,7 @@
 </template>
 
 <script>
-import { auth } from "../router";
-import { db } from "../router";
+import { $db } from "@/api/firebase";
 export default {
   data() {
     return {
@@ -277,7 +276,7 @@ export default {
         .onOk(() => {
           this.loadingShow();
 
-          let refs = db
+          let refs = $db
             .collection("userData")
             .doc(this.userKey)
             .delete()
@@ -324,7 +323,8 @@ export default {
       this.isShowAddRoomDialog = true;
     },
     loadUserData() {
-      db.collection("userData")
+      $db
+        .collection("userData")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .onSnapshot(doc => {
           let dataTemp = [];
@@ -344,7 +344,7 @@ export default {
     loadCurrentUser() {
       let userKey = this.$q.localStorage.getItem("userData").key;
 
-      let refs = db
+      let refs = $db
         .collection("userData")
         .doc(userKey)
         .get();
@@ -379,7 +379,8 @@ export default {
 
       // Add Mode
       if (this.isAddMode) {
-        db.collection("userData")
+        $db
+          .collection("userData")
           .where("email", "==", this.user.email)
           .get()
           .then(doc => {
@@ -395,7 +396,8 @@ export default {
               this.user.microtimeCreated = date.microtime;
               this.user.dateCreated = date.date;
 
-              db.collection("userData")
+              $db
+                .collection("userData")
                 .add(this.user)
                 .then(() => {
                   this.vnotify("สร้างบุคลากรเรียบร้อย");
@@ -413,7 +415,8 @@ export default {
 
         delete setData.key;
 
-        db.collection("userData")
+        $db
+          .collection("userData")
           .doc(userKey)
           .update(setData)
           .then(() => {
@@ -446,7 +449,7 @@ export default {
       //           prefix: this.user.prefix,
       //           password: this.user.password
       //         };
-      //         db.collection("userData")
+      //         $db.collection("userData")
       //           .add(userData)
       //           .then(() => {
       //             this.loadingHide();

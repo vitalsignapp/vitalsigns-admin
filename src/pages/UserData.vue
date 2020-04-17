@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { $db } from "@/api/firebase";
 export default {
   data() {
     return {
@@ -38,7 +38,7 @@ export default {
   methods: {
     loadUserData() {
       this.loadingShow();
-      db.collection("userData")
+      $db.collection("userData")
         .doc(this.$route.params.key)
         .get()
         .then(doc => {

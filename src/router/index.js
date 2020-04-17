@@ -6,7 +6,7 @@ import VueAxios from "vue-axios";
 import axios from "axios";
 import VueCryptojs from "vue-cryptojs";
 import VueQRCodeComponent from "vue-qrcode-component";
-import config from '@/config/environment';
+
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 Vue.use(VueCryptojs);
@@ -20,11 +20,6 @@ Vue.component("qr-code", VueQRCodeComponent);
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
-
-// Initialize Firebase
-firebase.initializeApp(config.FIREBASE_CONFIG);
-export const db = firebase.firestore();
-export const auth = firebase.auth();
 
 Vue.mixin({
   data() {

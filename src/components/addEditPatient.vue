@@ -213,7 +213,7 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
+import { $db } from '@/api/firebase';
 import { getPatientDetailById } from "../api";
 export default {
   props: ["sendData"],
@@ -279,8 +279,8 @@ export default {
     },
     async saveData() {
       let refs = this.isAddMode
-        ? db.collection("patientData")
-        : db.collection("patientData").doc(this.patientKey);
+        ? $db.collection("patientData")
+        : $db.collection("patientData").doc(this.patientKey);
 
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
@@ -313,7 +313,7 @@ export default {
 
       this.isDisabled = true;
 
-      let checkUsername = await db
+      let checkUsername = await $db
         .collection("patientData")
         .where("username", "==", this.patientData.username)
         .where("hospitalKey", "==", hospitalKey)
@@ -384,7 +384,7 @@ export default {
       this.patientData.dateOfAdmit = this.dateTime.date;
       this.patientData.dateOfBirth = this.dateTime.date;
 
-      let refs = db
+      let refs = $db
         .collection("patientRoom")
         .where(
           "hospitalKey",

@@ -170,8 +170,8 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
-import { getPatientDetailById } from '../api';
+import { $db } from "@/api/firebase";
+import { getPatientDetailById } from "../api";
 export default {
   props: ["dataKey", "dataRoute"],
   data() {
@@ -216,7 +216,7 @@ export default {
       }
     },
     loadRoom() {
-      let refs = db
+      let refs = $db
         .collection("patientRoom")
         .where(
           "hospitalKey",
@@ -254,12 +254,12 @@ export default {
       });
     },
     loadPatientDiagnosis() {
-      let refs = db
+      let refs = $db
         .collection("patientLog")
         .where("patientKey", "==", this.dataKey);
 
       this.syncDiagnosis = refs.onSnapshot(doc => {
-        db.collection("patientData")
+        $db.collection("patientData")
           .doc(this.dataKey)
           .update({
             isRead: true

@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { $db } from "@/api/firebase";
 import { listRoom } from "../api";
 
 export default {
@@ -129,7 +129,7 @@ export default {
     async addNewRoom() {
       this.loadingShow();
       let date = await this.getDate();
-      db.collection("patientRoom")
+      $db.collection("patientRoom")
         .add({
           name: this.roomName,
           hospitalKey: this.$q.localStorage.getItem("hospitalKey"),
@@ -147,7 +147,7 @@ export default {
     },
     loadPatientData() {
       this.loadingShow();
-      db.collection("patientData")
+      $db.collection("patientData")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
@@ -160,7 +160,7 @@ export default {
         });
     },
     loadPatientRoom() {
-      // this.isListenPatientRoom = db
+      // this.isListenPatientRoom = $db
       //   .collection("patientRoom")
       //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
       //   .onSnapshot(doc => {

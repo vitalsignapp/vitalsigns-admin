@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
+import { $db } from "@/api/firebase";
 import patientDetails from "../components/patientDetails.vue";
 import addEditPatient from "../components/addEditPatient.vue";
 export default {
@@ -151,7 +151,7 @@ export default {
         showNotify = !this.patient.isShowNotify;
       }
 
-      db.collection("patientData")
+      $db.collection("patientData")
         .doc(this.$route.params.key)
         .update({
           isShowNotify: showNotify
@@ -180,17 +180,17 @@ export default {
           this.loadingShow();
 
           setTimeout(() => {
-            db.collection("patientData")
+            $db.collection("patientData")
               .doc(this.$route.params.key)
               .delete()
               .then(() => {
-                db.collection("patientLog")
+                $db.collection("patientLog")
                   .where("patientKey", "==", this.$route.params.key)
                   .get()
                   .then(doc => {
                     let counter = 0;
                     doc.forEach(element => {
-                      db.collection("patientLog")
+                      $db.collection("patientLog")
                         .doc(element.id)
                         .delete()
                         .then(() => {

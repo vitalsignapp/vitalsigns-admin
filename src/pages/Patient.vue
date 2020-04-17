@@ -250,7 +250,7 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
+import { $db } from "@/api/firebase";
 import patientDetails from "../components/patientDetails.vue";
 import addEditPatient from "../components/addEditPatient.vue";
 import { listRoom, listPatient } from "../api";
@@ -321,7 +321,7 @@ export default {
         showNotify = !currentPatientDataSnapshot.isShowNotify;
       }
 
-      db.collection("patientData")
+      $db.collection("patientData")
         .doc(this.patientKey)
         .update({
           isShowNotify: showNotify
@@ -341,7 +341,7 @@ export default {
 
       this.isShowDetails = false;
 
-      let refs = db.collection("patientData").doc(key);
+      let refs = $db.collection("patientData").doc(key);
 
       refs
         .update({
@@ -390,18 +390,18 @@ export default {
           this.loadingShow();
 
           setTimeout(() => {
-            db.collection("patientData")
+            $db.collection("patientData")
               .doc(this.patientKey)
               .delete()
               .then(() => {
                 console.log(">>>>>>>>>>>>>>> patientData",)
-                db.collection("patientLog")
+                $db.collection("patientLog")
                   .where("patientKey", "==", this.patientKey)
                   .get()
                   .then(doc => {
                     let counter = 0;
                     doc.forEach(element => {
-                      db.collection("patientLog")
+                      $db.collection("patientLog")
                         .doc(element.id)
                         .delete()
                         .then(() => {
@@ -430,7 +430,7 @@ export default {
         " " +
         newYear;
 
-      // let refs = db.collection("patientRoom")
+      // let refs = $db.collection("patientRoom")
       //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"));
 
       this.loadingShow();
@@ -470,7 +470,7 @@ export default {
       this.loadingHide();
     },
     loadPatient() {
-      let refs = db
+      let refs = $db
         .collection("patientData")
         .where(
           "hospitalKey",
@@ -502,7 +502,7 @@ export default {
       });
     },
     loadPatientLog() {
-      let refs = db.collection("patientLog");
+      let refs = $db.collection("patientLog");
 
       this.syncCheckLog = refs.onSnapshot(doc => {
         let temp = [];

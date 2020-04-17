@@ -50,19 +50,19 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { $db } from "@/api/firebase";
 export default {
   data() {
     return {};
   },
   methods: {
     testConnect() {
-      db.collection("testConnect").add({
+      $db.collection("testConnect").add({
         test: true
       });
     },
     getHospital() {
-      db.collection("hospital")
+      $db.collection("hospital")
         .get()
         .then(doc => {
           let temp = [];
@@ -73,7 +73,7 @@ export default {
         });
     },
     getPatientData() {
-      db.collection("patientData")
+      $db.collection("patientData")
         .get()
         .then(doc => {
           let temp = [];
@@ -84,7 +84,7 @@ export default {
         });
     },
     getPatientLog() {
-      db.collection("patientLog")
+      $db.collection("patientLog")
         .get()
         .then(doc => {
           let temp = [];
@@ -95,7 +95,7 @@ export default {
         });
     },
     getPatientRoom() {
-      db.collection("patientRoom")
+      $db.collection("patientRoom")
         .get()
         .then(doc => {
           let temp = [];
@@ -106,7 +106,7 @@ export default {
         });
     },
     getUserData() {
-      db.collection("userData")
+      $db.collection("userData")
         .get()
         .then(doc => {
           let temp = [];
@@ -117,7 +117,7 @@ export default {
         });
     },
     getVersion() {
-      db.collection("version")
+      $db.collection("version")
         .get()
         .then(doc => {
           let temp = [];
@@ -133,7 +133,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("hospital")
+        $db.collection("hospital")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -147,7 +147,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("patientData")
+        $db.collection("patientData")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -161,7 +161,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("patientLog")
+        $db.collection("patientLog")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -175,7 +175,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("patientRoom")
+        $db.collection("patientRoom")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -189,7 +189,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("userData")
+        $db.collection("userData")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -203,7 +203,7 @@ export default {
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        db.collection("version")
+        $db.collection("version")
           .doc(eleKey)
           .set(element)
           .then(() => {
@@ -217,7 +217,7 @@ export default {
         let eKey = element.key;
         element.username = element.HN;
         delete element.HN;
-        db.collection("patientData")
+        $db.collection("patientData")
           .doc(eKey)
           .set(element)
           .then(() => {

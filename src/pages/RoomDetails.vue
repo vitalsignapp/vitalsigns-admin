@@ -566,7 +566,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { $db } from "@/api/firebase";
 import { listPatientsByRoomKey } from "../api";
 
 export default {
@@ -636,17 +636,17 @@ export default {
           cancel: { textColor: "black", flat: true }
         })
         .onOk(() => {
-          db.collection("patientData")
+          $db.collection("patientData")
             .doc(this.currentPatientData.key)
             .delete()
             .then(() => {
-              db.collection("patientLog")
+              $db.collection("patientLog")
                 .where("patientKey", "==", this.currentPatientData.key)
                 .get()
                 .then(doc => {
                   let counter = 0;
                   doc.forEach(element => {
-                    db.collection("patientLog")
+                    $db.collection("patientLog")
                       .doc(element.id)
                       .delete()
                       .then(() => {
@@ -682,7 +682,7 @@ export default {
 
       this.popUpDialog(titleText, contentText);
 
-      db.collection("patientData")
+      $db.collection("patientData")
         .doc(this.currentPatientData.key)
         .update({
           isShowNotify: showNotify
@@ -694,19 +694,19 @@ export default {
       // console.log(this.currentPatientData);
     },
     transferPatientDataToChoosedRoom() {
-      db.collection("patientData")
+      $db.collection("patientData")
         .where("patientRoomKey", "==", this.roomKey)
         .get()
         .then(doc => {
           let counter = 0;
 
           doc.forEach(element => {
-            db.collection("patientLog")
+            $db.collection("patientLog")
               .where("patientKey", "==", element.id)
               .get()
               .then(doc => {
                 doc.forEach(pelement => {
-                  db.collection("patientLog")
+                  $db.collection("patientLog")
                     .doc(pelement.id)
                     .update({
                       patientRoomKey: this.roomChoosed
@@ -714,7 +714,7 @@ export default {
                 });
               });
 
-            db.collection("patientData")
+            $db.collection("patientData")
               .doc(element.id)
               .update({
                 patientRoomKey: this.roomChoosed
@@ -725,7 +725,7 @@ export default {
                   this.deletePatientConfirmation = false;
                   // this.$router.push("/roomdetails/" + this.roomChoosed);
 
-                  db.collection("patientRoom")
+                  $db.collection("patientRoom")
                     .doc(this.roomKey)
                     .delete()
                     .then(() => {
@@ -741,7 +741,7 @@ export default {
       console.log("CHECK DELETE ROOm");
       this.loadingShow();
       // ต้องเช็คว่าภายในห้องนี้มีผู้ป่วยอยู่แล้วหรือไม่
-      db.collection("patientData")
+      $db.collection("patientData")
         .where("patientRoomKey", "==", this.roomKey)
         .get()
         .then(doc => {
@@ -770,7 +770,7 @@ export default {
               .onOk(validate => {
                 this.loadingShow();
 
-                db.collection("patientRoom")
+                $db.collection("patientRoom")
                   .doc(this.roomKey)
                   .delete()
                   .then(() => {
@@ -788,7 +788,7 @@ export default {
         this.loadingHide();
         return;
       }
-      db.collection("patientRoom")
+      $db.collection("patientRoom")
         .where("name", "==", this.roomName)
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
@@ -798,13 +798,13 @@ export default {
             this.popUpDialog("ผิดพลาด", "พบชื่อห้องซ้ำ");
             this.loadingHide();
           } else {
-            db.collection("patientRoom")
+            $db.collection("patientRoom")
               .doc(this.roomKey)
               .update({
                 name: this.roomName
               })
               .then(() => {
-                db.collection("patientRoom")
+                $db.collection("patientRoom")
                   .doc(this.roomKey)
                   .get()
                   .then(doc => {
@@ -884,7 +884,7 @@ export default {
       }
     },
     saveData() {
-      let refs = db.collection("patientData");
+      let refs = $db.collection("patientData");
 
       this.$refs.username.validate();
       this.$refs.name.validate();
@@ -947,7 +947,7 @@ export default {
       }
     },
     loadPatientRoom() {
-      db.collection("patientRoom")
+      $db.collection("patientRoom")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
@@ -972,7 +972,7 @@ export default {
       this.currentDate = await this.getDate();
 
       this.loadingShow();
-      db.collection("patientRoom")
+      $db.collection("patientRoom")
         .doc(this.roomKey)
         .get()
         .then(doc => {
@@ -991,7 +991,7 @@ export default {
       });
     },
     loadPatientLogInThisRoom() {
-      db.collection("patientLog")
+      $db.collection("patientLog")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         // .where("patientRoomKey", "==", this.roomKey)
         .get()

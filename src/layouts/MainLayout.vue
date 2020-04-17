@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { db } from "../router/index.js";
+import { $db } from "@/api/firebase";
 export default {
   name: "MainLayout",
   data() {
@@ -179,7 +179,7 @@ export default {
       }
     },
     loadVersion() {
-      let refs = db.collection("version").doc("vitalsign-admin");
+      let refs = $db.collection("version").doc("vitalsign-admin");
 
       this.syncVersion = refs.onSnapshot(result => {
         if (this.version != result.data().version) {

@@ -74,11 +74,8 @@
 </template>
 
 <script>
-import { auth } from "@/router";
-import { db } from "@/router";
-import axios from "axios";
-import { login } from "../api";
-import config from '@/config/environment';
+import { login } from "@/api";
+import { $db, $auth } from "@/api/firebase";
 
 export default {
   name: "PageIndex",
@@ -102,32 +99,29 @@ export default {
   methods: {
     signIn() {
       let _this = this;
-      const apiHost = config.API_HOST;
       this.loadingShow();
-
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
 
       login({
         email: _this.email,
-        password: _this.password,
-      }).then((res) => {
-        const data = {...res};
-        const setData = {
-          key: data.id,
-          ...data
-        }
-        _this.$q.localStorage.set("userData", setData);
-        _this.$q.localStorage.set(
-          "hospitalKey",
-          data.hospitalKey
-        );
-        this.$router.push("/patient");
-        _this.loadingHide();
-      }).catch((e) => {
-        console.log('e: ', e);
-        _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
-        _this.loadingHide();
-      });
+        password: _this.password
+      })
+        .then(res => {
+          const data = { ...res };
+          const setData = {
+            key: data.id,
+            ...data
+          };
+          _this.$q.localStorage.set("userData", setData);
+          _this.$q.localStorage.set("hospitalKey", data.hospitalKey);
+          this.$router.push("/patient");
+          _this.loadingHide();
+        })
+        .catch(e => {
+          console.log("e: ", e);
+          _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
+          _this.loadingHide();
+        });
     },
     changeLanguage(lang) {
       this.$i18n.locale = lang;
@@ -135,7 +129,7 @@ export default {
     loadHospitalNameFromPrefix() {
       let domainName = window.location.hostname;
       let preFix = domainName.split(".")[1];
-      db.collection("hospital")
+      $db.collection("hospital")
         .where("domainPrefix", "==", preFix)
         .get()
         .then(doc => {

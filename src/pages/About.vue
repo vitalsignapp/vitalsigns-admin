@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import { db, auth } from "../router";
+import { $db, $auth } from '@/api/firebase';
 export default {
   data() {
     return {
@@ -239,7 +239,7 @@ export default {
 
       this.isDisabled = true;
 
-      let refs = db
+      let refs = $db
         .collection("userData")
         .doc(this.userData.key)
         .update({ password: this.confirmpass })
@@ -271,7 +271,7 @@ export default {
     saveConfig() {
       this.loadingShow();
 
-      db.collection("hospital")
+      $db.collection("hospital")
         .doc(this.$q.localStorage.getItem("hospitalKey"))
         .update({
           vitalSignsConfig: this.vitalSignsArr
@@ -283,7 +283,7 @@ export default {
     loadUserData() {
       let userKey = this.$q.localStorage.getItem("userData").key;
 
-      let refs = db
+      let refs = $db
         .collection("userData")
         .doc(userKey)
         .get();
@@ -300,7 +300,7 @@ export default {
     },
     loadCurrentConfig() {
       this.loadingShow();
-      db.collection("hospital")
+      $db.collection("hospital")
         .doc(this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
