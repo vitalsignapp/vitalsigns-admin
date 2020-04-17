@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import { $db, $auth } from '@/api/firebase';
+import { $db } from '@/api/firebase';
 export default {
   data() {
     return {

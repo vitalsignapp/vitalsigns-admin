@@ -11,6 +11,11 @@ const FIREBASE_CONFIG = {
   measurementId: "G-MEX9V112SR"
 };
 
+export {
+  API_HOST,
+  FIREBASE_CONFIG,
+};
+
 export default {
   API_HOST,
   FIREBASE_CONFIG,
