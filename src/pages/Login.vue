@@ -74,10 +74,11 @@
 </template>
 
 <script>
-import { auth } from "../router";
-import { db } from "../router";
+import { auth } from "@/router";
+import { db } from "@/router";
 import axios from "axios";
 import { login } from "../api";
+import config from '@/config/environment';
 
 export default {
   name: "PageIndex",
@@ -101,8 +102,7 @@ export default {
   methods: {
     signIn() {
       let _this = this;
-      console.info(process.env)
-      const apiHost = process.env.API_HOST;
+      const apiHost = config.API_HOST;
       this.loadingShow();
 
       let hospitalKey = this.$q.localStorage.getItem("hospitalKey");

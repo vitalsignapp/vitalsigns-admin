@@ -6,6 +6,7 @@ import VueAxios from "vue-axios";
 import axios from "axios";
 import VueCryptojs from "vue-cryptojs";
 import VueQRCodeComponent from "vue-qrcode-component";
+import config from '@/config/environment';
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 Vue.use(VueCryptojs);
@@ -20,19 +21,8 @@ Vue.component("qr-code", VueQRCodeComponent);
  * with the Router instance.
  */
 
-var firebaseConfig = {
-  apiKey: "AIzaSyDkfuz9optU8t14BZJBgJ9JNYdH4Omdh6A",
-  authDomain: "vitalsign-2bc48.firebaseapp.com",
-  databaseURL: "https://vitalsign-2bc48.firebaseio.com",
-  projectId: "vitalsign-2bc48",
-  storageBucket: "vitalsign-2bc48.appspot.com",
-  messagingSenderId: "67633726727",
-  appId: "1:67633726727:web:b535d92a91ec80695bb1a2",
-  measurementId: "G-MEX9V112SR"
-};
-
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(config.FIREBASE_CONFIG);
 export const db = firebase.firestore();
 export const auth = firebase.auth();
 
