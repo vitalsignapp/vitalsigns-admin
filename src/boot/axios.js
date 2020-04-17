@@ -18,4 +18,6 @@ $axios.interceptors.request.use(async (config) => {
 
 Vue.prototype.$axios = $axios;
 
+export default { $axios }
+
 export { $axios };
