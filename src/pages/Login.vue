@@ -123,7 +123,8 @@ export default {
         );
         this.$router.push("/patient");
         _this.loadingHide();
-      }).catch(() => {
+      }).catch((e) => {
+        console.log('e: ', e);
         _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
         _this.loadingHide();
       });
