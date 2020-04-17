@@ -82,8 +82,16 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import { login } from '@/api';
 import { $db } from '@/api/firebase';
+=======
+import { auth } from "@/router";
+import { db } from "@/router";
+import axios from "axios";
+import { login } from "../api";
+import config from '@/config/environment';
+>>>>>>> feat: add path alias
 
 export default {
   name: 'PageIndex',
@@ -107,6 +115,10 @@ export default {
   methods: {
     signIn() {
       let _this = this;
+<<<<<<< HEAD
+=======
+      const apiHost = config.API_HOST;
+>>>>>>> feat: add path alias
       this.loadingShow();
 
       login({

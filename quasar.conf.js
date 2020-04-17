@@ -65,13 +65,18 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
+<<<<<<< HEAD
       extendWebpack(cfg) {
+=======
+      extendWebpack(cfg) { 
+>>>>>>> feat: add path alias
         cfg.resolve.alias = {
           ...cfg.resolve.alias, // This adds the existing alias
 
           // Add your own alias like this
           '@': path.resolve(__dirname, './src'),
         }
+<<<<<<< HEAD
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -81,6 +86,8 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+=======
+>>>>>>> feat: add path alias
       }
     },
 
