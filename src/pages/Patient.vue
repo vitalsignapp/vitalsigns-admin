@@ -253,7 +253,7 @@
 import { $db } from "@/api/firebase";
 import patientDetails from "../components/patientDetails.vue";
 import addEditPatient from "../components/addEditPatient.vue";
-import { listRoom, listPatient } from "../api";
+import { listRoom, listPatient, getPatientLogById } from "../api";
 
 export default {
   components: {
@@ -395,25 +395,23 @@ export default {
               .delete()
               .then(() => {
                 console.log(">>>>>>>>>>>>>>> patientData",)
-                $db.collection("patientLog")
-                  .where("patientKey", "==", this.patientKey)
-                  .get()
-                  .then(doc => {
-                    let counter = 0;
-                    doc.forEach(element => {
-                      $db.collection("patientLog")
-                        .doc(element.id)
-                        .delete()
-                        .then(() => {
+                getPatientLogById(this.patientKey).then((doc) => {
+                  let counter = 0;
+                  if (doc && Array.isArray(doc) && doc.length > 0) {
+                    doc.forEach((element) => {
+                      $db.collection("patientLog").doc(element.id)
+                        .delete().then(() => {
                           counter++;
                           if (counter == doc.size) {
                             this.loadingHide();
                           }
                         });
                     });
-
-                    this.isShowDetails = false;
-                  });
+                  } else {
+                    this.loadingHide();
+                  }
+                  this.isShowDetails = false;
+                });
               });
           }, 500);
         });
@@ -457,8 +455,8 @@ export default {
       const transform = (data = [])=> {
         return data = data.map(d => {
           return {
-            ...d, 
-            key: d.id, 
+            ...d,
+            key: d.id,
             hospitalKey: hospitalId,
             lastRecord: null,
           };
@@ -469,9 +467,9 @@ export default {
       this.patientList = await listPatient(hospitalId).then(transform);
       this.loadingHide();
     },
-    
+
     // loadPatient() {
-      
+
     //   let refs = db
     //     .collection("patientData")
     //     .where(
@@ -505,7 +503,6 @@ export default {
     // },
     loadPatientLog() {
       let refs = $db.collection("patientLog");
-
       this.syncCheckLog = refs.onSnapshot(doc => {
         let temp = [];
         doc.forEach(result => {

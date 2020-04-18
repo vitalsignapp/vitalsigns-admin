@@ -42,6 +42,13 @@ export function getPatientDetailById(patientID) {
     .catch(handleError);
 }
 
+export function getPatientLogById(patientID) {
+  const url = `/patient/${patientID}/log`;
+  return $axios.get(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 function handleError(err) {
   const { status, data } = err.response;
   const { message } = data;

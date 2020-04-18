@@ -102,6 +102,7 @@
 import { $db } from "@/api/firebase";
 import patientDetails from "../components/patientDetails.vue";
 import addEditPatient from "../components/addEditPatient.vue";
+import { getPatientLogById } from "./../api"
 export default {
   components: {
     patientDetails,
@@ -184,25 +185,22 @@ export default {
               .doc(this.$route.params.key)
               .delete()
               .then(() => {
-                $db.collection("patientLog")
-                  .where("patientKey", "==", this.$route.params.key)
-                  .get()
-                  .then(doc => {
-                    let counter = 0;
+                getPatientLogById(this.$route.params.key).then((doc) => {
+                  let counter = 0;
+                  if (doc && Array.isArray(doc) && doc.length > 0) {
                     doc.forEach(element => {
-                      $db.collection("patientLog")
-                        .doc(element.id)
-                        .delete()
-                        .then(() => {
-                          counter++;
-                          if (counter == doc.size) {
-                            this.loadingHide();
-                          }
-                        });
+                      $db.collection("patientLog").doc(element.id).delete().then(() => {
+                        counter++;
+                        if (counter == doc.size) {
+                          this.loadingHide();
+                        }
+                      });
                     });
-
-                    this.$router.push("/patient");
-                  });
+                  } else {
+                    this.loadingHide();
+                  }
+                  this.$router.push("/patient");
+                });
               });
           }, 500);
         });

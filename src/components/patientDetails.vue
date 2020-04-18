@@ -171,7 +171,7 @@
 
 <script>
 import { $db } from "@/api/firebase";
-import { getPatientDetailById } from "../api";
+import { getPatientDetailById, getPatientLogById } from "../api";
 export default {
   props: ["dataKey", "dataRoute"],
   data() {
@@ -254,21 +254,11 @@ export default {
       });
     },
     loadPatientDiagnosis() {
-      let refs = $db
-        .collection("patientLog")
-        .where("patientKey", "==", this.dataKey);
-
-      this.syncDiagnosis = refs.onSnapshot(doc => {
-        $db.collection("patientData")
-          .doc(this.dataKey)
-          .update({
-            isRead: true
-          });
-
+      getPatientLogById(this.dataKey).then((doc) => {
+        $db.collection("patientData").doc(this.dataKey).update({ isRead: true });
         let temp = [];
         doc.forEach(result => {
-          let dateAdmit = result.data().inputDate;
-
+          let dateAdmit = result.inputDate;
           let newDate =
             dateAdmit.substr(0, 2) +
             " " +
@@ -276,13 +266,14 @@ export default {
             " " +
             dateAdmit.substr(6) +
             " รอบ " +
-            result.data().inputRound +
+            result.inputRound +
             ":00 น.";
 
           let setData = {
             key: result.id,
             dateAndRound: newDate,
-            ...result.data()
+            ...result,
+            symptomsCheck: Array.isArray(result.symptomsCheck) ? result.symptomsCheck : [],
           };
 
           temp.push(setData);
@@ -291,9 +282,7 @@ export default {
         temp.sort((a, b) => {
           return b.microtime - a.microtime;
         });
-
         this.diagnosisList = temp;
-
         this.loadingHide();
       });
     }
@@ -333,8 +322,12 @@ export default {
     this.loadPaitent();
   },
   beforeDestroy() {
-    this.syncDiagnosis();
-    this.syncRoom();
+    if (typeof this.syncDiagnosis === "function") {
+      this.syncDiagnosis();
+    }
+    if (typeof this.syncRoom === "function") {
+      this.syncRoom();
+    }
     // this.syncPatient();
   }
 };

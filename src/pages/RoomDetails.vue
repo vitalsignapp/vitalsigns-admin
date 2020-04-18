@@ -567,7 +567,7 @@
 
 <script>
 import { $db } from "@/api/firebase";
-import { listPatientsByRoomKey } from "../api";
+import { listPatientsByRoomKey, getPatientLogById } from "../api";
 
 export default {
   data() {
@@ -640,23 +640,21 @@ export default {
             .doc(this.currentPatientData.key)
             .delete()
             .then(() => {
-              $db.collection("patientLog")
-                .where("patientKey", "==", this.currentPatientData.key)
-                .get()
-                .then(doc => {
-                  let counter = 0;
+              getPatientLogById(this.currentPatientData.key).then((doc) => {
+                let counter = 0;
+                if (doc && Array.isArray(doc) && doc.length > 0) {
                   doc.forEach(element => {
-                    $db.collection("patientLog")
-                      .doc(element.id)
-                      .delete()
-                      .then(() => {
-                        counter++;
-                        if (counter == doc.size) {
-                          this.loadingHide();
-                        }
-                      });
+                    $db.collection("patientLog").doc(element.id).delete().then(() => {
+                      counter++;
+                      if (counter == doc.size) {
+                        this.loadingHide();
+                      }
+                    });
                   });
-                });
+                } else {
+                  this.loadingHide();
+                }
+              });
             });
         });
     },
@@ -701,18 +699,13 @@ export default {
           let counter = 0;
 
           doc.forEach(element => {
-            $db.collection("patientLog")
-              .where("patientKey", "==", element.id)
-              .get()
-              .then(doc => {
-                doc.forEach(pelement => {
-                  $db.collection("patientLog")
-                    .doc(pelement.id)
-                    .update({
-                      patientRoomKey: this.roomChoosed
-                    });
-                });
+            getPatientLogById(element.id).then((doc) => {
+              doc.forEach(pelement => {
+                $db.collection("patientLog").doc(pelement.id).update({
+                    patientRoomKey: this.roomChoosed
+                  });
               });
+            });
 
             $db.collection("patientData")
               .doc(element.id)
@@ -991,9 +984,7 @@ export default {
       });
     },
     loadPatientLogInThisRoom() {
-      $db.collection("patientLog")
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
-        // .where("patientRoomKey", "==", this.roomKey)
+      $db.collection("patientLog").where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
         .then(doc => {
           let dataTemp = [];
