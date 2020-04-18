@@ -1,0 +1,3 @@
+src/statics/*
+quasar.conf.js
+babel.config.js
