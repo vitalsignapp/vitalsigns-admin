@@ -72,7 +72,7 @@ module.exports = function (ctx) {
           // Add your own alias like this
           '@': path.resolve(__dirname, './src'),
         }
-        /*cfg.module.rules.push({
+        cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -80,7 +80,7 @@ module.exports = function (ctx) {
           options: {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
-        })*/
+        })
       }
     },
 
