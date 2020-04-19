@@ -1,3 +1,5 @@
 src/statics/*
 quasar.conf.js
 babel.config.js
+jest.config.js
+.postcssrc.js

@@ -6,8 +6,8 @@
           class="bg-primary-500 text-white q-pa-md rounded-borders"
           style="width:90%;margin:auto"
         >
-          <div>{{userData.name + " " + userData.surname}}</div>
-          <div>{{userData.email}}</div>
+          <div>{{ userData.name + ' ' + userData.surname }}</div>
+          <div>{{ userData.email }}</div>
         </div>
       </div>
 
@@ -23,15 +23,20 @@
         </div>
 
         <div class="row items-center q-pt-md">
-          <div class="col-1 font-body q-pr-sm" style="width:fit-content">เปลี่ยนภาษา</div>
+          <div class="col-1 font-body q-pr-sm" style="width:fit-content">
+            เปลี่ยนภาษา
+          </div>
           <div style="width:70px;" class="col-2">
-            <div class="row bg-placeholder q-pa-xs round" style="border-radius:15px;">
+            <div
+              class="row bg-placeholder q-pa-xs round"
+              style="border-radius:15px;"
+            >
               <div class="col">
                 <q-btn
                   flat
                   round
                   size="8px"
-                  :class=" $i18n.locale != 'th-th' ? 'backdrop' : null"
+                  :class="$i18n.locale != 'th-th' ? 'backdrop' : null"
                   @click="(isChangeLanguage = 'th-th'), changeLanguage('th-th')"
                 >
                   <q-img src="../statics/pic/Thai.png"></q-img>
@@ -42,7 +47,7 @@
                   flat
                   round
                   size="8px"
-                  :class=" $i18n.locale != 'en-us' ? 'backdrop' : null"
+                  :class="$i18n.locale != 'en-us' ? 'backdrop' : null"
                   @click="(isChangeLanguage = 'en-us'), changeLanguage('en-us')"
                 >
                   <q-img src="../statics/pic/english.png"></q-img>
@@ -72,9 +77,11 @@
         <q-separator class="q-my-lg" />
 
         <div class="q-mb-sm font-h4">About project</div>
-        <div
-          class="font-body q-mb-sm"
-        >VitalSign เป็นระบบส่งผลการตรวจร่างการ เบื้องต้นด้วยตนเอง เพื่อลดความเสี่ยงให้ บุคลากรทางการแพทย์และเพิ่มความสามารถในการรองรับผู้ป่วยให้กับโรงพยาบาล</div>
+        <div class="font-body q-mb-sm">
+          VitalSign เป็นระบบส่งผลการตรวจร่างการ เบื้องต้นด้วยตนเอง
+          เพื่อลดความเสี่ยงให้
+          บุคลากรทางการแพทย์และเพิ่มความสามารถในการรองรับผู้ป่วยให้กับโรงพยาบาล
+        </div>
 
         <!-- <div class="q-mb-sm font-h4">Contributor</div>
 
@@ -102,7 +109,11 @@
           </div>
         </div>-->
 
-        <a href="https://vitalsignapp.com/" target="__blank" style="text-decoration:none">
+        <a
+          href="https://vitalsignapp.com/"
+          target="__blank"
+          style="text-decoration:none"
+        >
           <span class="color-primary-500 font-body">
             <span>อ่านเพิ่มเติม</span>
           </span>
@@ -122,16 +133,27 @@
     <q-dialog v-model="isShowConfigVitalSigns" maximized>
       <q-card class="q-pa-md bg-surface">
         <div align="right">
-          <q-btn dense round flat v-close-popup class="relative-position z-top color-black">
+          <q-btn
+            dense
+            round
+            flat
+            v-close-popup
+            class="relative-position z-top color-black"
+          >
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
-        <q-card-section class="dialog-container" style="max-width:360px;width:95%;margin:auto">
-          <div align="center" class="font-h4 q-pb-md">เลือกข้อมูลที่ต้องการให้คนไข้กรอก</div>
+        <q-card-section
+          class="dialog-container"
+          style="max-width:360px;width:95%;margin:auto"
+        >
+          <div align="center" class="font-h4 q-pb-md">
+            เลือกข้อมูลที่ต้องการให้คนไข้กรอก
+          </div>
           <div>
             <q-toolbar
               class="q-pa-xs"
-              v-for="(items,index) in vitalSignsArr"
+              v-for="(items, index) in vitalSignsArr"
               :key="index"
               @click="items.status = !items.status"
             >
@@ -146,7 +168,12 @@
           </div>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn @click="saveConfig()" label="บันทึก" style="min-width:80px;" class="button-action"></q-btn>
+          <q-btn
+            @click="saveConfig()"
+            label="บันทึก"
+            style="min-width:80px;"
+            class="button-action"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -154,7 +181,13 @@
     <q-dialog v-model="isChangePassword" maximized>
       <q-card class="q-pa-md bg-surface">
         <div align="right">
-          <q-btn dense round flat v-close-popup class="relative-position z-top color-black">
+          <q-btn
+            dense
+            round
+            flat
+            v-close-popup
+            class="relative-position z-top color-black"
+          >
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
@@ -166,11 +199,21 @@
             <div class="col-12">
               <span class="font-body">รหัสผ่านใหม่</span>
             </div>
-            <q-input outlined type="password" v-model="currentpass" placeholder="new password"></q-input>
+            <q-input
+              outlined
+              type="password"
+              v-model="currentpass"
+              placeholder="new password"
+            ></q-input>
           </div>
           <div class="q-mt-md">
             <span class="font-body">ยืนยันรหัสอีกครั้ง</span>
-            <q-input outlined type="password" v-model="confirmpass" placeholder="confirm password"></q-input>
+            <q-input
+              outlined
+              type="password"
+              v-model="confirmpass"
+              placeholder="confirm password"
+            ></q-input>
           </div>
         </q-card-section>
         <q-card-actions align="center">
@@ -191,47 +234,47 @@ import { $db } from '@/api/firebase';
 export default {
   data() {
     return {
-      currentpass: "",
-      confirmpass: "",
+      currentpass: '',
+      confirmpass: '',
       isChangeLanguage: this.$i18n.locale,
       isAdmin: false,
       isShowConfigVitalSigns: false,
       isChangePassword: false,
       vitalSignsArr: [
         {
-          sym: "อุณหภูมิร่างกาย",
-          status: false
+          sym: 'อุณหภูมิร่างกาย',
+          status: false,
         },
         {
-          sym: "ค่าออกซิเจนในเลือด",
-          status: false
+          sym: 'ค่าออกซิเจนในเลือด',
+          status: false,
         },
         {
-          sym: "ค่าความดันเลือด",
-          status: false
+          sym: 'ค่าความดันเลือด',
+          status: false,
         },
         {
-          sym: "อัตราการเต้นของหัวใจ",
-          status: false
+          sym: 'อัตราการเต้นของหัวใจ',
+          status: false,
         },
         {
-          sym: "อาการตอนนี้",
-          status: false
-        }
+          sym: 'อาการตอนนี้',
+          status: false,
+        },
       ],
 
-      isDisabled: false
+      isDisabled: false,
     };
   },
   methods: {
     resetpass() {
-      if (this.currentpass == "" || this.confirmpass == "") {
-        this.vnotify("กรุณากรอกข้อมูลให้ครบถ้วน");
+      if (this.currentpass == '' || this.confirmpass == '') {
+        this.vnotify('กรุณากรอกข้อมูลให้ครบถ้วน');
         return;
       }
 
       if (this.currentpass != this.confirmpass) {
-        this.vnotify("รหัสผ่านไม่ตรงกัน");
+        this.vnotify('รหัสผ่านไม่ตรงกัน');
         return;
       }
 
@@ -240,13 +283,13 @@ export default {
       this.isDisabled = true;
 
       let refs = $db
-        .collection("userData")
+        .collection('userData')
         .doc(this.userData.key)
         .update({ password: this.confirmpass })
         .then(() => {
           setTimeout(() => {
             this.loadingHide();
-            this.vnotify("เปลื่ยนรหัสผ่านแล้ว");
+            this.vnotify('เปลื่ยนรหัสผ่านแล้ว');
             this.isChangePassword = false;
             this.isDisabled = false;
           }, 1000);
@@ -256,14 +299,14 @@ export default {
       // TODO : message ต้องเปลี่ยน
       this.$q
         .dialog({
-          title: "ออกจากระบบ",
-          message: "คุณต้องการออกจากระบบใช่หรือไม่?",
+          title: 'ออกจากระบบ',
+          message: 'คุณต้องการออกจากระบบใช่หรือไม่?',
           cancel: true,
-          ok: { color: "orange-5" }
+          ok: { color: 'orange-5' },
         })
         .onOk(() => {
           auth.signOut().then(() => {
-            this.$router.push("/");
+            this.$router.push('/');
             this.$q.localStorage.clear();
           });
         });
@@ -271,20 +314,21 @@ export default {
     saveConfig() {
       this.loadingShow();
 
-      $db.collection("hospital")
-        .doc(this.$q.localStorage.getItem("hospitalKey"))
+      $db
+        .collection('hospital')
+        .doc(this.$q.localStorage.getItem('hospitalKey'))
         .update({
-          vitalSignsConfig: this.vitalSignsArr
+          vitalSignsConfig: this.vitalSignsArr,
         })
         .then(() => {
           this.loadingHide();
         });
     },
     loadUserData() {
-      let userKey = this.$q.localStorage.getItem("userData").key;
+      let userKey = this.$q.localStorage.getItem('userData').key;
 
       let refs = $db
-        .collection("userData")
+        .collection('userData')
         .doc(userKey)
         .get();
 
@@ -300,8 +344,9 @@ export default {
     },
     loadCurrentConfig() {
       this.loadingShow();
-      $db.collection("hospital")
-        .doc(this.$q.localStorage.getItem("hospitalKey"))
+      $db
+        .collection('hospital')
+        .doc(this.$q.localStorage.getItem('hospitalKey'))
         .get()
         .then(doc => {
           if (doc.data().vitalSignsConfig) {
@@ -310,11 +355,11 @@ export default {
 
           this.loadUserData();
         });
-    }
+    },
   },
   mounted() {
     this.loadCurrentConfig();
-  }
+  },
 };
 </script>
 
