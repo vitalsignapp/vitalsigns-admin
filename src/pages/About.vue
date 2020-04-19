@@ -230,7 +230,7 @@
 </template>
 
 <script>
-import { $db } from '@/api/firebase';
+import { $db, $auth } from '@/api/firebase';
 export default {
   data() {
     return {
@@ -282,7 +282,7 @@ export default {
 
       this.isDisabled = true;
 
-      let refs = $db
+      $db
         .collection('userData')
         .doc(this.userData.key)
         .update({ password: this.confirmpass })
@@ -305,7 +305,7 @@ export default {
           ok: { color: 'orange-5' },
         })
         .onOk(() => {
-          auth.signOut().then(() => {
+          $auth.signOut().then(() => {
             this.$router.push('/');
             this.$q.localStorage.clear();
           });
