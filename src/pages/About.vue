@@ -231,6 +231,8 @@
 
 <script>
 import { $db, $auth } from '@/api/firebase';
+import { logout } from './../api';
+
 export default {
   data() {
     return {
@@ -306,8 +308,10 @@ export default {
         })
         .onOk(() => {
           $auth.signOut().then(() => {
-            this.$router.push('/');
-            this.$q.localStorage.clear();
+            logout().then(() => {
+              this.$router.push('/');
+              this.$q.localStorage.clear();
+            });
           });
         });
     },

@@ -16,6 +16,14 @@ export function login({ email, password }) {
     .catch(handleError);
 }
 
+export function logout() {
+  const url = `/logout`;
+  return $axios
+    .get(url)
+    .then(() => Cookies.remove('access-token'))
+    .catch(handleError);
+}
+
 export function listRoom(hospitalId) {
   const url = `/ward/${hospitalId}`;
   return $axios
