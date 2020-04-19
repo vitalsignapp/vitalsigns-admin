@@ -498,9 +498,7 @@ export default {
     },
     async loadRoom() {
       this.dateTime = await this.getDate();
-
-      let newYear = Number(this.dateTime.date.substr(6)) + Number(543);
-
+      const newYear = Number(this.dateTime.date.substr(6)) + Number(543);
       this.currentDate =
         this.dateTime.date.substr(0, 2) +
         ' ' +
@@ -508,29 +506,7 @@ export default {
         ' ' +
         newYear;
 
-      // let refs = $db.collection("patientRoom")
-      //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"));
-
       this.loadingShow();
-
-      // this.syncRoom = refs.onSnapshot(doc => {
-      //   let temp = [];
-      //   doc.forEach(result => {
-      //     let setData = {
-      //       key: result.id,
-      //       ...result.data()
-      //     };
-      //     temp.push(setData);
-      //   });
-      //   temp.sort((a, b) => {
-      //     return a.name > b.name ? 1 : -1;
-      //   });
-
-      //   this.patientRoom = temp;
-      //   this.loadPatient();
-      //   return "ส่งข้อมูลเรียบร้อย";
-      // });
-
       const hospitalId = this.$q.localStorage.getItem('hospitalKey');
       const transform = (data = []) => {
         return (data = data
@@ -549,91 +525,36 @@ export default {
 
       this.patientRoom = await listRoom(hospitalId).then(transform);
       this.patientList = await listPatient(hospitalId).then(transform);
+
       this.loadingHide();
     },
-
-    // loadPatient() {
-
-    //   let refs = db
-    //     .collection("patientData")
-    //     .where(
-    //       "hospitalKey",
-    //       "==",
-    //       this.$q.localStorage.getItem("hospitalKey")
-    //     );
-
-    //   this.syncPatient = refs.onSnapshot(doc => {
-    //     let temp = [];
-    //     doc.forEach(result => {
-    //       let setData = {
-    //         key: result.id,
-    //         lastRecord: null,
-    //         ...result.data()
-    //       };
-
-    //       temp.push(setData);
-    //     });
-
-    //     temp.sort((a, b) => {
-    //       return a.name > b.name ? 1 : -1;
-    //     });
-
-    //     this.patientList = temp;
-
-    //     this.loadingHide();
-
-    //     // return "ส่งข้อมูลเรียบร้อย";
-    //   });
-    // },
     loadPatientLog() {
-      let refs = $db.collection('patientLog');
-      this.syncCheckLog = refs.onSnapshot(doc => {
-        let temp = [];
-        doc.forEach(result => {
-          let setMonth = result.data().inputDate.substr(3, 2);
-
+      this.patientList.forEach(async patientResult => {
+        let patientLogResults = await getPatientLogById(patientResult.key);
+        patientLogResults = patientLogResults.map(result => {
+          const setMonth = result.inputDate.substr(3, 2);
           let newMonth =
-            result.data().inputDate.substr(0, 2) +
-            ' ' +
-            this.showMonthName(setMonth);
-
+            result.inputDate.substr(0, 2) + ' ' + this.showMonthName(setMonth);
           let newDate =
-            result.data().inputDate.substr(0, 2) +
+            result.inputDate.substr(0, 2) +
             ' ' +
             this.showMonthName(setMonth) +
             ' ' +
-            result.data().inputDate.substr(6);
-
-          let setData = {
-            key: result.data().patientKey,
-            round: result.data().inputRound,
+            result.inputDate.substr(6);
+          return {
+            key: result.patientKey,
+            round: result.inputRound,
             dateShow: newMonth,
             date: newDate,
-            microtime: result.data().microtime,
+            microtime: result.microtime,
           };
-
-          temp.push(setData);
         });
-
-        temp.sort((a, b) => {
-          return b.microtime - a.microtime;
-        });
-
-        this.patientCheckLog = temp;
-
-        this.patientList.forEach(patientResult => {
-          let patientLength = temp.filter(x => {
-            return x.key == patientResult.key;
-          }).length;
-
-          if (patientLength) {
-            patientResult.lastRecord = temp.filter(x => {
-              return x.key == patientResult.key;
-            })[0];
-          } else {
-            patientResult.lastRecord = null;
-          }
-        });
+        patientLogResults.sort((a, b) => b.microtime - a.microtime);
+        if (patientLogResults.length) {
+          patientResult.lastRecord = patientLogResults[0];
+        } else {
+          patientResult.lastRecord = null;
+        }
       });
     },
   },
