@@ -6,12 +6,12 @@ export function login({ email, password }) {
   return $axios
     .post(url, { email: email, password: password })
     .then(response => {
-      if (response.data) {
-        return $axios.get(`/auth`).then(res => {
-          Cookies.set('access-token', res.data.token, { expires: '1M' }); //expired 15 minutes
-          return response.data;
-        });
+      const data = response.data;
+      if (data.data && data.token) {
+        Cookies.set('access-token', data.token);
+        return data.data;
       }
+      throw 'unauthorized';
     })
     .catch(handleError);
 }
