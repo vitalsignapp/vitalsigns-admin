@@ -163,6 +163,13 @@ Vue.mixin({
   },
 });
 
+const abc = Math.random() * 1000;
+if (parseInt(abc) % 2 === 0) {
+  console.log('y');
+} else {
+  console.log('x');
+}
+
 export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({

@@ -148,7 +148,7 @@ export default {
         }
       });
 
-      printPage.catch(error => {
+      printPage.catch(() => {
         alert('ไม่มีข้อมูล');
         window.close();
       });
@@ -234,7 +234,7 @@ export default {
         }
       });
 
-      printPage.catch(error => {
+      printPage.catch(() => {
         alert('ไม่มีข้อมูล');
         window.close();
       });

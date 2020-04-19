@@ -230,7 +230,7 @@ export default {
           this.isLoading = false;
           this.loadingHide();
         })
-        .catch(err => {
+        .catch(() => {
           this.isLoading = false;
           this.loadingHide();
         });

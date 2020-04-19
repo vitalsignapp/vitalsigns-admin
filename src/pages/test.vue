@@ -50,182 +50,195 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
+import { $db } from '@/api/firebase';
 export default {
   data() {
     return {};
   },
   methods: {
     testConnect() {
-      $db.collection("testConnect").add({
-        test: true
+      $db.collection('testConnect').add({
+        test: true,
       });
     },
     getHospital() {
-      $db.collection("hospital")
+      $db
+        .collection('hospital')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("hospital", temp);
+          this.$q.localStorage.set('hospital', temp);
         });
     },
     getPatientData() {
-      $db.collection("patientData")
+      $db
+        .collection('patientData')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("patientData", temp);
+          this.$q.localStorage.set('patientData', temp);
         });
     },
     getPatientLog() {
-      $db.collection("patientLog")
+      $db
+        .collection('patientLog')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("patientLog", temp);
+          this.$q.localStorage.set('patientLog', temp);
         });
     },
     getPatientRoom() {
-      $db.collection("patientRoom")
+      $db
+        .collection('patientRoom')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("patientRoom", temp);
+          this.$q.localStorage.set('patientRoom', temp);
         });
     },
     getUserData() {
-      $db.collection("userData")
+      $db
+        .collection('userData')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("userData", temp);
+          this.$q.localStorage.set('userData', temp);
         });
     },
     getVersion() {
-      $db.collection("version")
+      $db
+        .collection('version')
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
             temp.push({ ...element.data(), ...{ key: element.id } });
           });
-          this.$q.localStorage.set("version", temp);
+          this.$q.localStorage.set('version', temp);
         });
     },
     setHospital() {
-      let getData = this.$q.localStorage.getItem("hospital");
+      let getData = this.$q.localStorage.getItem('hospital');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("hospital")
+        $db
+          .collection('hospital')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
     setPatientData() {
-      let getData = this.$q.localStorage.getItem("patientData");
+      let getData = this.$q.localStorage.getItem('patientData');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("patientData")
+        $db
+          .collection('patientData')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
     setPatientLog() {
-      let getData = this.$q.localStorage.getItem("patientLog");
+      let getData = this.$q.localStorage.getItem('patientLog');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("patientLog")
+        $db
+          .collection('patientLog')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
     setPatientRoom() {
-      let getData = this.$q.localStorage.getItem("patientRoom");
+      let getData = this.$q.localStorage.getItem('patientRoom');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("patientRoom")
+        $db
+          .collection('patientRoom')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
     setUserData() {
-      let getData = this.$q.localStorage.getItem("userData");
+      let getData = this.$q.localStorage.getItem('userData');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("userData")
+        $db
+          .collection('userData')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
     setVersion() {
-      let getData = this.$q.localStorage.getItem("version");
+      let getData = this.$q.localStorage.getItem('version');
 
       getData.forEach(element => {
         let eleKey = element.key;
         delete element.key;
-        $db.collection("version")
+        $db
+          .collection('version')
           .doc(eleKey)
           .set(element)
           .then(() => {
-            console.log("FINISH");
+            console.log('FINISH');
           });
       });
     },
-    setPatientData() {
-      let getData = this.$q.localStorage.getItem("patientData");
-      getData.forEach(element => {
-        let eKey = element.key;
-        element.username = element.HN;
-        delete element.HN;
-        $db.collection("patientData")
-          .doc(eKey)
-          .set(element)
-          .then(() => {
-            console.log("FINISH");
-          });
-      });
-    }
-  }
+    // setPatientData() {
+    //   let getData = this.$q.localStorage.getItem('patientData');
+    //   getData.forEach(element => {
+    //     let eKey = element.key;
+    //     element.username = element.HN;
+    //     delete element.HN;
+    //     $db
+    //       .collection('patientData')
+    //       .doc(eKey)
+    //       .set(element)
+    //       .then(() => {
+    //         console.log('FINISH');
+    //       });
+    //   });
+    // },
+  },
 };
 </script>
 

@@ -1,32 +1,41 @@
 <template>
   <div>
     <!-- NOTE โชว์ข้อมูลในกรณีที่กดเลือกข้อมูลผู้ป่วยแล้ว -->
-    <div class="q-px-xs" style="max-width:330px;width:95%;margin:auto;" v-if="isLoadData">
+    <div
+      class="q-px-xs"
+      style="max-width:330px;width:95%;margin:auto;"
+      v-if="isLoadData"
+    >
       <div class="q-mt-lg">
-        <span class="font-h3">{{ patient.name + " " + patient.surname }}</span>
+        <span class="font-h3">{{ patient.name + ' ' + patient.surname }}</span>
         <br />
         <!-- text-overflow -->
         <div class="font-body row q-mt-sm">
           <div class="col-4 text-overflow" style="width:130px;">
             <span class="color-light-gray">รหัส</span>
-            {{ " " + patient.username + " " + "&nbsp;" }}
+            {{ ' ' + patient.username + ' ' + '&nbsp;' }}
           </div>
           <div class="col" align="right">
             <span class="color-light-gray">วันเกิด</span>
-            {{ " " + patient.dateOfBirth + "&nbsp;" }}
+            {{ ' ' + patient.dateOfBirth + '&nbsp;' }}
             <span
               class="color-primary-500 cursor-pointer"
               @click="isDetails = true"
-            >เพิ่มเติม</span>
+              >เพิ่มเติม</span
+            >
           </div>
         </div>
       </div>
 
       <div>
-        <div class="q-mt-md q-mb-lg" v-for="(item, index) in diagnosisList" :key="index">
+        <div
+          class="q-mt-md q-mb-lg"
+          v-for="(item, index) in diagnosisList"
+          :key="index"
+        >
           <q-card class="my-card font-body">
             <div class="q-pa-sm" align="center">
-              <span>{{item.dateAndRound}}</span>
+              <span>{{ item.dateAndRound }}</span>
             </div>
 
             <q-separator />
@@ -65,17 +74,27 @@
             <div
               class="q-mb-xs"
               align="center"
-              v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
+              v-if="
+                item.symptomsCheck.filter(x => x.status).length ||
+                  item.otherSymptoms
+              "
             >
               <span>อาการตอนนี้</span>
             </div>
             <q-separator
-              v-if="item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms"
+              v-if="
+                item.symptomsCheck.filter(x => x.status).length ||
+                  item.otherSymptoms
+              "
             />
 
             <div
               class="q-px-lg"
-              :class="{'q-mt-md q-pb-sm':item.symptomsCheck.filter(x => x.status ).length || item.otherSymptoms}"
+              :class="{
+                'q-mt-md q-pb-sm':
+                  item.symptomsCheck.filter(x => x.status).length ||
+                  item.otherSymptoms,
+              }"
             >
               <div
                 class="row"
@@ -102,7 +121,7 @@
                 </div>
                 <div class="col">
                   <div class="q-py-xs">
-                    <span>{{"อื่นๆ: " + item.otherSymptoms }}</span>
+                    <span>{{ 'อื่นๆ: ' + item.otherSymptoms }}</span>
                   </div>
                 </div>
               </div>
@@ -123,45 +142,60 @@
 
         <div class="q-my-md q-px-sm">
           <div>
-            <span class="font-h3">{{ patient.name + " " + patient.surname }}</span>
+            <span class="font-h3">{{
+              patient.name + ' ' + patient.surname
+            }}</span>
           </div>
           <div class="row q-mt-sm">
             <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
-              {{ " " + patient.username + " " + "&nbsp;" }}
+              {{ ' ' + patient.username + ' ' + '&nbsp;' }}
             </div>
             <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
-              {{ " " + patient.dateOfBirth }}
+              {{ ' ' + patient.dateOfBirth }}
             </div>
           </div>
           <div class="row q-mt-sm">
             <div class="col-2 self-start q-my-xs" style="width:75px;">
               <span class="color-light-gray">Diagnosis</span>
             </div>
-            <div class="col q-my-xs">{{ patient.diagnosis != '' ? patient.diagnosis : '-' }}</div>
+            <div class="col q-my-xs">
+              {{ patient.diagnosis != '' ? patient.diagnosis : '-' }}
+            </div>
           </div>
           <div class="row q-mt-sm">
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">อายุ</span>
-              {{ " " + getAge }}
+              {{ ' ' + getAge }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เพศ</span>
-              <span>{{ patient.sex == 'male' ? " ชาย" : ' หญิง'}}</span>
+              <span>{{ patient.sex == 'male' ? ' ชาย' : ' หญิง' }}</span>
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">ห้อง</span>
-              {{ " " + room.filter(x => { return x.key == patient.patientRoomKey } )[0].name }}
+              {{
+                ' ' +
+                  room.filter(x => {
+                    return x.key == patient.patientRoomKey;
+                  })[0].name
+              }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เข้ารักษา</span>
-              {{ " " + patient.dateOfAdmit }}
+              {{ ' ' + patient.dateOfAdmit }}
             </div>
           </div>
 
           <div align="right" class="q-mt-md q-pr-sm">
-            <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
+            <q-btn
+              flat
+              class="button-action small"
+              dense
+              label="ปิด"
+              @click="isDetails = false"
+            ></q-btn>
           </div>
         </div>
       </q-card>
@@ -170,35 +204,35 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
-import { getPatientDetailById, getPatientLogById } from "../api";
+import { $db } from '@/api/firebase';
+import { getPatientDetailById, getPatientLogById } from '../api';
 export default {
-  props: ["dataKey", "dataRoute"],
+  props: ['dataKey', 'dataRoute'],
   data() {
     return {
       patient: {
-        username: "",
-        name: "",
-        surname: "",
-        sex: "",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
-        hospitalKey: "",
-        patientRoomKey: ""
+        username: '',
+        name: '',
+        surname: '',
+        sex: '',
+        dateOfAdmit: '',
+        dateOfBirth: '',
+        diagnosis: '',
+        hospitalKey: '',
+        patientRoomKey: '',
       },
 
       room: [],
       diagnosisList: [],
 
-      currentDate: "",
+      currentDate: '',
 
       isLoadData: false,
       isDetails: false,
 
       syncDiagnosis: null,
       syncRoom: null,
-      syncPatient: null
+      syncPatient: null,
     };
   },
   methods: {
@@ -208,7 +242,7 @@ export default {
       const result = await getPatientDetailById(this.dataKey);
       if (result) {
         this.patient = result;
-        this.$emit("patientData", this.patient);
+        this.$emit('patientData', this.patient);
         this.loadRoom();
         this.isLoadData = true;
       } else {
@@ -217,11 +251,11 @@ export default {
     },
     loadRoom() {
       let refs = $db
-        .collection("patientRoom")
+        .collection('patientRoom')
         .where(
-          "hospitalKey",
-          "==",
-          this.$q.localStorage.getItem("hospitalKey")
+          'hospitalKey',
+          '==',
+          this.$q.localStorage.getItem('hospitalKey')
         );
 
       this.loadingShow();
@@ -232,7 +266,7 @@ export default {
           doc.forEach(result => {
             let setData = {
               key: result.id,
-              ...result.data()
+              ...result.data(),
             };
 
             temp.push(setData);
@@ -254,26 +288,31 @@ export default {
       });
     },
     loadPatientDiagnosis() {
-      getPatientLogById(this.dataKey).then((doc) => {
-        $db.collection("patientData").doc(this.dataKey).update({ isRead: true });
+      getPatientLogById(this.dataKey).then(doc => {
+        $db
+          .collection('patientData')
+          .doc(this.dataKey)
+          .update({ isRead: true });
         let temp = [];
         doc.forEach(result => {
           let dateAdmit = result.inputDate;
           let newDate =
             dateAdmit.substr(0, 2) +
-            " " +
+            ' ' +
             this.showMonthName(dateAdmit.substr(3, 2)) +
-            " " +
+            ' ' +
             dateAdmit.substr(6) +
-            " รอบ " +
+            ' รอบ ' +
             result.inputRound +
-            ":00 น.";
+            ':00 น.';
 
           let setData = {
             key: result.id,
             dateAndRound: newDate,
             ...result,
-            symptomsCheck: Array.isArray(result.symptomsCheck) ? result.symptomsCheck : [],
+            symptomsCheck: Array.isArray(result.symptomsCheck)
+              ? result.symptomsCheck
+              : [],
           };
 
           temp.push(setData);
@@ -285,7 +324,7 @@ export default {
         this.diagnosisList = temp;
         this.loadingHide();
       });
-    }
+    },
   },
   computed: {
     getAge() {
@@ -296,9 +335,9 @@ export default {
 
       let currentDate =
         Number(this.currentDate.date.substr(6)) +
-        "-" +
+        '-' +
         this.currentDate.date.substr(3, 2) +
-        "-" +
+        '-' +
         this.currentDate.date.substr(0, 2);
 
       let dob = newdob;
@@ -316,20 +355,20 @@ export default {
       }
 
       return age;
-    }
+    },
   },
   mounted() {
     this.loadPaitent();
   },
   beforeDestroy() {
-    if (typeof this.syncDiagnosis === "function") {
+    if (typeof this.syncDiagnosis === 'function') {
       this.syncDiagnosis();
     }
-    if (typeof this.syncRoom === "function") {
+    if (typeof this.syncRoom === 'function') {
       this.syncRoom();
     }
     // this.syncPatient();
-  }
+  },
 };
 </script>
 

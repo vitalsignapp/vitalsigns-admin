@@ -313,7 +313,7 @@ export default {
         .onOk(() => {
           this.loadingShow();
 
-          let refs = $db
+          $db
             .collection('userData')
             .doc(this.userKey)
             .delete()
@@ -341,6 +341,7 @@ export default {
         this.isClickedUserData = true;
         this.currentUserData = this.userDataList.filter(x => x.key == key)[0];
       } else {
+        // eslint-disable-next-line no-undef
         this.$router.push('/userdata/' + this.userDataList[index].key);
       }
     },
@@ -443,9 +444,8 @@ export default {
                 });
             }
           });
-      }
-      // Edit Mode
-      else {
+      } else {
+        // Edit Mode
         let setData = { ...this.user };
 
         let userKey = setData.key;

@@ -255,7 +255,7 @@ export default {
   },
   methods: {
     async dateBirth() {
-      let _this = this;
+      // let _this = this;
     },
     closeDialogAddPatient() {
       this.isDialogAddNewPatient = false;
@@ -442,7 +442,7 @@ export default {
   mounted() {
     this.loadRoom();
 
-    let element = document.getElementById('startdate');
+    // let element = document.getElementById('startdate');
 
     // element.addEventListener("click", () => {
 

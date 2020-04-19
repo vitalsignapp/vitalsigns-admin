@@ -83,7 +83,7 @@
 
 <script>
 import { login } from '@/api';
-import { $db, $auth } from '@/api/firebase';
+import { $db } from '@/api/firebase';
 
 export default {
   name: 'PageIndex',
@@ -108,7 +108,7 @@ export default {
     signIn() {
       let _this = this;
       this.loadingShow();
-      let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
+      // let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       login({
         email: _this.email,
@@ -153,7 +153,7 @@ export default {
     },
   },
   beforeCreate() {
-    let _this = this;
+    // let _this = this;
   },
   mounted() {
     this.loadHospitalNameFromPrefix();

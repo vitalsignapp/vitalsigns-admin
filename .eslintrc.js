@@ -12,7 +12,7 @@ module.exports = {
     "import",
   ],
   rules: {
-    'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
+    'brace-style': [2, '1tbs', { 'allowSingleLine': true }],
 
     'vue/max-attributes-per-line': 0,
     'vue/valid-v-for': 0,
@@ -23,7 +23,7 @@ module.exports = {
     // allow paren-less arrow functions
     'arrow-parens': 0,
     'one-var': 0,
-    'quotes': ['error', 'single'],
+    'quotes': ['error', 'single', { "allowTemplateLiterals": true }],
     "prettier/prettier": ["error", { "singleQuote": true }],
     'import/first': 0,
     'import/named': 2,

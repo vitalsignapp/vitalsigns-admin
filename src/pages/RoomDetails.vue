@@ -904,7 +904,7 @@ export default {
                   textColor: 'black',
                 },
               })
-              .onOk(validate => {
+              .onOk(() => {
                 this.loadingShow();
 
                 $db
