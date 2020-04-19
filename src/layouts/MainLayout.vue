@@ -149,37 +149,37 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
+import { $db } from '@/api/firebase';
 export default {
-  name: "MainLayout",
+  name: 'MainLayout',
   data() {
     return {
-      syncVersion: ""
+      syncVersion: ''
     };
   },
   methods: {
     goToUser() {
-      if (this.$route.name != "userlist") {
-        this.$router.push("/userlist");
+      if (this.$route.name != 'userlist') {
+        this.$router.push('/userlist');
       }
     },
     goToWard() {
-      if (this.$route.name != "room") {
-        this.$router.push("/room");
+      if (this.$route.name != 'room') {
+        this.$router.push('/room');
       }
     },
     goToPatient() {
-      if (this.$route.name != "patient") {
-        this.$router.push("/patient");
+      if (this.$route.name != 'patient') {
+        this.$router.push('/patient');
       }
     },
     goToAbout() {
-      if (this.$route.name != "about") {
-        this.$router.push("/about");
+      if (this.$route.name != 'about') {
+        this.$router.push('/about');
       }
     },
     loadVersion() {
-      let refs = $db.collection("version").doc("vitalsign-admin");
+      let refs = $db.collection('version').doc('vitalsign-admin');
 
       this.syncVersion = refs.onSnapshot(result => {
         if (this.version != result.data().version) {
@@ -192,7 +192,7 @@ export default {
     this.loadVersion();
   },
   beforeDestroy() {
-    if (typeof this.syncVersion == "function") {
+    if (typeof this.syncVersion == 'function') {
       this.syncVersion();
     }
   }

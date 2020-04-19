@@ -1,16 +1,16 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-import routes from "./routes";
-import VueAxios from "vue-axios";
-import axios from "axios";
-import VueCryptojs from "vue-cryptojs";
-import VueQRCodeComponent from "vue-qrcode-component";
+import routes from './routes';
+import VueAxios from 'vue-axios';
+import axios from 'axios';
+import VueCryptojs from 'vue-cryptojs';
+import VueQRCodeComponent from 'vue-qrcode-component';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 Vue.use(VueCryptojs);
-Vue.component("qr-code", VueQRCodeComponent);
+Vue.component('qr-code', VueQRCodeComponent);
 
 /*
  * If not building with SSR mode, you can
@@ -25,21 +25,21 @@ Vue.mixin({
   data() {
     return {
       month: [],
-      userData: this.$q.localStorage.getItem("userData"),
-      version: "1.02.008",
+      userData: this.$q.localStorage.getItem('userData'),
+      version: '1.02.008',
 
-      syncVersion: null
+      syncVersion: null,
     };
   },
   methods: {
     async getDate() {
-      let apiLink = "https://api.winner-english.com/data/api/gettime.php";
+      let apiLink = 'https://api.winner-english.com/data/api/gettime.php';
       const res = await axios.get(apiLink);
       return res.data[0];
     },
     loadingShow() {
       this.$q.loading.show({
-        delay: 400
+        delay: 400,
       });
     },
     loadingHide() {
@@ -53,12 +53,12 @@ Vue.mixin({
         // object TYPE
         result = this.CryptoJS.AES.encrypt(
           JSON.stringify(data),
-          "chomart12"
+          'chomart12'
         ).toString();
       } else if (type == 2) {
         // STRING TYPE
         data = data.toString();
-        result = this.CryptoJS.AES.encrypt(data, "chomart12").toString();
+        result = this.CryptoJS.AES.encrypt(data, 'chomart12').toString();
       }
       return result;
     },
@@ -68,7 +68,7 @@ Vue.mixin({
       if (!data) {
         return data;
       }
-      let result = this.CryptoJS.AES.decrypt(data, "chomart12").toString(
+      let result = this.CryptoJS.AES.decrypt(data, 'chomart12').toString(
         this.CryptoJS.enc.Utf8
       );
       if (type == 1) {
@@ -89,85 +89,85 @@ Vue.mixin({
         title: title,
         message: message,
         ok: {
-          color: "orange-5"
-        }
+          color: 'orange-5',
+        },
       });
     },
     vnotify(message) {
       this.$q.notify({
         message: message,
-        classes: "notifyBg",
-        timeout: 800
+        classes: 'notifyBg',
+        timeout: 800,
       });
     },
     showMonthName(index) {
       // console.log(this.$i18n.locale);
       let m = index;
       let month;
-      if (this.$i18n.locale != "th-th") {
-        if (m == "01") {
-          month = "January";
-        } else if (m == "02") {
-          month = "February";
-        } else if (m == "03") {
-          month = "March";
-        } else if (m == "04") {
-          month = "April";
-        } else if (m == "05") {
-          month = "May";
-        } else if (m == "06") {
-          month = "June";
-        } else if (m == "07") {
-          month = "July";
-        } else if (m == "08") {
-          month = "August";
-        } else if (m == "09") {
-          month = "September";
-        } else if (m == "10") {
-          month = "October";
-        } else if (m == "11") {
-          month = "November";
-        } else if (m == "12") {
-          month = "December";
+      if (this.$i18n.locale != 'th-th') {
+        if (m == '01') {
+          month = 'January';
+        } else if (m == '02') {
+          month = 'February';
+        } else if (m == '03') {
+          month = 'March';
+        } else if (m == '04') {
+          month = 'April';
+        } else if (m == '05') {
+          month = 'May';
+        } else if (m == '06') {
+          month = 'June';
+        } else if (m == '07') {
+          month = 'July';
+        } else if (m == '08') {
+          month = 'August';
+        } else if (m == '09') {
+          month = 'September';
+        } else if (m == '10') {
+          month = 'October';
+        } else if (m == '11') {
+          month = 'November';
+        } else if (m == '12') {
+          month = 'December';
         }
       } else {
-        if (m == "01") {
-          month = "มกราคม";
-        } else if (m == "02") {
-          month = "กุมภาพันธ์";
-        } else if (m == "03") {
-          month = "มีนาคม";
-        } else if (m == "04") {
-          month = "เมษายน";
-        } else if (m == "05") {
-          month = "พฤษภาคม";
-        } else if (m == "06") {
-          month = "มิถุนายน";
-        } else if (m == "07") {
-          month = "กรกฎาคม";
-        } else if (m == "08") {
-          month = "สิงหาคม";
-        } else if (m == "09") {
-          month = "กันยายน";
-        } else if (m == "10") {
-          month = "ตุลาคม";
-        } else if (m == "11") {
-          month = "พฤศจิกายน";
-        } else if (m == "12") {
-          month = "ธันวาคม";
+        if (m == '01') {
+          month = 'มกราคม';
+        } else if (m == '02') {
+          month = 'กุมภาพันธ์';
+        } else if (m == '03') {
+          month = 'มีนาคม';
+        } else if (m == '04') {
+          month = 'เมษายน';
+        } else if (m == '05') {
+          month = 'พฤษภาคม';
+        } else if (m == '06') {
+          month = 'มิถุนายน';
+        } else if (m == '07') {
+          month = 'กรกฎาคม';
+        } else if (m == '08') {
+          month = 'สิงหาคม';
+        } else if (m == '09') {
+          month = 'กันยายน';
+        } else if (m == '10') {
+          month = 'ตุลาคม';
+        } else if (m == '11') {
+          month = 'พฤศจิกายน';
+        } else if (m == '12') {
+          month = 'ธันวาคม';
         }
       }
 
       return month;
-    }
-  }
+    },
+  },
 });
 
 export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
-      y: 0
+      y: 0,
     }),
     routes,
 
@@ -175,7 +175,7 @@ export default function(/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
+    base: process.env.VUE_ROUTER_BASE,
   });
 
   return Router;

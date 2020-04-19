@@ -1,6 +1,10 @@
 <template>
   <div class>
-    <q-dialog v-model="isDialogAddNewPatient" persistent :maximized="maximizedToggle">
+    <q-dialog
+      v-model="isDialogAddNewPatient"
+      persistent
+      :maximized="maximizedToggle"
+    >
       <q-card class="q-pa-md bg-surface">
         <div align="right">
           <q-btn
@@ -106,7 +110,7 @@
                 :rules="[
                   val => val.length == 10,
                   val => val.substr(0, 2) >= '01' && val.substr(0, 2) <= '31',
-                  val => val.substr(3, 2) <= '12'
+                  val => val.substr(3, 2) <= '12',
                 ]"
               >
                 <template v-slot:append>
@@ -143,7 +147,7 @@
                 :rules="[
                   val => val.length == 10,
                   val => val.substr(0, 2) >= '01' && val.substr(0, 2) <= '31',
-                  val => val.substr(3, 2) <= '12'
+                  val => val.substr(3, 2) <= '12',
                 ]"
               >
                 <template v-slot:append>
@@ -214,31 +218,31 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { getPatientDetailById } from "../api";
+import { getPatientDetailById } from '../api';
 export default {
-  props: ["sendData"],
+  props: ['sendData'],
   data() {
     return {
       // NOTE  Patient Data Save to DB
       patientData: {
-        username: "",
-        name: "",
-        surname: "",
-        sex: "male",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
-        hospitalKey: this.$q.localStorage.getItem("hospitalKey"),
-        patientRoomKey: "",
+        username: '',
+        name: '',
+        surname: '',
+        sex: 'male',
+        dateOfAdmit: '',
+        dateOfBirth: '',
+        diagnosis: '',
+        hospitalKey: this.$q.localStorage.getItem('hospitalKey'),
+        patientRoomKey: '',
         isRead: true,
-        isShowNotify: true
+        isShowNotify: true,
       },
 
       // NOTE Current Date
-      dateTime: "",
-      getYearTH: "",
-      yearT: "",
-      yearTH: "",
+      dateTime: '',
+      getYearTH: '',
+      yearT: '',
+      yearTH: '',
 
       patientKey: this.sendData.patientKey,
       room: [],
@@ -246,7 +250,7 @@ export default {
       isDialogAddNewPatient: this.sendData.isDialogAddNewPatient,
       maximizedToggle: true,
       isDisabled: false,
-      isAddMode: this.sendData.isAddMode
+      isAddMode: this.sendData.isAddMode,
     };
   },
   methods: {
@@ -256,33 +260,33 @@ export default {
     closeDialogAddPatient() {
       this.isDialogAddNewPatient = false;
 
-      this.$emit("sendBack", {
-        isDialogAddNewPatient: false
+      this.$emit('sendBack', {
+        isDialogAddNewPatient: false,
       });
 
-      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+      let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       this.isAddMode = true;
       this.patientData = {
-        NH: "",
-        name: "",
-        surname: "",
-        sex: "male",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
+        NH: '',
+        name: '',
+        surname: '',
+        sex: 'male',
+        dateOfAdmit: '',
+        dateOfBirth: '',
+        diagnosis: '',
         hospitalKey: hospitalKey,
         patientRoomKey: this.room[0].key,
         isRead: true,
-        isShowNotify: true
+        isShowNotify: true,
       };
     },
     async saveData() {
       let refs = this.isAddMode
-        ? $db.collection("patientData")
-        : $db.collection("patientData").doc(this.patientKey);
+        ? $db.collection('patientData')
+        : $db.collection('patientData').doc(this.patientKey);
 
-      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+      let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       this.$refs.username.validate();
       this.$refs.name.validate();
@@ -297,30 +301,30 @@ export default {
         this.$refs.birth.hasError ||
         this.$refs.admit.hasError
       ) {
-        alert("กรุณากรอกข้อมูลให้ไม่ครบ");
+        alert('กรุณากรอกข้อมูลให้ไม่ครบ');
         return;
       }
 
-      if (this.patientData.sex == "") {
-        alert("กรุณาเลือกเพศ");
+      if (this.patientData.sex == '') {
+        alert('กรุณาเลือกเพศ');
         return;
       }
 
-      if (this.patientData.patientRoomKey == "") {
-        alert("กรุณาเลือกห้องผู้ป่วย");
+      if (this.patientData.patientRoomKey == '') {
+        alert('กรุณาเลือกห้องผู้ป่วย');
         return;
       }
 
       this.isDisabled = true;
 
       let checkUsername = await $db
-        .collection("patientData")
-        .where("username", "==", this.patientData.username)
-        .where("hospitalKey", "==", hospitalKey)
+        .collection('patientData')
+        .where('username', '==', this.patientData.username)
+        .where('hospitalKey', '==', hospitalKey)
         .get();
 
       if (checkUsername.size && this.isAddMode) {
-        alert("มีข้อมูลผู้ป่วยนี้แล้ว");
+        alert('มีข้อมูลผู้ป่วยนี้แล้ว');
 
         this.isDisabled = false;
         return;
@@ -332,25 +336,25 @@ export default {
         refs.add(this.patientData).then(() => {
           setTimeout(() => {
             this.patientData = {
-              username: "",
-              name: "",
-              surname: "",
-              sex: "male",
-              dateOfAdmit: "",
-              dateOfBirth: "",
-              diagnosis: "",
+              username: '',
+              name: '',
+              surname: '',
+              sex: 'male',
+              dateOfAdmit: '',
+              dateOfBirth: '',
+              diagnosis: '',
               hospitalKey: hospitalKey,
               patientRoomKey: this.room[0].key,
               isRead: true,
-              isShowNotify: true
+              isShowNotify: true,
             };
 
             this.loadingHide();
 
-            this.vnotify("คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว");
+            this.vnotify('คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว');
 
-            this.$emit("sendBack", {
-              isDialogAddNewPatient: false
+            this.$emit('sendBack', {
+              isDialogAddNewPatient: false,
             });
 
             this.isDialogAddNewPatient = false;
@@ -364,10 +368,10 @@ export default {
           setTimeout(() => {
             this.loadingHide();
 
-            this.vnotify("บันทึกข้อมูลเรียบร้อย");
+            this.vnotify('บันทึกข้อมูลเรียบร้อย');
 
-            this.$emit("sendBack", {
-              isDialogAddNewPatient: false
+            this.$emit('sendBack', {
+              isDialogAddNewPatient: false,
             });
 
             this.isDialogAddNewPatient = false;
@@ -385,11 +389,11 @@ export default {
       this.patientData.dateOfBirth = this.dateTime.date;
 
       let refs = $db
-        .collection("patientRoom")
+        .collection('patientRoom')
         .where(
-          "hospitalKey",
-          "==",
-          this.$q.localStorage.getItem("hospitalKey")
+          'hospitalKey',
+          '==',
+          this.$q.localStorage.getItem('hospitalKey')
         );
 
       this.loadingShow();
@@ -400,7 +404,7 @@ export default {
           doc.forEach(result => {
             let setData = {
               key: result.id,
-              ...result.data()
+              ...result.data(),
             };
 
             temp.push(setData);
@@ -427,22 +431,22 @@ export default {
       });
     },
     loadPatient() {
-      getPatientDetailById(this.patientKey).then((result) => {
+      getPatientDetailById(this.patientKey).then(result => {
         if (result) {
           this.patientData = result;
         }
         this.loadingHide();
       });
-    }
+    },
   },
   mounted() {
     this.loadRoom();
 
-    let element = document.getElementById("startdate");
+    let element = document.getElementById('startdate');
 
     // element.addEventListener("click", () => {
 
     // });
-  }
+  },
 };
 </script>
