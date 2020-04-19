@@ -7,7 +7,10 @@
       </q-toolbar-title>
       <q-space />
       <div style="width:70px;">
-        <div class="row bg-primary-600 q-pa-xs round" style="border-radius:15px;">
+        <div
+          class="row bg-primary-600 q-pa-xs round"
+          style="border-radius:15px;"
+        >
           <div class="col">
             <q-btn
               flat
@@ -63,63 +66,68 @@
       </div>
 
       <div class="q-pa-xl" align="center">
-        <q-btn @click="signIn()" class="button-action" dense label="เข้าสู่ระบบ"></q-btn>
+        <q-btn
+          @click="signIn()"
+          class="button-action"
+          dense
+          label="เข้าสู่ระบบ"
+        ></q-btn>
       </div>
     </div>
 
     <div class="absolute-bottom-right q-pa-sm">
-      <span class="font-body">{{"V" + version}}</span>
+      <span class="font-body">{{ 'V' + version }}</span>
     </div>
   </div>
 </template>
 
 <script>
-import { login } from "@/api";
-import { $db, $auth } from "@/api/firebase";
+import { login } from '@/api';
+import { $db, $auth } from '@/api/firebase';
 
 export default {
-  name: "PageIndex",
+  name: 'PageIndex',
   data() {
     return {
-      currentHospitalName: "",
+      currentHospitalName: '',
       isPwd: true,
-      email: "",
-      password: "",
-      isChangeLanguage: "th",
+      email: '',
+      password: '',
+      isChangeLanguage: 'th',
       user: {
-        userNo: "",
-        prefix: "",
-        name: "",
-        surname: "",
-        email: "",
-        password: ""
-      }
+        userNo: '',
+        prefix: '',
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+      },
     };
   },
   methods: {
     signIn() {
       let _this = this;
       this.loadingShow();
-      let hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+      let hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       login({
         email: _this.email,
-        password: _this.password
+        password: _this.password,
       })
         .then(res => {
           const data = { ...res };
           const setData = {
             key: data.id,
-            ...data
+            ...data,
           };
-          _this.$q.localStorage.set("userData", setData);
-          _this.$q.localStorage.set("hospitalKey", data.hospitalKey);
-          this.$router.push("/patient");
+          _this.$q.localStorage.set('userData', setData);
+          _this.$q.localStorage.set('hospitalKey', data.hospitalKey);
+          this.$router.push('/patient');
           _this.loadingHide();
         })
         .catch(e => {
-          console.log("e: ", e);
-          _this.popUpDialog("ผิดพลาด", "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
+          console.log('e: ', e);
+          _this.popUpDialog('ผิดพลาด', 'อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง');
           _this.loadingHide();
         });
     },
@@ -128,27 +136,28 @@ export default {
     },
     loadHospitalNameFromPrefix() {
       let domainName = window.location.hostname;
-      let preFix = domainName.split(".")[1];
-      $db.collection("hospital")
-        .where("domainPrefix", "==", preFix)
+      let preFix = domainName.split('.')[1];
+      $db
+        .collection('hospital')
+        .where('domainPrefix', '==', preFix)
         .get()
         .then(doc => {
           if (doc.size) {
-            this.$q.localStorage.set("hospitalKey", doc.docs[0].id);
+            this.$q.localStorage.set('hospitalKey', doc.docs[0].id);
 
             this.currentHospitalName = doc.docs[0].data().name;
           } else {
-            this.currentHospitalName = "Demo Hospital";
+            this.currentHospitalName = 'Demo Hospital';
           }
         });
-    }
+    },
   },
   beforeCreate() {
     let _this = this;
   },
   mounted() {
     this.loadHospitalNameFromPrefix();
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

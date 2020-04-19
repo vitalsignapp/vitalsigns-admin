@@ -13,15 +13,33 @@
           </q-toolbar-title>
           <q-space />
           <div class="self-center">
-            <q-btn dense round flat class="q-mx-sm" size="14px" @click="changeNotify()">
-              <q-img v-if="patient.isShowNotify" src="../statics/pic/Notification.png" width="30px"></q-img>
+            <q-btn
+              dense
+              round
+              flat
+              class="q-mx-sm"
+              size="14px"
+              @click="changeNotify()"
+            >
+              <q-img
+                v-if="patient.isShowNotify"
+                src="../statics/pic/Notification.png"
+                width="30px"
+              ></q-img>
               <q-img
                 v-if="!patient.isShowNotify"
                 src="../statics/pic/Notification Mute.png"
                 width="30px"
               ></q-img>
             </q-btn>
-            <q-btn dense round flat class="q-mx-sm" size="14px" @click="printBtn()">
+            <q-btn
+              dense
+              round
+              flat
+              class="q-mx-sm"
+              size="14px"
+              @click="printBtn()"
+            >
               <q-img src="../statics/pic/QR Code.png" width="30px"></q-img>
               <!-- <q-menu square :offset="[55, 16]">
                 <q-list style="min-width: 160px">
@@ -41,10 +59,18 @@
                   <q-btn class="fit row no-border-radius" flat>
                     <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
                   </q-btn>
-                  <q-btn class="fit row no-border-radius" flat @click="editPatient()">
+                  <q-btn
+                    class="fit row no-border-radius"
+                    flat
+                    @click="editPatient()"
+                  >
                     <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
                   </q-btn>
-                  <q-btn class="fit row no-border-radius" flat @click="deletePatient()">
+                  <q-btn
+                    class="fit row no-border-radius"
+                    flat
+                    @click="deletePatient()"
+                  >
                     <div class="col text-red" align="left">ลบผู้ป่วย</div>
                   </q-btn>
                 </q-list>
@@ -54,7 +80,10 @@
         </div>
 
         <q-dialog v-model="isDialogNotification" persistent>
-          <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
+          <q-card
+            style="max-width: 280px"
+            class="q-py-xs q-px-sm no-border-radius"
+          >
             <q-card-section class="q-pt-md">
               <div class="font-h3">
                 <span v-if="!patient.isShowNotify">ยกเลิกการแจ้งเตือน</span>
@@ -63,17 +92,24 @@
             </q-card-section>
             <q-card-section class="q-pt-none">
               <span class="font-body">
-                <span
-                  v-if="!patient.isShowNotify"
-                >ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
-                <span
-                  v-if="patient.isShowNotify"
-                >ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span>
+                <span v-if="!patient.isShowNotify"
+                  >ระบบจะไม่แจ้งเตือน
+                  เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา</span
+                >
+                <span v-if="patient.isShowNotify"
+                  >ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ไม่กรอกข้อมูลตามเวลา</span
+                >
               </span>
             </q-card-section>
 
             <div class="q-px-md q-pb-md q-pt-xs" align="right">
-              <q-btn flat class="button-action small" dense label="ปิด" v-close-popup />
+              <q-btn
+                flat
+                class="button-action small"
+                dense
+                label="ปิด"
+                v-close-popup
+              />
             </div>
           </q-card>
         </q-dialog>
@@ -93,38 +129,42 @@
     <add-edit-patient
       v-if="isDialogAddNewPatient"
       @sendBack="closePopup"
-      :sendData="{patientKey:$route.params.key,isAddMode:false,isDialogAddNewPatient:isDialogAddNewPatient}"
+      :sendData="{
+        patientKey: $route.params.key,
+        isAddMode: false,
+        isDialogAddNewPatient: isDialogAddNewPatient,
+      }"
     ></add-edit-patient>
   </q-page>
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
-import patientDetails from "../components/patientDetails.vue";
-import addEditPatient from "../components/addEditPatient.vue";
-import { getPatientLogById } from "./../api"
+import { $db } from '@/api/firebase';
+import patientDetails from '../components/patientDetails.vue';
+import addEditPatient from '../components/addEditPatient.vue';
+import { getPatientLogById } from './../api';
 export default {
   components: {
     patientDetails,
-    addEditPatient
+    addEditPatient,
   },
   data() {
     return {
-      patient: "",
+      patient: '',
       // NOTE Page Name : Patient Details
       isNotification: false,
       isDialogNotification: false,
 
       // NOTE Page Name : Add Edit Patient
-      isDialogAddNewPatient: false
+      isDialogAddNewPatient: false,
     };
   },
   methods: {
     printBtn() {
       let routeData = this.$router.resolve({
-        path: "/QRCode/" + this.$route.params.key
+        path: '/QRCode/' + this.$route.params.key,
       });
-      window.open(routeData.href, "_blank");
+      window.open(routeData.href, '_blank');
 
       // this.$router.push("/QRCode/" + this.patientKey);
     },
@@ -135,10 +175,10 @@ export default {
     goBack() {
       if (this.$route.params.roomKey) {
         this.$router.push(
-          "/" + this.$route.params.routeName + "/" + this.$route.params.roomKey
+          '/' + this.$route.params.routeName + '/' + this.$route.params.roomKey
         );
       } else {
-        this.$router.push("/" + this.$route.params.routeName);
+        this.$router.push('/' + this.$route.params.routeName);
       }
     },
     changeNotify() {
@@ -152,10 +192,11 @@ export default {
         showNotify = !this.patient.isShowNotify;
       }
 
-      $db.collection("patientData")
+      $db
+        .collection('patientData')
         .doc(this.$route.params.key)
         .update({
-          isShowNotify: showNotify
+          isShowNotify: showNotify,
         });
 
       this.patient.isShowNotify = showNotify;
@@ -170,44 +211,48 @@ export default {
       // ฟังก์ชันการลบข้อมูลผู้ป่วย
       this.$q
         .dialog({
-          title: "ลบผู้ป่วย",
-          message: "ต้องการลบผู้ป่วยใช่หรือไม่",
+          title: 'ลบผู้ป่วย',
+          message: 'ต้องการลบผู้ป่วยใช่หรือไม่',
           ok: {
-            color: "orange-5"
+            color: 'orange-5',
           },
-          cancel: { textColor: "black", flat: true }
+          cancel: { textColor: 'black', flat: true },
         })
         .onOk(() => {
           this.loadingShow();
 
           setTimeout(() => {
-            $db.collection("patientData")
+            $db
+              .collection('patientData')
               .doc(this.$route.params.key)
               .delete()
               .then(() => {
-                getPatientLogById(this.$route.params.key).then((doc) => {
+                getPatientLogById(this.$route.params.key).then(doc => {
                   let counter = 0;
                   if (doc && Array.isArray(doc) && doc.length > 0) {
                     doc.forEach(element => {
-                      $db.collection("patientLog").doc(element.id).delete().then(() => {
-                        counter++;
-                        if (counter == doc.size) {
-                          this.loadingHide();
-                        }
-                      });
+                      $db
+                        .collection('patientLog')
+                        .doc(element.id)
+                        .delete()
+                        .then(() => {
+                          counter++;
+                          if (counter == doc.size) {
+                            this.loadingHide();
+                          }
+                        });
                     });
                   } else {
                     this.loadingHide();
                   }
-                  this.$router.push("/patient");
+                  this.$router.push('/patient');
                 });
               });
           }, 500);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -1,10 +1,18 @@
 <template>
   <div style="background-color:#E5E5E5;">
-    <div class="pageA4 shadow-2" v-if="$route.name == 'printOnlyOne' && isLoadData">
+    <div
+      class="pageA4 shadow-2"
+      v-if="$route.name == 'printOnlyOne' && isLoadData"
+    >
       <div class="row">
         <div
           class="col-6"
-          :class="[i == 1 || i == 2 ? 'rotate-qr' : null,i == 3 ? 'border-tr' : null,i == 1 ? 'border-l' : null,i == 4 ? 'border-t' : null]"
+          :class="[
+            i == 1 || i == 2 ? 'rotate-qr' : null,
+            i == 3 ? 'border-tr' : null,
+            i == 1 ? 'border-l' : null,
+            i == 4 ? 'border-t' : null,
+          ]"
           style="padding:50px 0px;height:561px;"
           v-for="i in 4"
           :key="i"
@@ -15,15 +23,22 @@
             style="height:255px;padding-top:0px;"
           >
             <div class="q-pa-lg bg-white">
-              <qr-code :text="patientData.path" :size="220" color="#000" error-level="H"></qr-code>
+              <qr-code
+                :text="patientData.path"
+                :size="220"
+                color="#000"
+                error-level="H"
+              ></qr-code>
             </div>
           </div>
           <div class="font-h3 q-mt-lg" style="font-size:24px;">
             <div align="center">
-              <span class>{{"รหัส: " + patientData.username}}</span>
+              <span class>{{ 'รหัส: ' + patientData.username }}</span>
             </div>
             <div class="q-mt-md q-px-md" align="center">
-              <span class="font-h1">{{patientData.name + " " + patientData.surname}}</span>
+              <span class="font-h1">{{
+                patientData.name + ' ' + patientData.surname
+              }}</span>
             </div>
           </div>
         </div>
@@ -33,7 +48,7 @@
     <div
       class="pageA4 shadow-2"
       v-show="$route.name == 'printAll' && isLoadData"
-      v-for="(list,index) in patientDataList"
+      v-for="(list, index) in patientDataList"
       :key="index"
     >
       <div class="row">
@@ -41,8 +56,14 @@
         <div
           class="col-4"
           style="padding:35px 0px;height:374px;"
-          :class="[index2 == 0 || index2 == 1 || index2 == 3 || index2 == 4 ? 'border-b border-r' : null,index2 == 2 || index2 == 5 ? 'border-b ' : null,index2 == 6 || index2 == 7 ? 'border-r' : null]"
-          v-for="(item,index2) in list"
+          :class="[
+            index2 == 0 || index2 == 1 || index2 == 3 || index2 == 4
+              ? 'border-b border-r'
+              : null,
+            index2 == 2 || index2 == 5 ? 'border-b ' : null,
+            index2 == 6 || index2 == 7 ? 'border-r' : null,
+          ]"
+          v-for="(item, index2) in list"
           :key="index2"
           v-show="item.name != ''"
         >
@@ -52,14 +73,22 @@
             style="height:200px;padding-top:0px;"
           >
             <div class="q-pa-lg bg-white">
-              <qr-code :text="item.path" :size="170" color="#000" bg-color="#fff" error-level="H"></qr-code>
+              <qr-code
+                :text="item.path"
+                :size="170"
+                color="#000"
+                bg-color="#fff"
+                error-level="H"
+              ></qr-code>
             </div>
           </div>
           <div align="center" class="font-body q-mt-lg">
-            <span class>{{"รหัส: " + item.username}}</span>
+            <span class>{{ 'รหัส: ' + item.username }}</span>
             <br />
             <div class="q-mt-sm q-px-sm">
-              <span class="font-h4" style="font-size:21px;">{{item.name + " " + item.surname}}</span>
+              <span class="font-h4" style="font-size:21px;">{{
+                item.name + ' ' + item.surname
+              }}</span>
             </div>
           </div>
         </div>
@@ -69,14 +98,14 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
-import { getPatientDetailById } from "../api";
+import { $db } from '@/api/firebase';
+import { getPatientDetailById } from '../api';
 export default {
   data() {
     return {
-      patientData: "",
+      patientData: '',
       patientDataList: [],
-      isLoadData: false
+      isLoadData: false,
     };
   },
   methods: {
@@ -88,12 +117,12 @@ export default {
       let printPage = new Promise((resolve, reject) => {
         getPatientDetailById(patientKey).then(result => {
           if (result) {
-            let newPath = "https://demo.vitalsignapp.com/" + result.id;
+            let newPath = 'https://demo.vitalsignapp.com/' + result.id;
 
             let setData = {
               key: result.id,
               path: newPath,
-              ...result
+              ...result,
             };
 
             this.patientData = setData;
@@ -103,31 +132,31 @@ export default {
             this.isLoadData = true;
 
             setTimeout(() => {
-              resolve("complete");
+              resolve('complete');
             }, 1000);
           } else {
-            reject("close");
+            reject('close');
             this.loadingHide();
           }
         });
       });
 
       printPage.then(result => {
-        if (result == "complete") {
+        if (result == 'complete') {
           window.print();
           // window.close();
         }
       });
 
       printPage.catch(error => {
-        alert("ไม่มีข้อมูล");
+        alert('ไม่มีข้อมูล');
         window.close();
       });
     },
     loadPatientAll() {
       let refs = $db
-        .collection("patientData")
-        .where("patientRoomKey", "==", this.$route.params.key)
+        .collection('patientData')
+        .where('patientRoomKey', '==', this.$route.params.key)
         .get();
 
       this.loadingShow();
@@ -140,12 +169,12 @@ export default {
 
             setTimeout(() => {
               doc.forEach(result => {
-                let newPath = "https://demo.vitalsignapp.com/" + result.id;
+                let newPath = 'https://demo.vitalsignapp.com/' + result.id;
 
                 let setData = {
                   key: result.id,
                   path: newPath,
-                  ...result.data()
+                  ...result.data(),
                 };
                 temp.push(setData);
               });
@@ -166,10 +195,10 @@ export default {
                 if (setNewArr[i].length != 9) {
                   for (let ii = 0; ii < 9; ii++) {
                     let setData = {
-                      name: "",
-                      surname: "",
-                      path: "",
-                      username: ""
+                      name: '',
+                      surname: '',
+                      path: '',
+                      username: '',
                     };
 
                     setNewArr[i].push(setData);
@@ -188,36 +217,36 @@ export default {
               this.loadingHide();
 
               setTimeout(() => {
-                resolve("complete");
+                resolve('complete');
               }, 1000);
             }, 1200);
           } else {
-            reject("close");
+            reject('close');
             this.loadingHide();
           }
         });
       });
 
       printPage.then(result => {
-        if (result == "complete") {
+        if (result == 'complete') {
           window.print();
           // window.close();
         }
       });
 
       printPage.catch(error => {
-        alert("ไม่มีข้อมูล");
+        alert('ไม่มีข้อมูล');
         window.close();
       });
-    }
+    },
   },
   mounted() {
-    if (this.$route.name === "printOnlyOne") {
+    if (this.$route.name === 'printOnlyOne') {
       this.loadPatient();
     } else {
       this.loadPatientAll();
     }
-  }
+  },
 };
 </script>
 

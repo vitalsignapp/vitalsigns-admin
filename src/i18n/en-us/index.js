@@ -1,5 +1,5 @@
 export default {
   // login
-  emailLabel: "Email",
-  passwordLabel: "Password"
-}
+  emailLabel: 'Email',
+  passwordLabel: 'Password',
+};

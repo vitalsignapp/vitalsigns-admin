@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import config from '@/config/environment';
 
 firebase.initializeApp(config.FIREBASE_CONFIG);

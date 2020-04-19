@@ -14,16 +14,35 @@
         </q-toolbar-title>
         <div class="q-pa-sm">
           <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" />
-          <q-btn dense round flat icon="more_vert" class="no-border-radius" @click="addPatient()">
+          <q-btn
+            dense
+            round
+            flat
+            icon="more_vert"
+            class="no-border-radius"
+            @click="addPatient()"
+          >
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">
-                <q-btn class="fit row no-border-radius" flat @click="printAll()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="printAll()"
+                >
                   <div class="col" align="left">พิมพ์ QR Code ทั้งห้อง</div>
                 </q-btn>
-                <q-btn class="fit row no-border-radius" flat @click="isEditRoom = true">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="isEditRoom = true"
+                >
                   <div class="col" align="left">แก้ไขข้อมูลห้องพัก</div>
                 </q-btn>
-                <q-btn class="fit row no-border-radius" flat @click="checkDeleteRoom()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="checkDeleteRoom()"
+                >
                   <div class="col color-error" align="left">ลบห้องพัก</div>
                 </q-btn>
               </q-list>
@@ -31,7 +50,10 @@
           </q-btn>
         </div>
       </q-toolbar>
-      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop ">
+      <q-toolbar
+        class="col bg-primary-500 shadow-1"
+        v-if="$q.platform.is.desktop"
+      >
         <div class="row full-width" v-if="isClickedOnPatient">
           <q-toolbar-title>รายละเอียดผู้ป่วย</q-toolbar-title>
 
@@ -73,10 +95,18 @@
                 <q-btn class="fit row no-border-radius" flat>
                   <div class="col" align="left">พิมพ์รายละเอียดผู้ป่วย</div>
                 </q-btn>
-                <q-btn class="fit row no-border-radius" flat @click="editPatient()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="editPatient()"
+                >
                   <div class="col" align="left">แก้ไขข้อมูลผู้ป่วย</div>
                 </q-btn>
-                <q-btn class="fit row no-border-radius" flat @click="deletePatient()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="deletePatient()"
+                >
                   <div class="col text-red" align="left">ลบผู้ป่วย</div>
                 </q-btn>
               </q-list>
@@ -100,7 +130,10 @@
 
       <!-- DELETE Patient Room -->
       <q-dialog v-model="isDeleteRoom" persistent>
-        <q-card style="max-width: 280px" class="q-py-xs q-px-sm no-border-radius">
+        <q-card
+          style="max-width: 280px"
+          class="q-py-xs q-px-sm no-border-radius"
+        >
           <q-card-section class="q-pt-md">
             <div class="font-h3">
               <span>ยืนยันการลบข้อมูล</span>
@@ -113,8 +146,20 @@
           </q-card-section>
 
           <div class="q-px-md q-pb-md q-pt-xs" align="right">
-            <q-btn flat class="button-action small" dense label="ตกลง" v-close-popup />
-            <q-btn flat class="button-action small" dense label="ตกลง" v-close-popup />
+            <q-btn
+              flat
+              class="button-action small"
+              dense
+              label="ตกลง"
+              v-close-popup
+            />
+            <q-btn
+              flat
+              class="button-action small"
+              dense
+              label="ตกลง"
+              v-close-popup
+            />
           </div>
         </q-card>
       </q-dialog>
@@ -131,15 +176,20 @@
       >
         <div>
           <div
-            v-for="(items,index) in patientData"
+            v-for="(items, index) in patientData"
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
             @click="showPatientData(items.key)"
           >
-            <div class="row q-py-sm font-body full-width" style="padding-left:30px">
+            <div
+              class="row q-py-sm font-body full-width"
+              style="padding-left:30px"
+            >
               <div class="col" align="left">
-                <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
+                <span class="no-padding"
+                  >{{ items.name }} {{ items.surname }}</span
+                >
                 <br />
                 <span class="color-light-gray">{{ items.username }}</span>
               </div>
@@ -154,34 +204,51 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col container-list-data relative-position" v-if="$q.platform.is.desktop">
-        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isClickedOnPatient">
+      <div
+        class="col container-list-data relative-position"
+        v-if="$q.platform.is.desktop"
+      >
+        <div
+          class="font-h3 color q-ma-xl q-pa-xl color-light-gray"
+          v-if="!isClickedOnPatient"
+        >
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
         </div>
 
-        <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;" v-else>
+        <div
+          class="q-px-xs q-pt-md"
+          style="max-width:330px;width:95%;margin:auto;"
+          v-else
+        >
           <div class="q-mt-lg">
-            <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
+            <span class="font-h3">{{
+              currentPatientData.name + ' ' + currentPatientData.surname
+            }}</span>
             <br />
             <!-- text-overflow -->
             <div class="font-body row q-mt-sm">
               <div class="col-4 text-overflow" style="width:130px;">
                 <span class="color-light-gray">รหัส</span>
-                {{ " " + currentPatientData.username + " " + "&nbsp;" }}
+                {{ ' ' + currentPatientData.username + ' ' + '&nbsp;' }}
               </div>
               <div class="col">
                 <span class="color-light-gray">วันเกิด</span>
-                {{ " " + currentPatientData.dateOfBirth + "&nbsp;" }}
+                {{ ' ' + currentPatientData.dateOfBirth + '&nbsp;' }}
                 <span
                   class="color-primary-500 cursor-pointer"
                   @click="isDetails = true"
-                >เพิ่มเติม</span>
+                  >เพิ่มเติม</span
+                >
               </div>
             </div>
           </div>
 
-          <div class="q-mt-md q-mb-lg" v-for="(items,index) in currentPatientLog" :key="index">
+          <div
+            class="q-mt-md q-mb-lg"
+            v-for="(items, index) in currentPatientLog"
+            :key="index"
+          >
             <q-card class="my-card font-body">
               <div class="q-pa-sm" align="center">
                 <span>{{ items.dateAndRound }}</span>
@@ -194,7 +261,10 @@
                   <div class="q-py-xs" v-if="items.temperature">
                     <span>อุณหภูมิ</span>
                   </div>
-                  <div class="q-py-xs" v-if="items.bloodPressure != 'null/null'">
+                  <div
+                    class="q-py-xs"
+                    v-if="items.bloodPressure != 'null/null'"
+                  >
                     <span>ความดันโลหิต</span>
                   </div>
                   <div class="q-py-xs" v-if="items.oxygen">
@@ -208,7 +278,10 @@
                   <div class="q-py-xs" v-if="items.temperature">
                     <span>{{ items.temperature }} &#176;C</span>
                   </div>
-                  <div class="q-py-xs" v-if="items.bloodPressure != 'null/null'">
+                  <div
+                    class="q-py-xs"
+                    v-if="items.bloodPressure != 'null/null'"
+                  >
                     <span>{{ items.bloodPressure }}</span>
                   </div>
                   <div class="q-py-xs" v-if="items.oxygen">
@@ -227,11 +300,16 @@
               >
                 <span>อาการตอนนี้</span>
               </div>
-              <q-separator v-if="items.symptomsCheck != null || items.otherSymptoms" />
+              <q-separator
+                v-if="items.symptomsCheck != null || items.otherSymptoms"
+              />
 
               <div
                 class="q-px-lg"
-                :class="{'q-mt-md q-pb-sm':items.symptomsCheck != null || items.otherSymptoms}"
+                :class="{
+                  'q-mt-md q-pb-sm':
+                    items.symptomsCheck != null || items.otherSymptoms,
+                }"
               >
                 <div
                   class="row"
@@ -258,7 +336,7 @@
                   </div>
                   <div class="col">
                     <div class="q-py-xs">
-                      <span>{{"อื่นๆ: " + items.otherSymptoms }}</span>
+                      <span>{{ 'อื่นๆ: ' + items.otherSymptoms }}</span>
                     </div>
                   </div>
                 </div>
@@ -272,7 +350,14 @@
     <q-dialog v-model="isDialogAddNewPatient" persistent maximized>
       <q-card class="q-pa-md bg-surface">
         <div align="right">
-          <q-btn dense round flat class="color-black" v-close-popup @click="closeAddEditPatient()">
+          <q-btn
+            dense
+            round
+            flat
+            class="color-black"
+            v-close-popup
+            @click="closeAddEditPatient()"
+          >
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
@@ -400,7 +485,11 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="qDateProxy"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         mask="DD/MM/YYYY"
                         v-model="patientObj.dateOfAdmit"
@@ -416,7 +505,11 @@
             <div>
               <span class="font-body">ห้องผู้ป่วย</span>
             </div>
-            <div class="q-my-xs" v-for="(item,index) in patientRoom" :key="index">
+            <div
+              class="q-my-xs"
+              v-for="(item, index) in patientRoom"
+              :key="index"
+            >
               <q-radio
                 class="font-body"
                 dense
@@ -469,11 +562,20 @@
           <div class="font-h3 q-pt-md" align="center">แก้ไขห้องพักผู้ป่วย</div>
           <div class="q-pt-md font-h4">ชื่อห้องพักผู้ป่วย</div>
           <div class="q-pt-sm">
-            <q-input label="ชื่อห้องพักผู้ป่วย" v-model="roomName" outlined class="bg-white"></q-input>
+            <q-input
+              label="ชื่อห้องพักผู้ป่วย"
+              v-model="roomName"
+              outlined
+              class="bg-white"
+            ></q-input>
           </div>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn class="button-action" label="บันทึก" @click="editRoomName()"></q-btn>
+          <q-btn
+            class="button-action"
+            label="บันทึก"
+            @click="editRoomName()"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -487,12 +589,23 @@
         </div>
         <q-card-section style="max-width:360px;margin:auto">
           <div class="font-h3 q-pt-md" align="center">ลบห้องผู้ป่วย</div>
-          <div class="q-pt-md font-h4">ย้ายผู้ป่วยในห้องปัจจุบันไปยังห้องใด</div>
+          <div class="q-pt-md font-h4">
+            ย้ายผู้ป่วยในห้องปัจจุบันไปยังห้องใด
+          </div>
           <div class="q-pt-sm">
-            <q-toolbar class="q-pa-xs" v-for="(items,index) in patientRoomCheckbox" :key="index">
+            <q-toolbar
+              class="q-pa-xs"
+              v-for="(items, index) in patientRoomCheckbox"
+              :key="index"
+            >
               <div class="fit border-light-gray rounded-borders row">
                 <div class="col-12">
-                  <q-radio :val="items.key" v-model="roomChoosed" keep-color color="teal">
+                  <q-radio
+                    :val="items.key"
+                    v-model="roomChoosed"
+                    keep-color
+                    color="teal"
+                  >
                     <span>{{ items.name }}</span>
                   </q-radio>
                 </div>
@@ -501,7 +614,11 @@
           </div>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn class="button-action" label="บันทึก" @click="transferPatientDataToChoosedRoom()"></q-btn>
+          <q-btn
+            class="button-action"
+            label="บันทึก"
+            @click="transferPatientDataToChoosedRoom()"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -517,47 +634,61 @@
 
         <div class="q-my-md q-px-sm">
           <div class="text-overflow">
-            <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
+            <span class="font-h3">{{
+              currentPatientData.name + ' ' + currentPatientData.surname
+            }}</span>
           </div>
           <div class="row q-mt-sm">
             <div class="col-4 q-my-xs text-overflow" style="width:165px;">
               <span class="color-light-gray">รหัส</span>
-              {{ " " + currentPatientData.username + " " + "&nbsp;" }}
+              {{ ' ' + currentPatientData.username + ' ' + '&nbsp;' }}
             </div>
             <div class="col q-my-xs" align="right">
               <span class="color-light-gray">วันเกิด</span>
-              {{ " " + currentPatientData.dateOfBirth }}
+              {{ ' ' + currentPatientData.dateOfBirth }}
             </div>
           </div>
           <div class="row q-mt-sm">
             <div class="col-2 self-start q-my-xs" style="width:75px;">
               <span class="color-light-gray">Diagnosis</span>
             </div>
-            <div
-              class="col q-my-xs"
-            >{{ currentPatientData.diagnosis != '' ? currentPatientData.diagnosis : '-' }}</div>
+            <div class="col q-my-xs">
+              {{
+                currentPatientData.diagnosis != ''
+                  ? currentPatientData.diagnosis
+                  : '-'
+              }}
+            </div>
           </div>
           <div class="row q-mt-sm">
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">อายุ</span>
-              {{ " " + getAge }}
+              {{ ' ' + getAge }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เพศ</span>
-              <span>{{ currentPatientData.sex == 'male' ? " ชาย" : ' หญิง'}}</span>
+              <span>{{
+                currentPatientData.sex == 'male' ? ' ชาย' : ' หญิง'
+              }}</span>
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">ห้อง</span>
-              {{ " " + roomData.name }}
+              {{ ' ' + roomData.name }}
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เข้ารักษา</span>
-              {{ " " + currentPatientData.dateOfAdmit }}
+              {{ ' ' + currentPatientData.dateOfAdmit }}
             </div>
           </div>
 
           <div align="right" class="q-mt-md q-pr-sm">
-            <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
+            <q-btn
+              flat
+              class="button-action small"
+              dense
+              label="ปิด"
+              @click="isDetails = false"
+            ></q-btn>
           </div>
         </div>
       </q-card>
@@ -566,13 +697,13 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
-import { listPatientsByRoomKey, getPatientLogById } from "../api";
+import { $db } from '@/api/firebase';
+import { listPatientsByRoomKey, getPatientLogById } from '../api';
 
 export default {
   data() {
     return {
-      currentDate: "",
+      currentDate: '',
       deletePatientConfirmation: false,
       isEditRoom: false,
       items: [{}, {}, {}, {}, {}, {}, {}],
@@ -581,75 +712,80 @@ export default {
       isLoading: true,
       patientData: [],
       roomKey: this.$route.params.roomKey,
-      roomData: "",
+      roomData: '',
       isDisabled: false,
       patientObj: {
-        username: "",
-        name: "",
-        surname: "",
-        sex: "male",
-        dateOfBirth: "",
-        dateOfAdmit: "",
-        patientRoomKey: "",
-        diagnosis: ""
+        username: '',
+        name: '',
+        surname: '',
+        sex: 'male',
+        dateOfBirth: '',
+        dateOfAdmit: '',
+        patientRoomKey: '',
+        diagnosis: '',
       },
 
-      isListenPatientData: "",
-      currentPatientData: "",
-      patientLog: "",
-      currentPatientLog: "",
+      isListenPatientData: '',
+      currentPatientData: '',
+      patientLog: '',
+      currentPatientLog: '',
       platForm: this.$q.platform.is,
       isClickedOnPatient: false,
-      roomName: "",
-      patientRoomCheckbox: "",
-      roomChoosed: "",
+      roomName: '',
+      patientRoomCheckbox: '',
+      roomChoosed: '',
       isDetails: false,
 
       isAddMode: true,
-      isDeleteRoom: false
+      isDeleteRoom: false,
     };
   },
   methods: {
     printBtn() {
       let routeData = this.$router.resolve({
-        path: "/QRCode/" + this.currentPatientData.key
+        path: '/QRCode/' + this.currentPatientData.key,
       });
-      window.open(routeData.href, "_blank");
+      window.open(routeData.href, '_blank');
 
       // this.$router.push("/QRCode/" + this.patientKey);
     },
     printAll() {
       let routeData = this.$router.resolve({
-        path: "/QRCode/" + this.roomKey + "/all"
+        path: '/QRCode/' + this.roomKey + '/all',
       });
-      window.open(routeData.href, "_blank");
+      window.open(routeData.href, '_blank');
     },
     deletePatient() {
       // ฟังก์ชันการลบข้อมูลผู้ป่วย
       this.$q
         .dialog({
-          title: "ลบผู้ป่วย",
-          message: "ต้องการลบผู้ป่วยใช่หรือไม่",
+          title: 'ลบผู้ป่วย',
+          message: 'ต้องการลบผู้ป่วยใช่หรือไม่',
           ok: {
-            color: "orange-5"
+            color: 'orange-5',
           },
-          cancel: { textColor: "black", flat: true }
+          cancel: { textColor: 'black', flat: true },
         })
         .onOk(() => {
-          $db.collection("patientData")
+          $db
+            .collection('patientData')
             .doc(this.currentPatientData.key)
             .delete()
             .then(() => {
-              getPatientLogById(this.currentPatientData.key).then((doc) => {
+              getPatientLogById(this.currentPatientData.key).then(doc => {
                 let counter = 0;
                 if (doc && Array.isArray(doc) && doc.length > 0) {
                   doc.forEach(element => {
-                    $db.collection("patientLog").doc(element.id).delete().then(() => {
-                      counter++;
-                      if (counter == doc.size) {
-                        this.loadingHide();
-                      }
-                    });
+                    $db
+                      .collection('patientLog')
+                      .doc(element.id)
+                      .delete()
+                      .then(() => {
+                        counter++;
+                        if (counter == doc.size) {
+                          this.loadingHide();
+                        }
+                      });
                   });
                 } else {
                   this.loadingHide();
@@ -659,7 +795,7 @@ export default {
         });
     },
     changeNotify() {
-      console.log("CHANGED");
+      console.log('CHANGED');
       let currentPatientDataSnapshot = this.patientData.filter(
         x => x.key == this.currentPatientData.key
       )[0];
@@ -672,18 +808,19 @@ export default {
       }
 
       let titleText =
-        showNotify == false ? "เปิดการแจ้งเตือน" : "ยกเลิกการแจ้งเตือน";
+        showNotify == false ? 'เปิดการแจ้งเตือน' : 'ยกเลิกการแจ้งเตือน';
       let contentText =
         showNotify == false
-          ? "ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ ไม่กรอกข้อมูลตามเวลา "
-          : "ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา ";
+          ? 'ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ ไม่กรอกข้อมูลตามเวลา '
+          : 'ระบบจะไม่แจ้งเตือน เมื่อคนไข้ท่านนี้ไม่กรอกข้อมูลตามเวลา ';
 
       this.popUpDialog(titleText, contentText);
 
-      $db.collection("patientData")
+      $db
+        .collection('patientData')
         .doc(this.currentPatientData.key)
         .update({
-          isShowNotify: showNotify
+          isShowNotify: showNotify,
         });
 
       this.currentPatientData.isShowNotify = showNotify;
@@ -692,25 +829,30 @@ export default {
       // console.log(this.currentPatientData);
     },
     transferPatientDataToChoosedRoom() {
-      $db.collection("patientData")
-        .where("patientRoomKey", "==", this.roomKey)
+      $db
+        .collection('patientData')
+        .where('patientRoomKey', '==', this.roomKey)
         .get()
         .then(doc => {
           let counter = 0;
 
           doc.forEach(element => {
-            getPatientLogById(element.id).then((doc) => {
+            getPatientLogById(element.id).then(doc => {
               doc.forEach(pelement => {
-                $db.collection("patientLog").doc(pelement.id).update({
-                    patientRoomKey: this.roomChoosed
+                $db
+                  .collection('patientLog')
+                  .doc(pelement.id)
+                  .update({
+                    patientRoomKey: this.roomChoosed,
                   });
               });
             });
 
-            $db.collection("patientData")
+            $db
+              .collection('patientData')
               .doc(element.id)
               .update({
-                patientRoomKey: this.roomChoosed
+                patientRoomKey: this.roomChoosed,
               })
               .then(() => {
                 counter++;
@@ -718,12 +860,13 @@ export default {
                   this.deletePatientConfirmation = false;
                   // this.$router.push("/roomdetails/" + this.roomChoosed);
 
-                  $db.collection("patientRoom")
+                  $db
+                    .collection('patientRoom')
                     .doc(this.roomKey)
                     .delete()
                     .then(() => {
                       this.loadingHide();
-                      this.$router.push("/room/");
+                      this.$router.push('/room/');
                     });
                 }
               });
@@ -731,11 +874,12 @@ export default {
         });
     },
     checkDeleteRoom() {
-      console.log("CHECK DELETE ROOm");
+      console.log('CHECK DELETE ROOm');
       this.loadingShow();
       // ต้องเช็คว่าภายในห้องนี้มีผู้ป่วยอยู่แล้วหรือไม่
-      $db.collection("patientData")
-        .where("patientRoomKey", "==", this.roomKey)
+      $db
+        .collection('patientData')
+        .where('patientRoomKey', '==', this.roomKey)
         .get()
         .then(doc => {
           console.log(doc.size);
@@ -747,28 +891,29 @@ export default {
             // confirmation และลบได้เลย
             this.$q
               .dialog({
-                title: "ยืนยันการลบข้อมูล",
-                message: "คุณต้องการลบข้อมูลห้องพักหรือไม่",
+                title: 'ยืนยันการลบข้อมูล',
+                message: 'คุณต้องการลบข้อมูลห้องพักหรือไม่',
                 ok: {
-                  color: "orange-5",
-                  label: "ตกลง",
-                  textColor: "black"
+                  color: 'orange-5',
+                  label: 'ตกลง',
+                  textColor: 'black',
                 },
                 cancel: {
-                  label: "ยกเลิก",
+                  label: 'ยกเลิก',
                   flat: true,
-                  textColor: "black"
-                }
+                  textColor: 'black',
+                },
               })
               .onOk(validate => {
                 this.loadingShow();
 
-                $db.collection("patientRoom")
+                $db
+                  .collection('patientRoom')
                   .doc(this.roomKey)
                   .delete()
                   .then(() => {
                     this.loadingHide();
-                    this.$router.push("/room/");
+                    this.$router.push('/room/');
                   });
               });
           }
@@ -781,27 +926,30 @@ export default {
         this.loadingHide();
         return;
       }
-      $db.collection("patientRoom")
-        .where("name", "==", this.roomName)
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+      $db
+        .collection('patientRoom')
+        .where('name', '==', this.roomName)
+        .where('hospitalKey', '==', this.$q.localStorage.getItem('hospitalKey'))
         .get()
         .then(doc => {
           if (doc.size) {
             // กรณีชื่อซ้ำ
-            this.popUpDialog("ผิดพลาด", "พบชื่อห้องซ้ำ");
+            this.popUpDialog('ผิดพลาด', 'พบชื่อห้องซ้ำ');
             this.loadingHide();
           } else {
-            $db.collection("patientRoom")
+            $db
+              .collection('patientRoom')
               .doc(this.roomKey)
               .update({
-                name: this.roomName
+                name: this.roomName,
               })
               .then(() => {
-                $db.collection("patientRoom")
+                $db
+                  .collection('patientRoom')
                   .doc(this.roomKey)
                   .get()
                   .then(doc => {
-                    this.vnotify("บันทึกข้อมูลเรียบร้อย");
+                    this.vnotify('บันทึกข้อมูลเรียบร้อย');
                     this.roomData = doc.data();
                     this.patientObj.patientRoomKey = doc.id;
                     this.roomName = doc.data().name;
@@ -815,15 +963,15 @@ export default {
     closeAddEditPatient() {
       if (!this.isAddMode) {
         this.patientObj = {
-          username: "",
-          name: "",
-          surname: "",
-          sex: "male",
-          dateOfAdmit: "",
-          dateOfBirth: "",
-          diagnosis: "",
-          hospitalKey: "",
-          patientRoomKey: this.roomKey
+          username: '',
+          name: '',
+          surname: '',
+          sex: 'male',
+          dateOfAdmit: '',
+          dateOfBirth: '',
+          diagnosis: '',
+          hospitalKey: '',
+          patientRoomKey: this.roomKey,
         };
       }
 
@@ -844,15 +992,15 @@ export default {
       this.isAddMode = true;
 
       this.patientObj = {
-        username: "",
-        name: "",
-        surname: "",
-        sex: "male",
-        dateOfAdmit: "",
-        dateOfBirth: "",
-        diagnosis: "",
-        hospitalKey: "",
-        patientRoomKey: this.roomKey
+        username: '',
+        name: '',
+        surname: '',
+        sex: 'male',
+        dateOfAdmit: '',
+        dateOfBirth: '',
+        diagnosis: '',
+        hospitalKey: '',
+        patientRoomKey: this.roomKey,
       };
     },
     showPatientData(key) {
@@ -872,12 +1020,12 @@ export default {
       } else {
         // MOBILE ROUTE TO OTHER PAGE
         this.$router.push(
-          "/patientDetails/" + key + "/" + this.$route.name + "/" + this.roomKey
+          '/patientDetails/' + key + '/' + this.$route.name + '/' + this.roomKey
         );
       }
     },
     saveData() {
-      let refs = $db.collection("patientData");
+      let refs = $db.collection('patientData');
 
       this.$refs.username.validate();
       this.$refs.name.validate();
@@ -892,37 +1040,37 @@ export default {
         this.$refs.birth.hasError ||
         this.$refs.admit.hasError
       ) {
-        alert("กรุณากรอกข้อมูลให้ครบ");
+        alert('กรุณากรอกข้อมูลให้ครบ');
         return;
       }
 
-      if (this.patientObj.sex == "") {
-        alert("กรุณาเลือกเพศ");
+      if (this.patientObj.sex == '') {
+        alert('กรุณาเลือกเพศ');
         return;
       }
 
-      if (this.patientObj.patientRoomKey == "") {
-        alert("กรุณาเลือกห้องผู้ป่วย");
+      if (this.patientObj.patientRoomKey == '') {
+        alert('กรุณาเลือกห้องผู้ป่วย');
         return;
       }
 
       this.loadingShow();
       this.isDisabled = true;
-      this.patientObj.hospitalKey = this.$q.localStorage.getItem("hospitalKey");
+      this.patientObj.hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       if (this.isAddMode) {
         refs.add(this.patientObj).then(() => {
           this.isDisabled = false;
           this.patientObj = {
-            username: "",
-            name: "",
-            surname: "",
-            sex: "male",
-            dateOfAdmit: "",
-            dateOfBirth: "",
-            diagnosis: "",
-            hospitalKey: "",
-            patientRoomKey: this.roomKey
+            username: '',
+            name: '',
+            surname: '',
+            sex: 'male',
+            dateOfAdmit: '',
+            dateOfBirth: '',
+            diagnosis: '',
+            hospitalKey: '',
+            patientRoomKey: this.roomKey,
           };
           this.isDialogAddNewPatient = false;
           this.loadingHide();
@@ -940,8 +1088,9 @@ export default {
       }
     },
     loadPatientRoom() {
-      $db.collection("patientRoom")
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+      $db
+        .collection('patientRoom')
+        .where('hospitalKey', '==', this.$q.localStorage.getItem('hospitalKey'))
         .get()
         .then(doc => {
           let dataTemp = [];
@@ -950,7 +1099,7 @@ export default {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
             dataCheckBox.push({
               ...element.data(),
-              ...{ key: element.id, status: false }
+              ...{ key: element.id, status: false },
             });
           });
           this.patientRoom = dataTemp;
@@ -965,7 +1114,8 @@ export default {
       this.currentDate = await this.getDate();
 
       this.loadingShow();
-      $db.collection("patientRoom")
+      $db
+        .collection('patientRoom')
         .doc(this.roomKey)
         .get()
         .then(doc => {
@@ -978,13 +1128,15 @@ export default {
         });
     },
     loadPatientDataInThisRoom() {
-      listPatientsByRoomKey(this.roomKey).then((docs) => {
-        this.patientData = docs.map((doc) => ({ ...doc, key: doc.id}));
+      listPatientsByRoomKey(this.roomKey).then(docs => {
+        this.patientData = docs.map(doc => ({ ...doc, key: doc.id }));
         this.loadPatientLogInThisRoom();
       });
     },
     loadPatientLogInThisRoom() {
-      $db.collection("patientLog").where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+      $db
+        .collection('patientLog')
+        .where('hospitalKey', '==', this.$q.localStorage.getItem('hospitalKey'))
         .get()
         .then(doc => {
           let dataTemp = [];
@@ -993,18 +1145,18 @@ export default {
 
             let newDate =
               dateAdmit.substr(0, 2) +
-              " " +
+              ' ' +
               this.showMonthName(dateAdmit.substr(3, 2)) +
-              " " +
+              ' ' +
               dateAdmit.substr(6) +
-              " รอบ " +
+              ' รอบ ' +
               result.data().inputRound +
-              ":00 น.";
+              ':00 น.';
 
             let setData = {
               key: result.id,
               dateAndRound: newDate,
-              ...result.data()
+              ...result.data(),
             };
 
             dataTemp.push(setData);
@@ -1021,7 +1173,7 @@ export default {
           this.isLoading = false;
           this.loadingHide();
         });
-    }
+    },
   },
   computed: {
     getAge() {
@@ -1032,9 +1184,9 @@ export default {
 
       let currentDate =
         Number(this.currentDate.date.substr(6)) +
-        "-" +
+        '-' +
         this.currentDate.date.substr(3, 2) +
-        "-" +
+        '-' +
         this.currentDate.date.substr(0, 2);
 
       let dob = newdob;
@@ -1052,14 +1204,14 @@ export default {
       }
 
       return age;
-    }
+    },
   },
   mounted() {
     this.loadRoomData();
   },
   beforeDestroy() {
     // this.isListenPatientData();
-  }
+  },
 };
 </script>
 

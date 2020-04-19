@@ -20,7 +20,10 @@
           />
         </div>
       </q-toolbar>
-      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
+      <q-toolbar
+        class="col bg-primary-500 shadow-1"
+        v-if="$q.platform.is.desktop"
+      >
         <q-toolbar-title></q-toolbar-title>
         <q-space />
       </q-toolbar>
@@ -37,19 +40,26 @@
       >
         <div>
           <div
-            v-for="(items,index) in patientRoom"
+            v-for="(items, index) in patientRoom"
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
             @click="showRoomData(items.key)"
           >
-            <div class="row q-py-sm font-body full-width" style="padding-left:30px">
+            <div
+              class="row q-py-sm font-body full-width"
+              style="padding-left:30px"
+            >
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }}</span>
                 <br />
-                <span
-                  class="color-light-gray"
-                >{{ patientData.filter(x => x.patientRoomKey == items.key ).length }} คน</span>
+                <span class="color-light-gray"
+                  >{{
+                    patientData.filter(x => x.patientRoomKey == items.key)
+                      .length
+                  }}
+                  คน</span
+                >
               </div>
               <div class="col-1 self-center" style="width:30px;">
                 <q-icon name="chevron_right" size="24px"></q-icon>
@@ -81,7 +91,13 @@
     >
       <q-card class="bg-white">
         <q-card-section align="right">
-          <q-btn dense round flat class="relative-position z-top color-black" v-close-popup>
+          <q-btn
+            dense
+            round
+            flat
+            class="relative-position z-top color-black"
+            v-close-popup
+          >
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </q-card-section>
@@ -100,7 +116,12 @@
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn @click="addNewRoom()" label="บันทึก" class="button-action" style="min-width:80px"></q-btn>
+          <q-btn
+            @click="addNewRoom()"
+            label="บันทึก"
+            class="button-action"
+            style="min-width:80px"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -108,38 +129,39 @@
 </template>
 
 <script>
-import { db } from "../router";
-import { listRoom, listPatient } from "../api";
+import { $db } from '@/api/firebase';
+import { listRoom, listPatient } from '../api';
 
 export default {
   data() {
     return {
       isShowAddRoomDialog: false,
-      roomName: "",
+      roomName: '',
       patientRoom: [],
       patientData: [],
-      isListenPatientRoom: "",
-      isLoading: true
+      isListenPatientRoom: '',
+      isLoading: true,
     };
   },
   methods: {
     showRoomData(roomKey) {
-      this.$router.push("/roomdetails/" + roomKey);
+      this.$router.push('/roomdetails/' + roomKey);
     },
     async addNewRoom() {
       this.loadingShow();
       let date = await this.getDate();
-      $db.collection("patientRoom")
+      $db
+        .collection('patientRoom')
         .add({
           name: this.roomName,
-          hospitalKey: this.$q.localStorage.getItem("hospitalKey"),
+          hospitalKey: this.$q.localStorage.getItem('hospitalKey'),
           addTime: date.microtime,
-          date: date
+          date: date,
         })
         .then(() => {
           this.$q.notify({
-            message: "คุณสร้างห้องพักสำเร็จแล้ว",
-            color: "black"
+            message: 'คุณสร้างห้องพักสำเร็จแล้ว',
+            color: 'black',
           });
           this.isShowAddRoomDialog = false;
           this.loadingHide();
@@ -158,19 +180,24 @@ export default {
       //     this.patientData = dataTemp;
       //     this.loadPatientRoom();
       //   });
-        this.loadingShow();
-        const hospitalId = this.$q.localStorage.getItem("hospitalKey");
-        const transformPatientList =  (data = [])=> {
-          return data = data.map(d => {
+      this.loadingShow();
+      const hospitalId = this.$q.localStorage.getItem('hospitalKey');
+      const transformPatientList = (data = []) => {
+        return (data = data
+          .map(d => {
             return {
-              ...d, 
-              key: d.id
+              ...d,
+              key: d.id,
             };
-          }).sort((a, b) => { return a.name > b.name ? 1 : -1; });
-        };
-        this.patientData = await listPatient(hospitalId).then(transformPatientList);
-        this.loadPatientRoom();
-
+          })
+          .sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+          }));
+      };
+      this.patientData = await listPatient(hospitalId).then(
+        transformPatientList
+      );
+      this.loadPatientRoom();
     },
     loadPatientRoom() {
       // this.isListenPatientRoom = $db
@@ -190,29 +217,31 @@ export default {
       //     this.loadingHide();
       //   });
 
-      const hospitalId = this.$q.localStorage.getItem("hospitalKey");
+      const hospitalId = this.$q.localStorage.getItem('hospitalKey');
       listRoom(hospitalId)
-      .then(data => {
-        data = data.map(d => {
-          return {...d, key: d.id};
-        }).sort((a, b) => a.addTime - b.addTime);
+        .then(data => {
+          data = data
+            .map(d => {
+              return { ...d, key: d.id };
+            })
+            .sort((a, b) => a.addTime - b.addTime);
 
-        this.patientRoom = data;
-        this.isLoading = false;
-        this.loadingHide();
-      }).catch(err => {
-        this.isLoading = false;
-        this.loadingHide();
-      });
-
-    }
+          this.patientRoom = data;
+          this.isLoading = false;
+          this.loadingHide();
+        })
+        .catch(err => {
+          this.isLoading = false;
+          this.loadingHide();
+        });
+    },
   },
   mounted() {
     this.loadPatientData();
   },
   beforeDestroy() {
     // this.isListenPatientRoom();
-  }
+  },
 };
 </script>
 

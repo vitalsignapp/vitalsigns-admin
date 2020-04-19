@@ -11,7 +11,9 @@
     </q-header>
 
     <div class="q-pa-md" v-if="!isLoading">
-      <div class="font-h4">{{ userData.prefix }} {{ userData.displayName }}</div>
+      <div class="font-h4">
+        {{ userData.prefix }} {{ userData.displayName }}
+      </div>
       <div class="font-body">
         <div class="q-pt-md">
           <span class="color-light-gray">รหัส</span>
@@ -27,18 +29,19 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
+import { $db } from '@/api/firebase';
 export default {
   data() {
     return {
-      userData: "",
-      isLoading: true
+      userData: '',
+      isLoading: true,
     };
   },
   methods: {
     loadUserData() {
       this.loadingShow();
-      $db.collection("userData")
+      $db
+        .collection('userData')
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
@@ -46,13 +49,12 @@ export default {
           this.loadingHide();
           this.isLoading = false;
         });
-    }
+    },
   },
   mounted() {
     this.loadUserData();
-  }
+  },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

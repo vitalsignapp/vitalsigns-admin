@@ -40,23 +40,35 @@
             <template v-slot:after>
               <span
                 class="font-body q-px-sm color-white cursor-pointer"
-                @click="isSearch = false,displayUserData = userDataList"
-              >ยกเลิก</span>
+                @click="(isSearch = false), (displayUserData = userDataList)"
+                >ยกเลิก</span
+              >
             </template>
           </q-input>
         </div>
       </q-toolbar>
-      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
+      <q-toolbar
+        class="col bg-primary-500 shadow-1"
+        v-if="$q.platform.is.desktop"
+      >
         <q-toolbar-title>รายละเอียดบุคลากร</q-toolbar-title>
         <div v-if="isClickedUserData && isAdmin">
           <q-btn dense round flat class="q-ml-sm" size="14px">
             <q-img src="../statics/pic/Option.png" width="30px"></q-img>
             <q-menu square :offset="[5, 16]">
               <q-list style="min-width: 150px">
-                <q-btn class="fit row no-border-radius" flat @click="editUser()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="editUser()"
+                >
                   <div class="col" align="left">แก้ไข้ข้อมูลบุคลากร</div>
                 </q-btn>
-                <q-btn class="fit row no-border-radius" flat @click="deleteUser()">
+                <q-btn
+                  class="fit row no-border-radius"
+                  flat
+                  @click="deleteUser()"
+                >
                   <div class="col text-red" align="left">ลบบุคลากร</div>
                 </q-btn>
               </q-list>
@@ -76,15 +88,20 @@
       >
         <div>
           <div
-            v-for="(items,index) in displayUserData"
+            v-for="(items, index) in displayUserData"
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
             @click="showUserData(items.key)"
           >
-            <div class="row q-py-sm font-body full-width" style="padding-left:30px">
+            <div
+              class="row q-py-sm font-body full-width"
+              style="padding-left:30px"
+            >
               <div class="col" align="left">
-                <span class="no-padding">{{ items.prefix }} {{ items.name }} {{ items.surname }}</span>
+                <span class="no-padding"
+                  >{{ items.prefix }} {{ items.name }} {{ items.surname }}</span
+                >
                 <br />
                 <span class="color-light-gray">{{ items.userAccount }}</span>
               </div>
@@ -92,7 +109,7 @@
                 <q-icon name="chevron_right" size="24px"></q-icon>
               </div>
               <div class="col-12">
-                <span class="color-light-gray">{{items.userId}}</span>
+                <span class="color-light-gray">{{ items.userId }}</span>
               </div>
             </div>
             <q-separator />
@@ -102,18 +119,25 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col container-list-data relative-position" v-if="$q.platform.is.desktop">
+      <div
+        class="col container-list-data relative-position"
+        v-if="$q.platform.is.desktop"
+      >
         <div
           class="q-px-xs q-pt-md"
           style="max-width:330px;width:90%;margin:auto;"
           v-if="isClickedUserData"
         >
           <div class="q-pt-md">
+            <div align="left" class="font-h3">
+              {{ currentUserData.prefix }} {{ currentUserData.name }}
+              {{ currentUserData.surname }}
+            </div>
             <div
+              class="font-body q-py-sm q-pt-md"
               align="left"
-              class="font-h3"
-            >{{ currentUserData.prefix }} {{ currentUserData.name }} {{ currentUserData.surname }}</div>
-            <div class="font-body q-py-sm q-pt-md" align="left" v-if="currentUserData.userId">
+              v-if="currentUserData.userId"
+            >
               <span class="color-light-gray">รหัสบุคลากร</span>
               <span>&nbsp;{{ currentUserData.userId }}</span>
             </div>
@@ -141,7 +165,10 @@
           <div class="text-h6" align="center">เพิ่มบุคลากร</div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none row" style="max-width:360px;margin:auto">
+        <q-card-section
+          class="q-pt-none row"
+          style="max-width:360px;margin:auto"
+        >
           <div class="col-12 q-px-sm q-mt-md" align="left">
             <span class>รหัสบุคลากร</span>
             <q-input
@@ -156,7 +183,12 @@
           </div>
           <div class="col-12 q-px-sm q-mt-md" align="left">
             <span class>คำนำหน้า</span>
-            <q-input v-model="user.prefix" style="max-width:147px;" outlined label="คำนำหน้า"></q-input>
+            <q-input
+              v-model="user.prefix"
+              style="max-width:147px;"
+              outlined
+              label="คำนำหน้า"
+            ></q-input>
           </div>
           <div class="col-6 q-px-sm q-mt-md" align="left">
             <span class>ชื่อและนามสกุล</span>
@@ -211,7 +243,12 @@
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn @click="addUser()" label="บันทึก" class="button-action" style="min-width:80px"></q-btn>
+          <q-btn
+            @click="addUser()"
+            label="บันทึก"
+            class="button-action"
+            style="min-width:80px"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -219,34 +256,34 @@
 </template>
 
 <script>
-import { $db } from "@/api/firebase";
+import { $db } from '@/api/firebase';
 export default {
   data() {
     return {
       isClickedUserData: false,
       user: {
-        dateCreated: "",
-        email: "",
-        hospitalKey: "",
+        dateCreated: '',
+        email: '',
+        hospitalKey: '',
         isAdmin: false,
-        microtimeCreated: "",
-        name: "",
-        password: "",
-        surname: "",
-        userId: "",
-        prefix: ""
+        microtimeCreated: '',
+        name: '',
+        password: '',
+        surname: '',
+        userId: '',
+        prefix: '',
       },
-      userKey: "",
+      userKey: '',
       isShowAddRoomDialog: false,
-      userDataList: "",
-      currentUserData: "",
+      userDataList: '',
+      currentUserData: '',
       platform: this.$q.platform.is,
       isAdmin: false,
       isSearch: false,
-      search: "",
-      displayUserData: "",
+      search: '',
+      displayUserData: '',
 
-      isAddMode: true
+      isAddMode: true,
     };
   },
   methods: {
@@ -260,24 +297,24 @@ export default {
     deleteUser() {
       this.$q
         .dialog({
-          title: "ลบข้อมูล",
-          message: "ยืนยันการลบข้อมูล",
+          title: 'ลบข้อมูล',
+          message: 'ยืนยันการลบข้อมูล',
           ok: {
-            color: "orange-5",
-            textColor: "black",
-            label: "ตกลง"
+            color: 'orange-5',
+            textColor: 'black',
+            label: 'ตกลง',
           },
           cancel: {
-            label: "ยกเลิก",
+            label: 'ยกเลิก',
             flat: true,
-            textColor: "black"
-          }
+            textColor: 'black',
+          },
         })
         .onOk(() => {
           this.loadingShow();
 
           let refs = $db
-            .collection("userData")
+            .collection('userData')
             .doc(this.userKey)
             .delete()
             .then(() => {
@@ -289,7 +326,7 @@ export default {
         });
     },
     filterData() {
-      if (this.search == "") {
+      if (this.search == '') {
         this.displayUserData = this.userDataList;
       }
       let filter = this.userDataList.filter(x => {
@@ -304,28 +341,28 @@ export default {
         this.isClickedUserData = true;
         this.currentUserData = this.userDataList.filter(x => x.key == key)[0];
       } else {
-        this.$router.push("/userdata/" + this.userDataList[index].key);
+        this.$router.push('/userdata/' + this.userDataList[index].key);
       }
     },
     showAddUserDialog() {
       this.user = {
-        dateCreated: "",
-        email: "",
-        hospitalKey: "",
+        dateCreated: '',
+        email: '',
+        hospitalKey: '',
         isAdmin: false,
-        microtimeCreated: "",
-        name: "",
-        password: "",
-        surname: "",
-        userId: "",
-        prefix: ""
+        microtimeCreated: '',
+        name: '',
+        password: '',
+        surname: '',
+        userId: '',
+        prefix: '',
       };
       this.isShowAddRoomDialog = true;
     },
     loadUserData() {
       $db
-        .collection("userData")
-        .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
+        .collection('userData')
+        .where('hospitalKey', '==', this.$q.localStorage.getItem('hospitalKey'))
         .onSnapshot(doc => {
           let dataTemp = [];
           doc.forEach(element => {
@@ -342,10 +379,10 @@ export default {
     },
 
     loadCurrentUser() {
-      let userKey = this.$q.localStorage.getItem("userData").key;
+      let userKey = this.$q.localStorage.getItem('userData').key;
 
       let refs = $db
-        .collection("userData")
+        .collection('userData')
         .doc(userKey)
         .get();
 
@@ -380,27 +417,27 @@ export default {
       // Add Mode
       if (this.isAddMode) {
         $db
-          .collection("userData")
-          .where("email", "==", this.user.email)
+          .collection('userData')
+          .where('email', '==', this.user.email)
           .get()
           .then(doc => {
             if (doc.size) {
               // กรณีตรวจพบ User ซ้ำ
               this.loadingHide();
-              this.vnotify("Email นี้ถูกใช้งานแล้ว");
+              this.vnotify('Email นี้ถูกใช้งานแล้ว');
             } else {
               this.user.hospitalKey = this.$q.localStorage.getItem(
-                "userData"
+                'userData'
               ).hospitalKey;
 
               this.user.microtimeCreated = date.microtime;
               this.user.dateCreated = date.date;
 
               $db
-                .collection("userData")
+                .collection('userData')
                 .add(this.user)
                 .then(() => {
-                  this.vnotify("สร้างบุคลากรเรียบร้อย");
+                  this.vnotify('สร้างบุคลากรเรียบร้อย');
                   this.loadingHide();
                   this.isShowAddRoomDialog = false;
                 });
@@ -416,11 +453,11 @@ export default {
         delete setData.key;
 
         $db
-          .collection("userData")
+          .collection('userData')
           .doc(userKey)
           .update(setData)
           .then(() => {
-            this.vnotify("บันทึกข้อมูลแล้ว");
+            this.vnotify('บันทึกข้อมูลแล้ว');
             this.loadingHide();
             this.isShowAddRoomDialog = false;
             this.isAddMode = true;
@@ -469,12 +506,12 @@ export default {
       //       // รูปแบบ Email ผิดพลาด
       //     }
       //   });
-    }
+    },
   },
   mounted() {
     this.loadCurrentUser();
     this.loadUserData();
-  }
+  },
 };
 </script>
 
