@@ -711,6 +711,7 @@ export default {
       isDialogAddNewPatient: false,
       isLoading: true,
       patientData: [],
+      patientDataTmp: [],
       roomKey: this.$route.params.roomKey,
       roomData: '',
       isDisabled: false,
@@ -982,10 +983,10 @@ export default {
       this.isAddMode = false;
 
       let copy = { ...this.currentPatientData };
-
       this.patientObj = copy;
 
       delete this.patientObj.key;
+      delete this.patientObj.logs;
     },
     addPatient() {
       this.isDialogAddNewPatient = true;
@@ -1012,9 +1013,9 @@ export default {
 
         this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
 
-        this.currentPatientLog = this.patientLog.filter(x => {
-          return x.patientKey == key;
-        });
+        this.currentPatientLog = this.patientDataTmp.find(
+          x => x.key == key
+        ).logs;
 
         this.loadingHide();
       } else {
@@ -1130,49 +1131,37 @@ export default {
     loadPatientDataInThisRoom() {
       listPatientsByRoomKey(this.roomKey).then(docs => {
         this.patientData = docs.map(doc => ({ ...doc, key: doc.id }));
+        this.patientDataTmp = docs.map(doc => ({ ...doc, key: doc.id })); // FIXME: remove logic dup
         this.loadPatientLogInThisRoom();
       });
     },
     loadPatientLogInThisRoom() {
-      $db
-        .collection('patientLog')
-        .where('hospitalKey', '==', this.$q.localStorage.getItem('hospitalKey'))
-        .get()
-        .then(doc => {
-          let dataTemp = [];
-          doc.forEach(result => {
-            let dateAdmit = result.data().inputDate;
+      this.patientDataTmp.forEach(async patientResult => {
+        let patientLogResults = await getPatientLogById(patientResult.key);
+        patientLogResults = patientLogResults.map(result => {
+          let dateAdmit = result.inputDate;
+          let newDate =
+            dateAdmit.substr(0, 2) +
+            ' ' +
+            this.showMonthName(dateAdmit.substr(3, 2)) +
+            ' ' +
+            dateAdmit.substr(6) +
+            ' รอบ ' +
+            result.inputRound +
+            ':00 น.';
 
-            let newDate =
-              dateAdmit.substr(0, 2) +
-              ' ' +
-              this.showMonthName(dateAdmit.substr(3, 2)) +
-              ' ' +
-              dateAdmit.substr(6) +
-              ' รอบ ' +
-              result.data().inputRound +
-              ':00 น.';
-
-            let setData = {
-              key: result.id,
-              dateAndRound: newDate,
-              ...result.data(),
-            };
-
-            dataTemp.push(setData);
-          });
-
-          dataTemp.sort((a, b) => b.microtime - a.microtime);
-
-          this.patientLog = dataTemp;
-
-          // this.currentPatientLog = dataTemp.filter(
-          //   x => x.patientKey == this.currentPatientData.key
-          // );
-
-          this.isLoading = false;
-          this.loadingHide();
+          return {
+            key: result.id,
+            dateAndRound: newDate,
+            ...result,
+          };
         });
+
+        patientLogResults.sort((a, b) => b.microtime - a.microtime);
+        patientResult.logs = patientLogResults;
+      });
+      this.isLoading = false;
+      this.loadingHide();
     },
   },
   computed: {
