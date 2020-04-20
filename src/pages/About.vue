@@ -231,7 +231,7 @@
 
 <script>
 import { $db, $auth } from '@/api/firebase';
-import { logout } from './../api';
+import { logout, changePassword } from '@/api';
 
 export default {
   data() {
@@ -284,10 +284,7 @@ export default {
 
       this.isDisabled = true;
 
-      $db
-        .collection('userData')
-        .doc(this.userData.key)
-        .update({ password: this.confirmpass })
+      changePassword(this.userData.key, this.currentpass, this.confirmpass)
         .then(() => {
           setTimeout(() => {
             this.loadingHide();
@@ -295,6 +292,11 @@ export default {
             this.isChangePassword = false;
             this.isDisabled = false;
           }, 1000);
+        })
+        .catch(() => {
+          this.loadingHide();
+          this.isChangePassword = false;
+          this.isDisabled = false;
         });
     },
     logout() {

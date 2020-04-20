@@ -64,7 +64,16 @@ export function getPatientLogById(patientID) {
     .catch(handleError);
 }
 
+export function changePassword(userId, password, confirmPassword) {
+  const url = `/userData/reset/${userId}`;
+  return $axios
+    .put(url, { password, confirmPassword })
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 function handleError(err) {
+  console.log(err);
   const { status, data } = err.response;
   const { message } = data;
   console.error(message);
