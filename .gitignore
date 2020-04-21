@@ -33,5 +33,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 yarn.lock
-
 test/jest/coverage
+.firebase/*
+package-lock.json
