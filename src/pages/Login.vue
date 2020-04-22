@@ -108,10 +108,12 @@ export default {
     signIn() {
       let _this = this;
       this.loadingShow();
+      const hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       login({
         email: _this.email,
         password: _this.password,
+        hospitalKey: hospitalKey,
       })
         .then(res => {
           const data = { ...res };
@@ -134,11 +136,11 @@ export default {
       this.$i18n.locale = lang;
     },
     loadHospitalNameFromPrefix() {
-      let domainName = window.location.hostname;
-      let preFix = domainName.split('.')[1];
+      // let domainName = window.location.hostname;
+      // let preFix = domainName.split('.')[1];
       $db
         .collection('hospital')
-        .where('domainPrefix', '==', preFix)
+        .where('domainPrefix', '==', 'demo') // FIXME: hard code
         .get()
         .then(doc => {
           if (doc.size) {
@@ -155,7 +157,7 @@ export default {
     // let _this = this;
   },
   mounted() {
-    // this.loadHospitalNameFromPrefix();
+    this.loadHospitalNameFromPrefix();
   },
 };
 </script>

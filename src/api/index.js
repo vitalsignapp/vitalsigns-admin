@@ -1,10 +1,10 @@
 import { Cookies } from 'quasar';
 import { $axios } from '@/boot/axios';
 
-export function login({ email, password }) {
+export function login({ email, password, hospitalKey }) {
   const url = `/login`;
   return $axios
-    .post(url, { email: email, password: password })
+    .post(url, { email: email, password: password, hospitalKey: hospitalKey })
     .then(response => {
       const data = response.data;
       if (data.data && data.token) {
