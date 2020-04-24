@@ -72,6 +72,14 @@ export function changePassword(userId, password, confirmPassword) {
     .catch(handleError);
 }
 
+export function addRoom(data) {
+  const url = `/ward`;
+  return $axios
+    .post(url, data)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 function handleError(err) {
   console.log(err);
   const { status, data } = err.response;

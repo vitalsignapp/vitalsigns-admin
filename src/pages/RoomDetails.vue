@@ -13,14 +13,13 @@
           <span class="q-pl-md">{{ roomData.name }}</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" />
+          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" @click="addPatient()"></q-btn>
           <q-btn
             dense
             round
             flat
             icon="more_vert"
             class="no-border-radius"
-            @click="addPatient()"
           >
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">

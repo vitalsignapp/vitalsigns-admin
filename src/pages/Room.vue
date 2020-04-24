@@ -130,7 +130,7 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { listRoom, listPatient } from '../api';
+import { listRoom, listPatient, addRoom } from '../api';
 
 export default {
   data() {
@@ -150,22 +150,22 @@ export default {
     async addNewRoom() {
       this.loadingShow();
       let date = await this.getDate();
-      $db
-        .collection('patientRoom')
-        .add({
-          name: this.roomName,
-          hospitalKey: this.$q.localStorage.getItem('hospitalKey'),
-          addTime: date.microtime,
-          date: date,
-        })
-        .then(() => {
-          this.$q.notify({
-            message: 'คุณสร้างห้องพักสำเร็จแล้ว',
-            color: 'black',
-          });
-          this.isShowAddRoomDialog = false;
-          this.loadingHide();
+      addRoom({
+        name: this.roomName,
+        hospitalKey: this.$q.localStorage.getItem('hospitalKey'),
+        addTime: date.microtime,
+        date: date,
+      })
+      .then(() => {
+        this.$q.notify({
+          message: 'คุณสร้างห้องพักสำเร็จแล้ว',
+          color: 'black',
         });
+        this.isShowAddRoomDialog = false;
+        this.loadPatientRoom();
+        this.loadingHide();
+      })
+      .catch(()=> this.loadingHide());
     },
     async loadPatientData() {
       // this.loadingShow();
@@ -200,23 +200,6 @@ export default {
       this.loadPatientRoom();
     },
     loadPatientRoom() {
-      // this.isListenPatientRoom = $db
-      //   .collection("patientRoom")
-      //   .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
-      //   .onSnapshot(doc => {
-      //     let dataTemp = [];
-      //     doc.forEach(element => {
-      //       let dataKey = {
-      //         key: element.id
-      //       };
-      //       dataTemp.push({ ...element.data(), ...dataKey });
-      //     });
-      //     dataTemp = dataTemp.sort((a, b) => a.addTime - b.addTime);
-      //     this.patientRoom = dataTemp;
-      //     this.isLoading = false;
-      //     this.loadingHide();
-      //   });
-
       const hospitalId = this.$q.localStorage.getItem('hospitalKey');
       listRoom(hospitalId)
         .then(data => {
