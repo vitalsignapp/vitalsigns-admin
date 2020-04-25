@@ -80,6 +80,14 @@ export function addRoom(data) {
     .catch(handleError);
 }
 
+export function updateHospitalConfig(data) {
+  const url = `/hospital`;
+  return $axios
+    .post(url, data)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 function handleError(err) {
   console.log(err);
   const { status, data } = err.response;

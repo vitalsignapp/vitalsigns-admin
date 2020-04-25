@@ -231,7 +231,7 @@
 
 <script>
 import { $db, $auth } from '@/api/firebase';
-import { logout, changePassword } from '@/api';
+import { logout, changePassword, updateHospitalConfig } from '@/api';
 
 export default {
   data() {
@@ -320,15 +320,24 @@ export default {
     saveConfig() {
       this.loadingShow();
 
-      $db
-        .collection('hospital')
-        .doc(this.$q.localStorage.getItem('hospitalKey'))
-        .update({
-          vitalSignsConfig: this.vitalSignsArr,
-        })
+      updateHospitalConfig({ vitalSignsArr: this.vitalSignsArr })
         .then(() => {
           this.loadingHide();
+        })
+        .catch(e => {
+          console.error(e);
+          this.loadingHide();
         });
+
+      // $db
+      //   .collection('hospital')
+      //   .doc(this.$q.localStorage.getItem('hospitalKey'))
+      //   .update({
+      //     vitalSignsConfig: this.vitalSignsArr,
+      //   })
+      //   .then(() => {
+      //     this.loadingHide();
+      //   });
     },
     loadUserData() {
       let userKey = this.$q.localStorage.getItem('userData').key;
