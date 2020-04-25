@@ -704,6 +704,7 @@ import {
   deletePatientById,
   deletePatientLogById,
 } from '@/api';
+import { createPatient } from '../api';
 
 export default {
   data() {
@@ -793,7 +794,6 @@ export default {
         });
     },
     changeNotify() {
-      console.log('CHANGED');
       let currentPatientDataSnapshot = this.patientData.filter(
         x => x.key == this.currentPatientData.key
       )[0];
@@ -822,7 +822,6 @@ export default {
       this.currentPatientData.isShowNotify = showNotify;
       this.patientObj.isShowNotify = showNotify;
 
-      // console.log(this.currentPatientData);
     },
     transferPatientDataToChoosedRoom() {
       $db
@@ -870,7 +869,6 @@ export default {
         });
     },
     checkDeleteRoom() {
-      console.log('CHECK DELETE ROOm');
       this.loadingShow();
       // ต้องเช็คว่าภายในห้องนี้มีผู้ป่วยอยู่แล้วหรือไม่
       $db
@@ -878,7 +876,6 @@ export default {
         .where('patientRoomKey', '==', this.roomKey)
         .get()
         .then(doc => {
-          console.log(doc.size);
           this.loadingHide();
           if (doc.size) {
             // กรณี มีผู้ป่วยอยู่ในห้องนี้ ต้องแจ้งเตือนให้ย้ายผู้ป่วยก่อน
@@ -986,22 +983,9 @@ export default {
     addPatient() {
       this.isDialogAddNewPatient = true;
       this.isAddMode = true;
-
-      this.patientObj = {
-        username: '',
-        name: '',
-        surname: '',
-        sex: 'male',
-        dateOfAdmit: '',
-        dateOfBirth: '',
-        diagnosis: '',
-        hospitalKey: '',
-        patientRoomKey: this.roomKey,
-      };
+      this.resetForm();
     },
     showPatientData(key) {
-      // console.log(this.patientData.filter(x => x.key == key));
-
       if (this.platForm.desktop) {
         this.isClickedOnPatient = true;
         this.loadingShow();
@@ -1021,8 +1005,6 @@ export default {
       }
     },
     saveData() {
-      let refs = $db.collection('patientData');
-
       this.$refs.username.validate();
       this.$refs.name.validate();
       this.$refs.surname.validate();
@@ -1036,7 +1018,7 @@ export default {
         this.$refs.birth.hasError ||
         this.$refs.admit.hasError
       ) {
-        alert('กรุณากรอกข้อมูลให้ครบ');
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
         return;
       }
 
@@ -1055,23 +1037,20 @@ export default {
       this.patientObj.hospitalKey = this.$q.localStorage.getItem('hospitalKey');
 
       if (this.isAddMode) {
-        refs.add(this.patientObj).then(() => {
-          this.isDisabled = false;
-          this.patientObj = {
-            username: '',
-            name: '',
-            surname: '',
-            sex: 'male',
-            dateOfAdmit: '',
-            dateOfBirth: '',
-            diagnosis: '',
-            hospitalKey: '',
-            patientRoomKey: this.roomKey,
-          };
-          this.isDialogAddNewPatient = false;
-          this.loadingHide();
-        });
+        createPatient(this.patientObj)
+          .then(()=> {
+            this.isDisabled = false;
+            this.resetForm();
+            this.isDialogAddNewPatient = false;
+            this.loadPatientRoom();
+            this.loadingHide();
+          })
+          .catch(err => {
+            this.isDialogAddNewPatient = false;
+            this.loadingHide();
+          });
       } else {
+        let refs = $db.collection('patientData');
         refs
           .doc(this.currentPatientData.key)
           .set(this.patientObj)
@@ -1158,6 +1137,19 @@ export default {
       this.isLoading = false;
       this.loadingHide();
     },
+    resetForm() {
+      this.patientObj = {
+        username: '',
+        name: '',
+        surname: '',
+        sex: 'male',
+        dateOfAdmit: '',
+        dateOfBirth: '',
+        diagnosis: '',
+        hospitalKey: '',
+        patientRoomKey: this.roomKey,
+      };
+    }
   },
   computed: {
     getAge() {

@@ -120,6 +120,14 @@ export function setPatientShowNotify(patientId, isNotify) {
     .catch(handleError);
 }
 
+export function createPatient(data) {
+  const url = '/patient';
+  return $axios
+    .post(url, data)
+    .then(response => response.data)
+    .catch(handleError)
+}
+
 function handleError(err) {
   console.log(err);
   const { status, data } = err.response;
