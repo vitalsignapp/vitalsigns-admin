@@ -13,14 +13,14 @@
           <span class="q-pl-md">{{ roomData.name }}</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" @click="addPatient()"></q-btn>
           <q-btn
-            dense
-            round
             flat
-            icon="more_vert"
-            class="no-border-radius"
-          >
+            dense
+            icon="add"
+            label="เพิ่มผู้ป่วย"
+            @click="addPatient()"
+          ></q-btn>
+          <q-btn dense round flat icon="more_vert" class="no-border-radius">
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">
                 <q-btn
@@ -697,7 +697,11 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { listPatientsByRoomKey, getPatientLogById } from '../api';
+import {
+  listPatientsByRoomKey,
+  getPatientLogById,
+  setPatientShowNotify,
+} from '@/api';
 
 export default {
   data() {
@@ -816,12 +820,10 @@ export default {
 
       this.popUpDialog(titleText, contentText);
 
-      $db
-        .collection('patientData')
-        .doc(this.currentPatientData.key)
-        .update({
-          isShowNotify: showNotify,
-        });
+      setPatientShowNotify(
+        this.currentPatientData.key,
+        showNotify
+      ).then(() => {});
 
       this.currentPatientData.isShowNotify = showNotify;
       this.patientObj.isShowNotify = showNotify;

@@ -88,6 +88,22 @@ export function updateHospitalConfig(data) {
     .catch(handleError);
 }
 
+export function setPatientRead(patientId, isRead) {
+  const url = `/patient/${patientId}/status`;
+  return $axios
+    .patch(url, { isRead })
+    .then(response => response.data)
+    .catch(handleError);
+}
+
+export function setPatientShowNotify(patientId, isNotify) {
+  const url = `/patient/${patientId}/status`;
+  return $axios
+    .patch(url, { isNotify })
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 function handleError(err) {
   console.log(err);
   const { status, data } = err.response;

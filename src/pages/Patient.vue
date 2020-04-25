@@ -328,7 +328,13 @@
 import { $db } from '@/api/firebase';
 import patientDetails from '../components/patientDetails.vue';
 import addEditPatient from '../components/addEditPatient.vue';
-import { listRoom, listPatient, getPatientLogById } from '../api';
+import {
+  listRoom,
+  listPatient,
+  getPatientLogById,
+  setPatientRead,
+  setPatientShowNotify,
+} from '@/api';
 
 export default {
   components: {
@@ -396,12 +402,7 @@ export default {
         showNotify = !currentPatientDataSnapshot.isShowNotify;
       }
 
-      $db
-        .collection('patientData')
-        .doc(this.patientKey)
-        .update({
-          isShowNotify: showNotify,
-        });
+      setPatientShowNotify(this.patientKey, showNotify).then(() => {});
 
       this.patientSelected.isShowNotify = showNotify;
     },
@@ -417,12 +418,7 @@ export default {
 
       this.isShowDetails = false;
 
-      let refs = $db.collection('patientData').doc(key);
-
-      refs
-        .update({
-          isRead: true,
-        })
+      setPatientRead(key, true)
         .then(() => {
           if (this.$q.platform.is.desktop) {
             this.isShowDetails = true;
@@ -438,6 +434,11 @@ export default {
             );
           }
 
+          setTimeout(() => {
+            this.isDisabled = false;
+          }, 300);
+        })
+        .catch(() => {
           setTimeout(() => {
             this.isDisabled = false;
           }, 300);

@@ -205,7 +205,7 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { getPatientDetailById, getPatientLogById } from '../api';
+import { getPatientDetailById, getPatientLogById, setPatientRead } from '@/api';
 export default {
   props: ['dataKey', 'dataRoute'],
   data() {
@@ -289,10 +289,7 @@ export default {
     },
     loadPatientDiagnosis() {
       getPatientLogById(this.dataKey).then(doc => {
-        $db
-          .collection('patientData')
-          .doc(this.dataKey)
-          .update({ isRead: true });
+        setPatientRead(this.dataKey, true).then(() => {});
         let temp = [];
         doc.forEach(result => {
           let dateAdmit = result.inputDate;

@@ -142,7 +142,7 @@
 import { $db } from '@/api/firebase';
 import patientDetails from '../components/patientDetails.vue';
 import addEditPatient from '../components/addEditPatient.vue';
-import { getPatientLogById } from './../api';
+import { getPatientLogById, setPatientShowNotify } from '@/api';
 export default {
   components: {
     patientDetails,
@@ -192,12 +192,7 @@ export default {
         showNotify = !this.patient.isShowNotify;
       }
 
-      $db
-        .collection('patientData')
-        .doc(this.$route.params.key)
-        .update({
-          isShowNotify: showNotify,
-        });
+      setPatientShowNotify(this.$route.params.key, showNotify).then(() => {});
 
       this.patient.isShowNotify = showNotify;
     },
