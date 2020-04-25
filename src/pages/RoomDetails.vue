@@ -701,6 +701,7 @@ import {
   listPatientsByRoomKey,
   getPatientLogById,
   setPatientShowNotify,
+  deletePatientById,
 } from '@/api';
 
 export default {
@@ -771,31 +772,27 @@ export default {
           cancel: { textColor: 'black', flat: true },
         })
         .onOk(() => {
-          $db
-            .collection('patientData')
-            .doc(this.currentPatientData.key)
-            .delete()
-            .then(() => {
-              getPatientLogById(this.currentPatientData.key).then(doc => {
-                let counter = 0;
-                if (doc && Array.isArray(doc) && doc.length > 0) {
-                  doc.forEach(element => {
-                    $db
-                      .collection('patientLog')
-                      .doc(element.id)
-                      .delete()
-                      .then(() => {
-                        counter++;
-                        if (counter == doc.size) {
-                          this.loadingHide();
-                        }
-                      });
-                  });
-                } else {
-                  this.loadingHide();
-                }
-              });
+          deletePatientById(this.currentPatientData.key).then(() => {
+            getPatientLogById(this.currentPatientData.key).then(doc => {
+              let counter = 0;
+              if (doc && Array.isArray(doc) && doc.length > 0) {
+                doc.forEach(element => {
+                  $db
+                    .collection('patientLog')
+                    .doc(element.id)
+                    .delete()
+                    .then(() => {
+                      counter++;
+                      if (counter == doc.size) {
+                        this.loadingHide();
+                      }
+                    });
+                });
+              } else {
+                this.loadingHide();
+              }
             });
+          });
         });
     },
     changeNotify() {

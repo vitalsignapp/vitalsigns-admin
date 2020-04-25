@@ -56,6 +56,14 @@ export function getPatientDetailById(patientID) {
     .catch(handleError);
 }
 
+export function deletePatientById(patientID) {
+  const url = `/patient/${patientID}`;
+  return $axios
+    .delete(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 export function getPatientLogById(patientID) {
   const url = `/patient/${patientID}/log`;
   return $axios
