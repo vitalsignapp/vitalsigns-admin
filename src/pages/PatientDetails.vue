@@ -146,6 +146,7 @@ import {
   getPatientLogById,
   setPatientShowNotify,
   deletePatientById,
+  deletePatientLogById,
 } from '@/api';
 export default {
   components: {
@@ -226,16 +227,12 @@ export default {
                 let counter = 0;
                 if (doc && Array.isArray(doc) && doc.length > 0) {
                   doc.forEach(element => {
-                    $db
-                      .collection('patientLog')
-                      .doc(element.id)
-                      .delete()
-                      .then(() => {
-                        counter++;
-                        if (counter == doc.size) {
-                          this.loadingHide();
-                        }
-                      });
+                    deletePatientLogById(element.id).then(() => {
+                      counter++;
+                      if (counter == doc.length) {
+                        this.loadingHide();
+                      }
+                    });
                   });
                 } else {
                   this.loadingHide();
