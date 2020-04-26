@@ -128,6 +128,14 @@ export function createPatient(data) {
     .catch(handleError)
 }
 
+export function updatePatient(data) {
+  const url = `/patient/${data.id}`;
+  return $axios
+    .put(url, data)
+    .then(response => response.data)
+    .catch(handleError)
+}
+
 function handleError(err) {
   console.log(err);
   const { status, data } = err.response;

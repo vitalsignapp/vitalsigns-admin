@@ -704,7 +704,7 @@ import {
   deletePatientById,
   deletePatientLogById,
 } from '@/api';
-import { createPatient } from '../api';
+import { createPatient, updatePatient } from '../api';
 
 export default {
   data() {
@@ -1046,19 +1046,41 @@ export default {
             this.loadingHide();
           })
           .catch(err => {
-            this.isDialogAddNewPatient = false;
-            this.loadingHide();
+            console.error(err);
+            setTimeout(()=> {
+              this.loadingHide();
+              this.isDisabled = false;
+              this.isDialogAddNewPatient = false;
+
+              this.vnotify('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+              this.$emit('sendBack', {
+                isDialogAddNewPatient: false,
+              });
+            }, 500);
           });
       } else {
-        let refs = $db.collection('patientData');
-        refs
-          .doc(this.currentPatientData.key)
-          .set(this.patientObj)
-          .then(() => {
+        updatePatient(this.patientObj)
+          .then(()=> {
             this.isDisabled = false;
-
             this.isDialogAddNewPatient = false;
+            this.loadPatientRoom();
+          })
+          .then(()=> {
+            this.currentPatientData = this.patientObj;
             this.loadingHide();
+          })
+          .catch((err) => {
+            console.error(err);
+            setTimeout(()=> {
+              this.loadingHide();
+              this.isDisabled = false;
+              this.isDialogAddNewPatient = false;
+
+              this.vnotify('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+              this.$emit('sendBack', {
+                isDialogAddNewPatient: false,
+              });
+            }, 500);
           });
       }
     },

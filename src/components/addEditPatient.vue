@@ -218,7 +218,7 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { getPatientDetailById, createPatient } from '../api';
+import { getPatientDetailById, createPatient, updatePatient } from '../api';
 export default {
   props: ['sendData'],
   data() {
@@ -357,19 +357,18 @@ export default {
           }, 500);
         });
       } else {
-        let copyPatientDate = { ...this.patientData };
-        delete copyPatientDate.key;
-
-        refs.update(copyPatientDate).then(() => {
-          setTimeout(() => {
-            this.loadingHide();
-            this.vnotify('บันทึกข้อมูลเรียบร้อย');
-            this.$emit('sendBack', {
-              isDialogAddNewPatient: false,
-            });
-            this.isDialogAddNewPatient = false;
-          }, 500);
-        });
+        let patientData = { ...this.patientData, hospitalKey: hospitalKey };
+        updatePatient(patientData)
+          .then(()=> {
+            setTimeout(()=> {
+              this.loadingHide();
+              this.vnotify('บันทึกข้อมูลเรียบร้อย');
+              this.$emit('sendBack', {
+                isDialogAddNewPatient: false,
+              });
+              this.isDialogAddNewPatient = false;
+            }, 500);
+          });
       }
     },
     async loadRoom() {
