@@ -218,7 +218,7 @@
 
 <script>
 import { $db } from '@/api/firebase';
-import { getPatientDetailById } from '../api';
+import { getPatientDetailById, createPatient, updatePatient } from '../api';
 export default {
   props: ['sendData'],
   data() {
@@ -259,7 +259,6 @@ export default {
     },
     closeDialogAddPatient() {
       this.isDialogAddNewPatient = false;
-
       this.$emit('sendBack', {
         isDialogAddNewPatient: false,
       });
@@ -301,7 +300,7 @@ export default {
         this.$refs.birth.hasError ||
         this.$refs.admit.hasError
       ) {
-        alert('กรุณากรอกข้อมูลให้ไม่ครบ');
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
         return;
       }
 
@@ -325,7 +324,6 @@ export default {
 
       if (checkUsername.size && this.isAddMode) {
         alert('มีข้อมูลผู้ป่วยนี้แล้ว');
-
         this.isDisabled = false;
         return;
       }
@@ -333,7 +331,8 @@ export default {
       this.loadingShow();
 
       if (this.isAddMode) {
-        refs.add(this.patientData).then(() => {
+        createPatient(this.patientData)
+        .then(() => {
           setTimeout(() => {
             this.patientData = {
               username: '',
@@ -350,33 +349,26 @@ export default {
             };
 
             this.loadingHide();
-
             this.vnotify('คุณเพิ่มผู้ป่วยใหม่สำเร็จแล้ว');
-
-            this.$emit('sendBack', {
-              isDialogAddNewPatient: false,
+            this.$emit('sendBack', { 
+              isDialogAddNewPatient: false 
             });
-
             this.isDialogAddNewPatient = false;
           }, 500);
         });
       } else {
-        let copyPatientDate = { ...this.patientData };
-        delete copyPatientDate.key;
-
-        refs.update(copyPatientDate).then(() => {
-          setTimeout(() => {
-            this.loadingHide();
-
-            this.vnotify('บันทึกข้อมูลเรียบร้อย');
-
-            this.$emit('sendBack', {
-              isDialogAddNewPatient: false,
-            });
-
-            this.isDialogAddNewPatient = false;
-          }, 500);
-        });
+        let patientData = { ...this.patientData, hospitalKey: hospitalKey };
+        updatePatient(patientData)
+          .then(()=> {
+            setTimeout(()=> {
+              this.loadingHide();
+              this.vnotify('บันทึกข้อมูลเรียบร้อย');
+              this.$emit('sendBack', {
+                isDialogAddNewPatient: false,
+              });
+              this.isDialogAddNewPatient = false;
+            }, 500);
+          });
       }
     },
     async loadRoom() {

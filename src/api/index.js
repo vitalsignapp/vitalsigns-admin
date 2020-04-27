@@ -54,6 +54,22 @@ export function getPatientDetailById(patientID) {
     .catch(handleError);
 }
 
+export function deletePatientById(patientID) {
+  const url = `/patient/${patientID}`;
+  return $axios
+    .delete(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
+export function deletePatientLogById(patientID) {
+  const url = `/patient/${patientID}/log`;
+  return $axios
+    .delete(url)
+    .then(response => response.data)
+    .catch(handleError);
+}
+
 export function getPatientLogById(patientID) {
   const url = `/patient/${patientID}/log`;
   return $axios
@@ -100,6 +116,22 @@ export function setPatientShowNotify(patientId, isNotify) {
     .patch(url, { isNotify })
     .then(response => response.data)
     .catch(handleError);
+}
+
+export function createPatient(data) {
+  const url = '/patient';
+  return $axios
+    .post(url, data)
+    .then(response => response.data)
+    .catch(handleError)
+}
+
+export function updatePatient(data) {
+  const url = `/patient/${data.id}`;
+  return $axios
+    .put(url, data)
+    .then(response => response.data)
+    .catch(handleError)
 }
 
 function handleError(err) {

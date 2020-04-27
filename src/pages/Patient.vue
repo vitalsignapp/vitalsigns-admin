@@ -332,6 +332,8 @@ import {
   listRoom,
   listPatient,
   getPatientLogById,
+  deletePatientById,
+  deletePatientLogById,
   setPatientRead,
   setPatientShowNotify,
 } from '@/api';
@@ -467,33 +469,24 @@ export default {
           this.loadingShow();
 
           setTimeout(() => {
-            $db
-              .collection('patientData')
-              .doc(this.patientKey)
-              .delete()
-              .then(() => {
-                console.log('>>>>>>>>>>>>>>> patientData');
-                getPatientLogById(this.patientKey).then(doc => {
-                  let counter = 0;
-                  if (doc && Array.isArray(doc) && doc.length > 0) {
-                    doc.forEach(element => {
-                      $db
-                        .collection('patientLog')
-                        .doc(element.id)
-                        .delete()
-                        .then(() => {
-                          counter++;
-                          if (counter == doc.size) {
-                            this.loadingHide();
-                          }
-                        });
+            deletePatientById(this.patientKey).then(() => {
+              getPatientLogById(this.patientKey).then(doc => {
+                let counter = 0;
+                if (doc && Array.isArray(doc) && doc.length > 0) {
+                  doc.forEach(element => {
+                    deletePatientLogById(element.id).then(() => {
+                      counter++;
+                      if (counter == doc.length) {
+                        this.loadingHide();
+                      }
                     });
-                  } else {
-                    this.loadingHide();
-                  }
-                  this.isShowDetails = false;
-                });
+                  });
+                } else {
+                  this.loadingHide();
+                }
+                this.isShowDetails = false;
               });
+            });
           }, 500);
         });
     },

@@ -142,7 +142,12 @@
 import { $db } from '@/api/firebase';
 import patientDetails from '../components/patientDetails.vue';
 import addEditPatient from '../components/addEditPatient.vue';
-import { getPatientLogById, setPatientShowNotify } from '@/api';
+import {
+  getPatientLogById,
+  setPatientShowNotify,
+  deletePatientById,
+  deletePatientLogById,
+} from '@/api';
 export default {
   components: {
     patientDetails,
@@ -217,32 +222,24 @@ export default {
           this.loadingShow();
 
           setTimeout(() => {
-            $db
-              .collection('patientData')
-              .doc(this.$route.params.key)
-              .delete()
-              .then(() => {
-                getPatientLogById(this.$route.params.key).then(doc => {
-                  let counter = 0;
-                  if (doc && Array.isArray(doc) && doc.length > 0) {
-                    doc.forEach(element => {
-                      $db
-                        .collection('patientLog')
-                        .doc(element.id)
-                        .delete()
-                        .then(() => {
-                          counter++;
-                          if (counter == doc.size) {
-                            this.loadingHide();
-                          }
-                        });
+            deletePatientById(this.$route.params.key).then(() => {
+              getPatientLogById(this.$route.params.key).then(doc => {
+                let counter = 0;
+                if (doc && Array.isArray(doc) && doc.length > 0) {
+                  doc.forEach(element => {
+                    deletePatientLogById(element.id).then(() => {
+                      counter++;
+                      if (counter == doc.length) {
+                        this.loadingHide();
+                      }
                     });
-                  } else {
-                    this.loadingHide();
-                  }
-                  this.$router.push('/patient');
-                });
+                  });
+                } else {
+                  this.loadingHide();
+                }
+                this.$router.push('/patient');
               });
+            });
           }, 500);
         });
     },
