@@ -1,4 +1,3 @@
-import { Cookies } from 'quasar';
 import { $axios } from '@/boot/axios';
 
 export function login({ email, password, hospitalKey }) {
@@ -8,7 +7,6 @@ export function login({ email, password, hospitalKey }) {
     .then(response => {
       const data = response.data;
       if (data.data && data.token) {
-        Cookies.set('access-token', data.token);
         return data.data;
       }
       throw 'unauthorized';
@@ -20,7 +18,7 @@ export function logout() {
   const url = `/logout`;
   return $axios
     .get(url)
-    .then(() => Cookies.remove('access-token'))
+    .then(response => response.data)
     .catch(handleError);
 }
 

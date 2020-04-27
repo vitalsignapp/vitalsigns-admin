@@ -311,8 +311,10 @@ export default {
         .onOk(() => {
           $auth.signOut().then(() => {
             logout().then(() => {
-              this.$router.push('/');
+              const hospitalKey = this.$q.localStorage.getItem('hospitalKey');
               this.$q.localStorage.clear();
+              this.$q.localStorage.set('hospitalKey', hospitalKey);
+              this.$router.push('/');
             });
           });
         });

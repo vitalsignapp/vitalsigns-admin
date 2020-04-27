@@ -5,6 +5,7 @@ import { Cookies } from 'quasar';
 
 const $axios = axios.create({
   baseURL: config.API_HOST,
+  withCredentials: true,
 });
 
 $axios.interceptors.request.use(async config => {

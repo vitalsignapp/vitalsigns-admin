@@ -109,6 +109,10 @@ export default {
       let _this = this;
       this.loadingShow();
       const hospitalKey = this.$q.localStorage.getItem('hospitalKey');
+      if (!hospitalKey) {
+        window.alert('Please set hospital key');
+        return;
+      }
 
       login({
         email: _this.email,
