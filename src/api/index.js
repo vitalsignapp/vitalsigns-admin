@@ -3,7 +3,11 @@ import { $axios } from '@/boot/axios';
 export function login({ email, password, hospitalKey }) {
   const url = `/login`;
   return $axios
-    .post(url, { email: email, password: password, hospitalKey: hospitalKey })
+    .post(
+      url,
+      { email: email, password: password, hospitalKey: hospitalKey },
+      { withCredentials: true }
+    )
     .then(response => {
       const data = response.data;
       if (data.data && data.token) {
