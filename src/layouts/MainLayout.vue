@@ -181,11 +181,11 @@ export default {
     loadVersion() {
       let refs = db.collection("version").doc("vitalsign-admin");
 
-      this.syncVersion = refs.onSnapshot(result => {
-        if (this.version != result.data().version) {
-          window.location.reload(true);
-        }
-      });
+      // this.syncVersion = refs.onSnapshot(result => {
+      //   if (this.version != result.data().version) {
+      //     // window.location.reload(true);
+      //   }
+      // });
     }
   },
   mounted() {

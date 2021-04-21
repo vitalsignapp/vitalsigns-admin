@@ -1,29 +1,41 @@
 <template>
-  <div style="background-color:#E5E5E5;">
+  <div style="background-color: #e5e5e5">
     <div class="pageA4 shadow-2" v-if="$route.name == 'printOnlyOne' && isLoadData">
       <div class="row">
         <div
           class="col-6"
-          :class="[i == 1 || i == 2 ? 'rotate-qr' : null,i == 3 ? 'border-tr' : null,i == 1 ? 'border-l' : null,i == 4 ? 'border-t' : null]"
-          style="padding:50px 0px;height:561px;"
+          :class="[
+            i == 1 || i == 2 ? 'rotate-qr' : null,
+            i == 3 ? 'border-tr' : null,
+            i == 1 ? 'border-l' : null,
+            i == 4 ? 'border-t' : null,
+          ]"
+          style="padding: 50px 0px; height: 561px"
           v-for="i in 4"
           :key="i"
         >
           <div
             class="row justify-center items-center"
             align="center"
-            style="height:255px;padding-top:0px;"
+            style="height: 255px; padding-top: 0px"
           >
             <div class="q-pa-lg bg-white">
-              <qr-code :text="patientData.path" :size="220" color="#000" error-level="H"></qr-code>
+              <qr-code
+                :text="patientData.path"
+                :size="220"
+                color="#000"
+                error-level="H"
+              ></qr-code>
             </div>
           </div>
-          <div class="font-h3 q-mt-lg" style="font-size:24px;">
+          <div class="font-h3 q-mt-lg" style="font-size: 24px">
             <div align="center">
-              <span class>{{"รหัส: " + patientData.username}}</span>
+              <span class>{{ "รหัส: " + patientData.username }}</span>
             </div>
             <div class="q-mt-md q-px-md" align="center">
-              <span class="font-h1">{{patientData.name + " " + patientData.surname}}</span>
+              <span class="font-h1">{{
+                patientData.name + " " + patientData.surname
+              }}</span>
             </div>
           </div>
         </div>
@@ -33,33 +45,47 @@
     <div
       class="pageA4 shadow-2"
       v-show="$route.name == 'printAll' && isLoadData"
-      v-for="(list,index) in patientDataList"
+      v-for="(list, index) in patientDataList"
       :key="index"
     >
       <div class="row">
         <!-- v-show="item.name != ''" -->
         <div
           class="col-4"
-          style="padding:35px 0px;height:374px;"
-          :class="[index2 == 0 || index2 == 1 || index2 == 3 || index2 == 4 ? 'border-b border-r' : null,index2 == 2 || index2 == 5 ? 'border-b ' : null,index2 == 6 || index2 == 7 ? 'border-r' : null]"
-          v-for="(item,index2) in list"
+          style="padding: 35px 0px; height: 374px"
+          :class="[
+            index2 == 0 || index2 == 1 || index2 == 3 || index2 == 4
+              ? 'border-b border-r'
+              : null,
+            index2 == 2 || index2 == 5 ? 'border-b ' : null,
+            index2 == 6 || index2 == 7 ? 'border-r' : null,
+          ]"
+          v-for="(item, index2) in list"
           :key="index2"
           v-show="item.name != ''"
         >
           <div
             class="row justify-center items-center"
             align="center"
-            style="height:200px;padding-top:0px;"
+            style="height: 200px; padding-top: 0px"
           >
             <div class="q-pa-lg bg-white">
-              <qr-code :text="item.path" :size="170" color="#000" bg-color="#fff" error-level="H"></qr-code>
+              <qr-code
+                :text="item.path"
+                :size="170"
+                color="#000"
+                bg-color="#fff"
+                error-level="H"
+              ></qr-code>
             </div>
           </div>
           <div align="center" class="font-body q-mt-lg">
-            <span class>{{"รหัส: " + item.username}}</span>
+            <span class>{{ "รหัส: " + item.username }}</span>
             <br />
             <div class="q-mt-sm q-px-sm">
-              <span class="font-h4" style="font-size:21px;">{{item.name + " " + item.surname}}</span>
+              <span class="font-h4" style="font-size: 21px">{{
+                item.name + " " + item.surname
+              }}</span>
             </div>
           </div>
         </div>
@@ -75,7 +101,7 @@ export default {
     return {
       patientData: "",
       patientDataList: [],
-      isLoadData: false
+      isLoadData: false,
     };
   },
   methods: {
@@ -87,14 +113,17 @@ export default {
       this.loadingShow();
 
       let printPage = new Promise((resolve, reject) => {
-        refs.get().then(result => {
+        refs.get().then((result) => {
           if (result.exists) {
-            let newPath = "https://demo.vitalsignapp.com/" + result.id;
+            let domainName = window.location.hostname;
+            let preFix = domainName.split(".")[1];
+
+            let newPath = "https://" + preFix + ".vitalsignapp.com/" + result.id;
 
             let setData = {
               key: result.id,
               path: newPath,
-              ...result.data()
+              ...result.data(),
             };
 
             this.patientData = setData;
@@ -113,14 +142,14 @@ export default {
         });
       });
 
-      printPage.then(result => {
+      printPage.then((result) => {
         if (result == "complete") {
           window.print();
           // window.close();
         }
       });
 
-      printPage.catch(error => {
+      printPage.catch((error) => {
         alert("ไม่มีข้อมูล");
         window.close();
       });
@@ -134,19 +163,21 @@ export default {
       this.loadingShow();
 
       let printPage = new Promise((resolve, reject) => {
-        refs.then(doc => {
+        refs.then((doc) => {
           if (doc.size) {
             let temp = [];
             let setCount = 9;
+            let domainName = window.location.hostname;
+            let preFix = domainName.split(".")[1];
 
             setTimeout(() => {
-              doc.forEach(result => {
-                let newPath = "https://demo.vitalsignapp.com/" + result.id;
+              doc.forEach((result) => {
+                let newPath = "https://" + preFix + ".vitalsignapp.com/" + result.id;
 
                 let setData = {
                   key: result.id,
                   path: newPath,
-                  ...result.data()
+                  ...result.data(),
                 };
                 temp.push(setData);
               });
@@ -170,7 +201,7 @@ export default {
                       name: "",
                       surname: "",
                       path: "",
-                      username: ""
+                      username: "",
                     };
 
                     setNewArr[i].push(setData);
@@ -199,18 +230,18 @@ export default {
         });
       });
 
-      printPage.then(result => {
+      printPage.then((result) => {
         if (result == "complete") {
           window.print();
           // window.close();
         }
       });
 
-      printPage.catch(error => {
+      printPage.catch((error) => {
         alert("ไม่มีข้อมูล");
         window.close();
       });
-    }
+    },
   },
   mounted() {
     if (this.$route.name === "printOnlyOne") {
@@ -218,7 +249,7 @@ export default {
     } else {
       this.loadPatientAll();
     }
-  }
+  },
 };
 </script>
 

@@ -6,8 +6,8 @@
         <q-img src="../statics/pic/logo-admin.png" width="250px"></q-img>
       </q-toolbar-title>
       <q-space />
-      <div style="width:70px;">
-        <div class="row bg-primary-600 q-pa-xs round" style="border-radius:15px;">
+      <div style="width: 70px">
+        <div class="row bg-primary-600 q-pa-xs round" style="border-radius: 15px">
           <div class="col">
             <q-btn
               flat
@@ -35,7 +35,7 @@
     </q-toolbar>
 
     <div align="center" class="font-h3 q-pt-lg">{{ currentHospitalName }}</div>
-    <div style="max-width:330px;margin:auto;width:90%" class="q-pt-xl">
+    <div style="max-width: 330px; margin: auto; width: 90%" class="q-pt-xl">
       <div>
         <q-input
           outlined
@@ -68,7 +68,7 @@
     </div>
 
     <div class="absolute-bottom-right q-pa-sm">
-      <span class="font-body">{{"V" + version}}</span>
+      <span class="font-body">{{ "V" + version }}</span>
     </div>
   </div>
 </template>
@@ -91,8 +91,8 @@ export default {
         name: "",
         surname: "",
         email: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   },
   methods: {
@@ -109,11 +109,11 @@ export default {
         .where("hospitalKey", "==", hospitalKey)
         .get();
 
-      refs.then(doc => {
+      refs.then((doc) => {
         if (doc.size) {
           let setData = {
             key: doc.docs[0].id,
-            ...doc.docs[0].data()
+            ...doc.docs[0].data(),
           };
 
           delete setData.password;
@@ -121,10 +121,7 @@ export default {
 
           this.$q.localStorage.set("userData", setData);
 
-          this.$q.localStorage.set(
-            "hospitalKey",
-            doc.docs[0].data().hospitalKey
-          );
+          this.$q.localStorage.set("hospitalKey", doc.docs[0].data().hospitalKey);
 
           this.$router.push("/patient");
         } else {
@@ -142,7 +139,7 @@ export default {
       db.collection("hospital")
         .where("domainPrefix", "==", preFix)
         .get()
-        .then(doc => {
+        .then((doc) => {
           if (doc.size) {
             this.$q.localStorage.set("hospitalKey", doc.docs[0].id);
 
@@ -151,14 +148,14 @@ export default {
             this.currentHospitalName = "Demo Hospital";
           }
         });
-    }
+    },
   },
   beforeCreate() {
     let _this = this;
   },
   mounted() {
     this.loadHospitalNameFromPrefix();
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

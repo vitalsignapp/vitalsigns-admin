@@ -4,17 +4,15 @@
     <q-header class="row color-white">
       <q-toolbar
         class="col-4 bg-primary-500 no-padding shadow-1"
-        :style="
-          $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
-        "
+        :style="$q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'"
       >
         <q-toolbar-title>
           <q-btn dense flat icon="chevron_left" to="/room"></q-btn>
           <span class="q-pl-md">{{ roomData.name }}</span>
         </q-toolbar-title>
         <div class="q-pa-sm">
-          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" />
-          <q-btn dense round flat icon="more_vert" class="no-border-radius" @click="addPatient()">
+          <q-btn flat dense icon="add" label="เพิ่มผู้ป่วย" @click="addPatient()" />
+          <q-btn dense round flat icon="more_vert" class="no-border-radius">
             <q-menu square :offset="[43, 10]">
               <q-list style="min-width: 100px">
                 <q-btn class="fit row no-border-radius" flat @click="printAll()">
@@ -31,7 +29,7 @@
           </q-btn>
         </div>
       </q-toolbar>
-      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop ">
+      <q-toolbar class="col bg-primary-500 shadow-1" v-if="$q.platform.is.desktop">
         <div class="row full-width" v-if="isClickedOnPatient">
           <q-toolbar-title>รายละเอียดผู้ป่วย</q-toolbar-title>
 
@@ -125,25 +123,23 @@
       <div
         class="container-list-data bg-white"
         :class="$q.platform.is.desktop ? 'col-4' : 'col-12'"
-        :style="
-          $q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'
-        "
+        :style="$q.platform.is.desktop ? 'max-width:360px;width:100%;' : 'width:100%;'"
       >
         <div>
           <div
-            v-for="(items,index) in patientData"
+            v-for="(items, index) in patientData"
             :key="index"
             class="relative-position container cursor-pointer"
             v-ripple
             @click="showPatientData(items.key)"
           >
-            <div class="row q-py-sm font-body full-width" style="padding-left:30px">
+            <div class="row q-py-sm font-body full-width" style="padding-left: 30px">
               <div class="col" align="left">
                 <span class="no-padding">{{ items.name }} {{ items.surname }}</span>
                 <br />
                 <span class="color-light-gray">{{ items.username }}</span>
               </div>
-              <div class="col-1 self-center" style="width:30px;">
+              <div class="col-1 self-center" style="width: 30px">
                 <q-icon name="chevron_right" size="24px"></q-icon>
               </div>
             </div>
@@ -154,34 +150,49 @@
 
       <!-- COLUMN ขวา -->
 
-      <div class="col container-list-data relative-position" v-if="$q.platform.is.desktop">
-        <div class="font-h3 color q-ma-xl q-pa-xl color-light-gray" v-if="!isClickedOnPatient">
+      <div
+        class="col container-list-data relative-position"
+        v-if="$q.platform.is.desktop"
+      >
+        <div
+          class="font-h3 color q-ma-xl q-pa-xl color-light-gray"
+          v-if="!isClickedOnPatient"
+        >
           <q-icon name="arrow_back" class="q-mr-sm"></q-icon>เลือกผู้ป่วย
           เพื่อดูรายละเอียด
         </div>
 
-        <div class="q-px-xs q-pt-md" style="max-width:330px;width:95%;margin:auto;" v-else>
+        <div
+          class="q-px-xs q-pt-md"
+          style="max-width: 330px; width: 95%; margin: auto"
+          v-else
+        >
           <div class="q-mt-lg">
-            <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
+            <span class="font-h3">{{
+              currentPatientData.name + " " + currentPatientData.surname
+            }}</span>
             <br />
             <!-- text-overflow -->
             <div class="font-body row q-mt-sm">
-              <div class="col-4 text-overflow" style="width:130px;">
+              <div class="col-4 text-overflow" style="width: 130px">
                 <span class="color-light-gray">รหัส</span>
                 {{ " " + currentPatientData.username + " " + "&nbsp;" }}
               </div>
               <div class="col">
                 <span class="color-light-gray">วันเกิด</span>
                 {{ " " + currentPatientData.dateOfBirth + "&nbsp;" }}
-                <span
-                  class="color-primary-500 cursor-pointer"
-                  @click="isDetails = true"
-                >เพิ่มเติม</span>
+                <span class="color-primary-500 cursor-pointer" @click="isDetails = true"
+                  >เพิ่มเติม</span
+                >
               </div>
             </div>
           </div>
 
-          <div class="q-mt-md q-mb-lg" v-for="(items,index) in currentPatientLog" :key="index">
+          <div
+            class="q-mt-md q-mb-lg"
+            v-for="(items, index) in currentPatientLog"
+            :key="index"
+          >
             <q-card class="my-card font-body">
               <div class="q-pa-sm" align="center">
                 <span>{{ items.dateAndRound }}</span>
@@ -189,7 +200,7 @@
 
               <q-separator />
 
-              <div class="row" style="padding:15px 30px;">
+              <div class="row" style="padding: 15px 30px">
                 <div class="col-8">
                   <div class="q-py-xs" v-if="items.temperature">
                     <span>อุณหภูมิ</span>
@@ -231,7 +242,9 @@
 
               <div
                 class="q-px-lg"
-                :class="{'q-mt-md q-pb-sm':items.symptomsCheck != null || items.otherSymptoms}"
+                :class="{
+                  'q-mt-md q-pb-sm': items.symptomsCheck != null || items.otherSymptoms,
+                }"
               >
                 <div
                   class="row"
@@ -239,7 +252,7 @@
                   :key="index2"
                   v-show="diag.status"
                 >
-                  <div class="col-1" style="width:15px;">
+                  <div class="col-1" style="width: 15px">
                     <div class="q-py-xs">
                       <q-icon name="fiber_manual_record" size="7px"></q-icon>
                     </div>
@@ -251,14 +264,14 @@
                   </div>
                 </div>
                 <div class="row" v-if="items.otherSymptoms">
-                  <div class="col-1" style="width:15px;">
+                  <div class="col-1" style="width: 15px">
                     <div class="q-py-xs">
                       <q-icon name="fiber_manual_record" size="7px"></q-icon>
                     </div>
                   </div>
                   <div class="col">
                     <div class="q-py-xs">
-                      <span>{{"อื่นๆ: " + items.otherSymptoms }}</span>
+                      <span>{{ "อื่นๆ: " + items.otherSymptoms }}</span>
                     </div>
                   </div>
                 </div>
@@ -272,7 +285,14 @@
     <q-dialog v-model="isDialogAddNewPatient" persistent maximized>
       <q-card class="q-pa-md bg-surface">
         <div align="right">
-          <q-btn dense round flat class="color-black" v-close-popup @click="closeAddEditPatient()">
+          <q-btn
+            dense
+            round
+            flat
+            class="color-black"
+            v-close-popup
+            @click="closeAddEditPatient()"
+          >
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
@@ -294,7 +314,7 @@
               ref="username"
               :readonly="!isAddMode"
               v-model="patientObj.username"
-              :rules="[val => !!val]"
+              :rules="[(val) => !!val]"
             ></q-input>
           </div>
           <div class="q-pa-xs q-mt-sm row">
@@ -309,7 +329,7 @@
                 label="ชื่อจริง"
                 ref="name"
                 v-model="patientObj.name"
-                :rules="[val => !!val]"
+                :rules="[(val) => !!val]"
               ></q-input>
             </div>
             <div class="col">
@@ -320,7 +340,7 @@
                 label="นามสกุล"
                 ref="surname"
                 v-model="patientObj.surname"
-                :rules="[val => !!val]"
+                :rules="[(val) => !!val]"
               ></q-input>
             </div>
           </div>
@@ -363,7 +383,7 @@
                 mask="##/##/####"
                 label="เลือกวันที่"
                 ref="birth"
-                :rules="[val => val.length == 10]"
+                :rules="[(val) => val.length == 10]"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -395,12 +415,16 @@
                 label="เลือกวันที่"
                 ref="admit"
                 hide-bottom-space
-                :rules="[val => val.length == 10]"
+                :rules="[(val) => val.length == 10]"
                 readonly
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      ref="qDateProxy"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         mask="DD/MM/YYYY"
                         v-model="patientObj.dateOfAdmit"
@@ -416,7 +440,7 @@
             <div>
               <span class="font-body">ห้องผู้ป่วย</span>
             </div>
-            <div class="q-my-xs" v-for="(item,index) in patientRoom" :key="index">
+            <div class="q-my-xs" v-for="(item, index) in patientRoom" :key="index">
               <q-radio
                 class="font-body"
                 dense
@@ -465,11 +489,16 @@
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
-        <q-card-section style="max-width:360px;margin:auto">
+        <q-card-section style="max-width: 360px; margin: auto">
           <div class="font-h3 q-pt-md" align="center">แก้ไขห้องพักผู้ป่วย</div>
           <div class="q-pt-md font-h4">ชื่อห้องพักผู้ป่วย</div>
           <div class="q-pt-sm">
-            <q-input label="ชื่อห้องพักผู้ป่วย" v-model="roomName" outlined class="bg-white"></q-input>
+            <q-input
+              label="ชื่อห้องพักผู้ป่วย"
+              v-model="roomName"
+              outlined
+              class="bg-white"
+            ></q-input>
           </div>
         </q-card-section>
         <q-card-actions align="center">
@@ -485,11 +514,15 @@
             <q-icon name="close" size="45px"></q-icon>
           </q-btn>
         </div>
-        <q-card-section style="max-width:360px;margin:auto">
+        <q-card-section style="max-width: 360px; margin: auto">
           <div class="font-h3 q-pt-md" align="center">ลบห้องผู้ป่วย</div>
           <div class="q-pt-md font-h4">ย้ายผู้ป่วยในห้องปัจจุบันไปยังห้องใด</div>
           <div class="q-pt-sm">
-            <q-toolbar class="q-pa-xs" v-for="(items,index) in patientRoomCheckbox" :key="index">
+            <q-toolbar
+              class="q-pa-xs"
+              v-for="(items, index) in patientRoomCheckbox"
+              :key="index"
+            >
               <div class="fit border-light-gray rounded-borders row">
                 <div class="col-12">
                   <q-radio :val="items.key" v-model="roomChoosed" keep-color color="teal">
@@ -501,14 +534,18 @@
           </div>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn class="button-action" label="บันทึก" @click="transferPatientDataToChoosedRoom()"></q-btn>
+          <q-btn
+            class="button-action"
+            label="บันทึก"
+            @click="transferPatientDataToChoosedRoom()"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
 
     <!-- TODO : Container Dialog Model -->
     <q-dialog v-model="isDetails" v-if="isDetails" persistent>
-      <q-card class="my-card font-body" style="max-width:320px;width:100%;">
+      <q-card class="my-card font-body" style="max-width: 320px; width: 100%">
         <div class="q-pa-sm" align="center">
           <span>ข้อมูลผู้ป่วย</span>
         </div>
@@ -517,10 +554,12 @@
 
         <div class="q-my-md q-px-sm">
           <div class="text-overflow">
-            <span class="font-h3">{{ currentPatientData.name + " " + currentPatientData.surname }}</span>
+            <span class="font-h3">{{
+              currentPatientData.name + " " + currentPatientData.surname
+            }}</span>
           </div>
           <div class="row q-mt-sm">
-            <div class="col-4 q-my-xs text-overflow" style="width:165px;">
+            <div class="col-4 q-my-xs text-overflow" style="width: 165px">
               <span class="color-light-gray">รหัส</span>
               {{ " " + currentPatientData.username + " " + "&nbsp;" }}
             </div>
@@ -530,12 +569,14 @@
             </div>
           </div>
           <div class="row q-mt-sm">
-            <div class="col-2 self-start q-my-xs" style="width:75px;">
+            <div class="col-2 self-start q-my-xs" style="width: 75px">
               <span class="color-light-gray">Diagnosis</span>
             </div>
-            <div
-              class="col q-my-xs"
-            >{{ currentPatientData.diagnosis != '' ? currentPatientData.diagnosis : '-' }}</div>
+            <div class="col q-my-xs">
+              {{
+                currentPatientData.diagnosis != "" ? currentPatientData.diagnosis : "-"
+              }}
+            </div>
           </div>
           <div class="row q-mt-sm">
             <div class="col-12 q-my-xs">
@@ -544,7 +585,7 @@
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">เพศ</span>
-              <span>{{ currentPatientData.sex == 'male' ? " ชาย" : ' หญิง'}}</span>
+              <span>{{ currentPatientData.sex == "male" ? " ชาย" : " หญิง" }}</span>
             </div>
             <div class="col-12 q-my-xs">
               <span class="color-light-gray">ห้อง</span>
@@ -557,7 +598,13 @@
           </div>
 
           <div align="right" class="q-mt-md q-pr-sm">
-            <q-btn flat class="button-action small" dense label="ปิด" @click="isDetails = false"></q-btn>
+            <q-btn
+              flat
+              class="button-action small"
+              dense
+              label="ปิด"
+              @click="isDetails = false"
+            ></q-btn>
           </div>
         </div>
       </q-card>
@@ -589,7 +636,7 @@ export default {
         dateOfBirth: "",
         dateOfAdmit: "",
         patientRoomKey: "",
-        diagnosis: ""
+        diagnosis: "",
       },
 
       isListenPatientData: "",
@@ -604,13 +651,13 @@ export default {
       isDetails: false,
 
       isAddMode: true,
-      isDeleteRoom: false
+      isDeleteRoom: false,
     };
   },
   methods: {
     printBtn() {
       let routeData = this.$router.resolve({
-        path: "/QRCode/" + this.currentPatientData.key
+        path: "/QRCode/" + this.currentPatientData.key,
       });
       window.open(routeData.href, "_blank");
 
@@ -618,7 +665,7 @@ export default {
     },
     printAll() {
       let routeData = this.$router.resolve({
-        path: "/QRCode/" + this.roomKey + "/all"
+        path: "/QRCode/" + this.roomKey + "/all",
       });
       window.open(routeData.href, "_blank");
     },
@@ -629,9 +676,9 @@ export default {
           title: "ลบผู้ป่วย",
           message: "ต้องการลบผู้ป่วยใช่หรือไม่",
           ok: {
-            color: "orange-5"
+            color: "orange-5",
           },
-          cancel: { textColor: "black", flat: true }
+          cancel: { textColor: "black", flat: true },
         })
         .onOk(() => {
           db.collection("patientData")
@@ -641,9 +688,9 @@ export default {
               db.collection("patientLog")
                 .where("patientKey", "==", this.currentPatientData.key)
                 .get()
-                .then(doc => {
+                .then((doc) => {
                   let counter = 0;
-                  doc.forEach(element => {
+                  doc.forEach((element) => {
                     db.collection("patientLog")
                       .doc(element.id)
                       .delete()
@@ -661,7 +708,7 @@ export default {
     changeNotify() {
       console.log("CHANGED");
       let currentPatientDataSnapshot = this.patientData.filter(
-        x => x.key == this.currentPatientData.key
+        (x) => x.key == this.currentPatientData.key
       )[0];
       let showNotify = false;
 
@@ -671,8 +718,7 @@ export default {
         showNotify = !currentPatientDataSnapshot.isShowNotify;
       }
 
-      let titleText =
-        showNotify == false ? "เปิดการแจ้งเตือน" : "ยกเลิกการแจ้งเตือน";
+      let titleText = showNotify == false ? "เปิดการแจ้งเตือน" : "ยกเลิกการแจ้งเตือน";
       let contentText =
         showNotify == false
           ? "ระบบจะแจ้งเตือนเมื่อคนไข้ ท่านนี้ ไม่กรอกข้อมูลตามเวลา "
@@ -680,11 +726,9 @@ export default {
 
       this.popUpDialog(titleText, contentText);
 
-      db.collection("patientData")
-        .doc(this.currentPatientData.key)
-        .update({
-          isShowNotify: showNotify
-        });
+      db.collection("patientData").doc(this.currentPatientData.key).update({
+        isShowNotify: showNotify,
+      });
 
       this.currentPatientData.isShowNotify = showNotify;
       this.patientObj.isShowNotify = showNotify;
@@ -695,27 +739,25 @@ export default {
       db.collection("patientData")
         .where("patientRoomKey", "==", this.roomKey)
         .get()
-        .then(doc => {
+        .then((doc) => {
           let counter = 0;
 
-          doc.forEach(element => {
+          doc.forEach((element) => {
             db.collection("patientLog")
               .where("patientKey", "==", element.id)
               .get()
-              .then(doc => {
-                doc.forEach(pelement => {
-                  db.collection("patientLog")
-                    .doc(pelement.id)
-                    .update({
-                      patientRoomKey: this.roomChoosed
-                    });
+              .then((doc) => {
+                doc.forEach((pelement) => {
+                  db.collection("patientLog").doc(pelement.id).update({
+                    patientRoomKey: this.roomChoosed,
+                  });
                 });
               });
 
             db.collection("patientData")
               .doc(element.id)
               .update({
-                patientRoomKey: this.roomChoosed
+                patientRoomKey: this.roomChoosed,
               })
               .then(() => {
                 counter++;
@@ -742,7 +784,7 @@ export default {
       db.collection("patientData")
         .where("patientRoomKey", "==", this.roomKey)
         .get()
-        .then(doc => {
+        .then((doc) => {
           console.log(doc.size);
           this.loadingHide();
           if (doc.size) {
@@ -757,15 +799,15 @@ export default {
                 ok: {
                   color: "orange-5",
                   label: "ตกลง",
-                  textColor: "black"
+                  textColor: "black",
                 },
                 cancel: {
                   label: "ยกเลิก",
                   flat: true,
-                  textColor: "black"
-                }
+                  textColor: "black",
+                },
               })
-              .onOk(validate => {
+              .onOk((validate) => {
                 this.loadingShow();
 
                 db.collection("patientRoom")
@@ -790,7 +832,7 @@ export default {
         .where("name", "==", this.roomName)
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
-        .then(doc => {
+        .then((doc) => {
           if (doc.size) {
             // กรณีชื่อซ้ำ
             this.popUpDialog("ผิดพลาด", "พบชื่อห้องซ้ำ");
@@ -799,13 +841,13 @@ export default {
             db.collection("patientRoom")
               .doc(this.roomKey)
               .update({
-                name: this.roomName
+                name: this.roomName,
               })
               .then(() => {
                 db.collection("patientRoom")
                   .doc(this.roomKey)
                   .get()
-                  .then(doc => {
+                  .then((doc) => {
                     this.vnotify("บันทึกข้อมูลเรียบร้อย");
                     this.roomData = doc.data();
                     this.patientObj.patientRoomKey = doc.id;
@@ -828,7 +870,7 @@ export default {
           dateOfBirth: "",
           diagnosis: "",
           hospitalKey: "",
-          patientRoomKey: this.roomKey
+          patientRoomKey: this.roomKey,
         };
       }
 
@@ -857,7 +899,7 @@ export default {
         dateOfBirth: "",
         diagnosis: "",
         hospitalKey: "",
-        patientRoomKey: this.roomKey
+        patientRoomKey: this.roomKey,
       };
     },
     showPatientData(key) {
@@ -867,9 +909,9 @@ export default {
         this.isClickedOnPatient = true;
         this.loadingShow();
 
-        this.currentPatientData = this.patientData.filter(x => x.key == key)[0];
+        this.currentPatientData = this.patientData.filter((x) => x.key == key)[0];
 
-        this.currentPatientLog = this.patientLog.filter(x => {
+        this.currentPatientLog = this.patientLog.filter((x) => {
           return x.patientKey == key;
         });
 
@@ -927,7 +969,7 @@ export default {
             dateOfBirth: "",
             diagnosis: "",
             hospitalKey: "",
-            patientRoomKey: this.roomKey
+            patientRoomKey: this.roomKey,
           };
           this.isDialogAddNewPatient = false;
           this.loadingHide();
@@ -948,14 +990,14 @@ export default {
       db.collection("patientRoom")
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         .get()
-        .then(doc => {
+        .then((doc) => {
           let dataTemp = [];
           let dataCheckBox = [];
-          doc.forEach(element => {
+          doc.forEach((element) => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
             dataCheckBox.push({
               ...element.data(),
-              ...{ key: element.id, status: false }
+              ...{ key: element.id, status: false },
             });
           });
           this.patientRoom = dataTemp;
@@ -973,7 +1015,7 @@ export default {
       db.collection("patientRoom")
         .doc(this.roomKey)
         .get()
-        .then(doc => {
+        .then((doc) => {
           this.roomData = doc.data();
           this.patientObj.patientRoomKey = doc.id;
           this.roomName = doc.data().name;
@@ -986,9 +1028,9 @@ export default {
       this.isListenPatientData = db
         .collection("patientData")
         .where("patientRoomKey", "==", this.roomKey)
-        .onSnapshot(doc => {
+        .onSnapshot((doc) => {
           let dataTemp = [];
-          doc.forEach(element => {
+          doc.forEach((element) => {
             dataTemp.push({ ...element.data(), ...{ key: element.id } });
           });
           this.patientData = dataTemp;
@@ -1000,9 +1042,9 @@ export default {
         .where("hospitalKey", "==", this.$q.localStorage.getItem("hospitalKey"))
         // .where("patientRoomKey", "==", this.roomKey)
         .get()
-        .then(doc => {
+        .then((doc) => {
           let dataTemp = [];
-          doc.forEach(result => {
+          doc.forEach((result) => {
             let dateAdmit = result.data().inputDate;
 
             let newDate =
@@ -1018,7 +1060,7 @@ export default {
             let setData = {
               key: result.id,
               dateAndRound: newDate,
-              ...result.data()
+              ...result.data(),
             };
 
             dataTemp.push(setData);
@@ -1035,7 +1077,7 @@ export default {
           this.isLoading = false;
           this.loadingHide();
         });
-    }
+    },
   },
   computed: {
     getAge() {
@@ -1066,14 +1108,14 @@ export default {
       }
 
       return age;
-    }
+    },
   },
   mounted() {
     this.loadRoomData();
   },
   beforeDestroy() {
     this.isListenPatientData();
-  }
+  },
 };
 </script>
 

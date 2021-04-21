@@ -40,8 +40,10 @@ register(process.env.SERVICE_WORKER_FILE, {
   updated( /* registration */ ) {
     if (process.env.DEV) {
       console.log('New content is available; please refresh.')
-      window.location.reload(true)
+      // window.location.reload(true)
     }
+    window.location.reload(true)
+
   },
 
   offline() {

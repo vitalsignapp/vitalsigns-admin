@@ -296,17 +296,34 @@ export default {
         this.$refs.birth.hasError ||
         this.$refs.admit.hasError
       ) {
-        alert("กรุณากรอกข้อมูลให้ไม่ครบ");
+        // alert("กรุณากรอกข้อมูลให้ไม่ครบ");
+        this.$q.notify(
+          {
+          message : "กรุณากรอกข้อมูลให้ครบถ้วน",
+          color : "red"
+          }
+        )
         return;
       }
 
       if (this.patientData.sex == "") {
-        alert("กรุณาเลือกเพศ");
+
+         this.$q.notify(
+          {
+          message : "กรุณาเลือกเพศ",
+          color : "red"
+          }
+        )
         return;
       }
 
       if (this.patientData.patientRoomKey == "") {
-        alert("กรุณาเลือกห้องผู้ป่วย");
+          this.$q.notify(
+          {
+          message : "กรุณาเลือกห้องผู้ป่วย",
+          color : "red"
+          }
+        )
         return;
       }
 
@@ -319,7 +336,13 @@ export default {
         .get();
 
       if (checkUsername.size && this.isAddMode) {
-        alert("มีข้อมูลผู้ป่วยนี้แล้ว");
+        // alert("มีข้อมูลผู้ป่วยนี้แล้ว");
+         this.$q.notify(
+          {
+          message : "มีข้อมูลผู้ป่วยนี้อยู่ในระบบแล้ว",
+          color : "red"
+          }
+        )
 
         this.isDisabled = false;
         return;
@@ -380,8 +403,8 @@ export default {
       this.yearT = new Date(this.dateTime.date).getFullYear();
       this.yearTH = this.yearT + 543;
 
-      this.patientData.dateOfAdmit = this.dateTime.date;
-      this.patientData.dateOfBirth = this.dateTime.date;
+      this.patientData.dateOfAdmit = ""
+      this.patientData.dateOfBirth = ""
 
       let refs = db
         .collection("patientRoom")
